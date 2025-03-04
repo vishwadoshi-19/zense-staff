@@ -112,7 +112,7 @@ export default function Onboarding() {
   useEffect(() => {
     if (!isLoading) {
       if (isAuthenticated && !isNewUser) {
-        router.push("/dashboard");
+        router.push("/jobs");
       }
     }
   }, [isAuthenticated, isLoading, isNewUser, router]);
@@ -197,7 +197,7 @@ export default function Onboarding() {
 
       // Save form data to Firestore
       const result = await saveFormData(user.uid, updatedFormState);
-      // router.push("/dashboard");
+      // router.push("/jobs");
 
       if (result.success) {
         setStep("completed");
@@ -210,7 +210,7 @@ export default function Onboarding() {
 
         // Redirect to dashboard after a short delay
         setTimeout(() => {
-          router.push("/dashboard");
+          router.push("/jobs");
         }, 3000);
       } else {
         toast.error("Failed to save your profile. Please try again.");

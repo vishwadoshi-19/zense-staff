@@ -15,7 +15,7 @@ export default function Home() {
         if (isNewUser) {
           router.push("/");
         } else {
-          router.push("/dashboard");
+          router.push("/jobs");
         }
       } else {
         router.push("/sign-in");
