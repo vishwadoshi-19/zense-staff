@@ -1,0 +1,7 @@
+[
+  {
+    "origin": ["http://localhost:3000", "https://zense-provider.vercel.app"],
+    "method": ["GET", "POST", "PUT"],
+    "maxAgeSeconds": 3600
+  }
+]

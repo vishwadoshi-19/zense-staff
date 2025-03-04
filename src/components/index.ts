@@ -1,0 +1,14 @@
+export * from "./EducationSection";
+export { FileUpload } from "./FileUpload";
+export * from "./FormNavigation";
+export * from "./FormProgress";
+export * from "./IdProofSection";
+export * from "./PersonalInfoSection";
+export * from "./PhoneVerification";
+export * from "./ProgressBar";
+export * from "./QuestionCard";
+export * from "./ShiftSelection";
+export * from "./SkillsSection";
+export * from "./TestimonialSection";
+export * from "./UserDetails";
+export * from "./WagesSection";
