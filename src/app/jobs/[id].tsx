@@ -1,7 +1,35 @@
 import { useRouter } from "next/router";
 import { useEffect, useState } from "react";
 import { Job } from "@/components/JobCard";
-import { jobs } from "./page";
+// import { jobs } from "./page";
+
+const jobs = [
+  {
+    id: 1,
+    patientName: "Sarah Johnson",
+    age: 72,
+    description: "Post-surgery care and rehabilitation assistance",
+    requirements: ["Wound dressing", "Mobility assistance", "Vital monitoring"],
+    location: "Green Park, Delhi",
+    timing: "9:00 AM - 5:00 PM",
+    status: "available",
+  },
+  {
+    id: 2,
+    patientName: "Raj Patel",
+    age: 65,
+    description: "Diabetes management and daily care",
+    requirements: [
+      "Blood sugar monitoring",
+      "Medication management",
+      "Diet assistance",
+    ],
+    location: "Dwarka, Delhi",
+    timing: "24-hour care",
+    status: "assigned",
+  },
+  // Add more jobs as needed
+];
 
 const JobDetails = () => {
   const router = useRouter();
