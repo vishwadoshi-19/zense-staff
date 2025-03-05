@@ -56,7 +56,7 @@ export const UserDetails: React.FC<UserDetailsProps> = ({
         await updateDoc(doc(db, "users", user.uid), {
           ...userDetails,
           profilePhoto: profilePhotoURL,
-          status: "registered",
+          // status: "registered",
           updatedAt: serverTimestamp(),
         });
       }

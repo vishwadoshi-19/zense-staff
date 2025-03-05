@@ -16,7 +16,7 @@ const jobs = [
     description: "Post-surgery care and rehabilitation assistance",
     requirements: ["Wound dressing", "Mobility assistance", "Vital monitoring"],
     location: "Green Park, Delhi",
-    timing: "9:00 AM - 5:00 PM",
+    timing: "12-hour care",
     status: "available",
   },
   {
@@ -34,6 +34,34 @@ const jobs = [
     status: "assigned",
   },
   // Add more jobs as needed
+  {
+    id: 3,
+    patientName: "Vikram Singh",
+    age: 66,
+    description: "Lukemia patient care",
+    requirements: [
+      "Blood sugar monitoring",
+      "Medication management",
+      "Diet assistance",
+    ],
+    location: "Rohini, Delhi",
+    timing: "24-hour care",
+    status: "completed",
+  },
+  {
+    id: 4,
+    patientName: "Vikram Singh",
+    age: 55,
+    description: "Overthinker patient care",
+    requirements: [
+      "Blood sugar monitoring",
+      "Medication management",
+      "Diet assistance",
+    ],
+    location: "Ookhla , Delhi",
+    timing: "12-hour care",
+    status: "ongoing",
+  },
 ];
 
 export default function Jobs() {

@@ -13,6 +13,8 @@ import {
   Settings as Lungs,
   Check,
   Plus,
+  Smile,
+  Utensils,
 } from "lucide-react";
 import { TaskList } from "@/components/TaskList";
 import { VitalsCard } from "@/components/VitalsCard";
@@ -22,6 +24,15 @@ import { useRouter } from "next/navigation";
 
 type ValuePiece = Date | null;
 type Value = ValuePiece | [ValuePiece, ValuePiece];
+
+const moods = [
+  { name: "Cheerful", emoji: "😊" },
+  { name: "Calm", emoji: "😌" },
+  { name: "Excited", emoji: "😃" },
+  { name: "Tense", emoji: "😬" },
+  { name: "Fearful", emoji: "😨" },
+  { name: "Angry", emoji: "😠" },
+];
 
 export default function DailyTasks() {
   const { isAuthenticated, isLoading, userData } = useAuth();
@@ -54,6 +65,18 @@ export default function DailyTasks() {
     totalHours: 8,
   });
 
+  const [diet, setDiet] = useState({
+    breakfast: false,
+    lunch: false,
+    snacks: false,
+    dinner: false,
+  });
+
+  const [activities, setActivities] = useState<string[]>([]);
+  const [newActivity, setNewActivity] = useState("");
+
+  const [selectedMood, setSelectedMood] = useState<string | null>(null);
+
   useEffect(() => {
     if (!isLoading) {
       if (!isAuthenticated) {
@@ -63,6 +86,21 @@ export default function DailyTasks() {
       }
     }
   }, [isAuthenticated, isLoading, router, userData]);
+
+  const handleDietClick = (meal: keyof typeof diet) => {
+    setDiet((prevDiet) => ({ ...prevDiet, [meal]: !prevDiet[meal] }));
+  };
+
+  const handleAddActivity = () => {
+    if (newActivity.trim()) {
+      setActivities((prevActivities) => [...prevActivities, newActivity]);
+      setNewActivity("");
+    }
+  };
+
+  const handleMoodSelect = (mood: string) => {
+    setSelectedMood(mood);
+  };
 
   return (
     <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 pb-24">
@@ -130,7 +168,7 @@ export default function DailyTasks() {
       </div>
 
       {/* Tasks Section */}
-      <div>
+      <div className="mb-8">
         <div className="flex items-center justify-between mb-4">
           <h2 className="text-lg font-semibold text-gray-900">Tasks</h2>
           <button className="text-blue-500 hover:text-blue-600">
@@ -147,6 +185,72 @@ export default function DailyTasks() {
             );
           }}
         />
+      </div>
+
+      {/* Diet Section */}
+      <div className="mb-8 ">
+        <h2 className="text-lg font-semibold text-gray-900 mb-4">Diet</h2>
+        <div className="grid grid-cols-2 gap-4">
+          {["breakfast", "lunch", "snacks", "dinner"].map((meal) => (
+            <button
+              key={meal}
+              className={`p-4 border rounded-lg ${
+                diet[meal as keyof typeof diet]
+                  ? "bg-blue-500 text-white"
+                  : "bg-white text-gray-900"
+              }`}
+              onClick={() => handleDietClick(meal as keyof typeof diet)}
+            >
+              {meal.charAt(0).toUpperCase() + meal.slice(1)}
+            </button>
+          ))}
+        </div>
+      </div>
+
+      {/* Activity Section */}
+      <div className="mb-8">
+        <h2 className="text-lg font-semibold text-gray-900 mb-4">Activity</h2>
+        <div className="mb-4">
+          <input
+            type="text"
+            value={newActivity}
+            onChange={(e) => setNewActivity(e.target.value)}
+            className="p-3 border border-blue-500 rounded-lg w-full"
+            placeholder="Add new activity"
+          />
+          <button
+            className="mt-3 p-2 bg-blue-500 text-white rounded-lg"
+            onClick={handleAddActivity}
+          >
+            Add Activity
+          </button>
+        </div>
+        <ul className="list-disc pl-5">
+          {activities.map((activity, index) => (
+            <li key={index}>{activity}</li>
+          ))}
+        </ul>
+      </div>
+
+      {/* Mood Section */}
+      <div className="mb-8">
+        <h2 className="text-lg font-semibold text-gray-900 mb-4">Mood</h2>
+        <div className="grid grid-cols-2 md:grid-cols-3 gap-4">
+          {moods.map((mood) => (
+            <button
+              key={mood.name}
+              className={`p-4 border rounded-lg flex items-center justify-center ${
+                selectedMood === mood.name
+                  ? "bg-blue-500 text-white"
+                  : "bg-white text-gray-900"
+              }`}
+              onClick={() => handleMoodSelect(mood.name)}
+            >
+              <span className="mr-6 text-2xl">{mood.emoji}</span>
+              {mood.name}
+            </button>
+          ))}
+        </div>
       </div>
     </div>
   );

@@ -4,24 +4,31 @@ import { useEffect } from "react";
 import { useRouter } from "next/navigation";
 import { useAuth } from "@/context/AuthContext";
 import LoadingScreen from "@/components/common/LoadingScreen";
+import { getStaffDetails } from "@/lib/firebase/firestore";
 
 export default function Home() {
-  const { isAuthenticated, isLoading, isNewUser } = useAuth();
+  const { isAuthenticated, isLoading, user } = useAuth();
   const router = useRouter();
 
   useEffect(() => {
-    if (!isLoading) {
-      if (isAuthenticated) {
-        if (isNewUser) {
-          router.push("/");
+    const checkUserStatus = async () => {
+      if (!isLoading) {
+        if (isAuthenticated && user) {
+          const staffDetails = await getStaffDetails(user.uid);
+          if (staffDetails && staffDetails.success) {
+            // Pre-populate form fields with staffDetails.data
+            // Redirect to the first not-filled form step
+            router.push("/jobs");
+          } else {
+            router.push("/onboarding");
+          }
         } else {
-          router.push("/jobs");
+          router.push("/sign-in");
         }
-      } else {
-        router.push("/sign-in");
       }
-    }
-  }, [isAuthenticated, isLoading, isNewUser, router]);
+    };
+    checkUserStatus();
+  }, [isAuthenticated, isLoading, user, router]);
 
   if (isLoading) {
     return <LoadingScreen />;

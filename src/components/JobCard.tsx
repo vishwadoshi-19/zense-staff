@@ -33,6 +33,9 @@ export const JobCard = ({ job }: JobCardProps) => {
     setShowConfirmation(false);
   };
 
+  const canJobBeAccepted =
+    job.status === "available" || job.status === "assigned";
+
   return (
     <motion.div
       initial={{ opacity: 0, y: 20 }}
@@ -88,23 +91,24 @@ export const JobCard = ({ job }: JobCardProps) => {
               ))}
             </ul>
           </div>
-
-          <div className="flex gap-3">
-            <button
-              onClick={() => handleAction("accept")}
-              className="flex-1 bg-blue-500 text-white px-4 py-2 rounded-lg hover:bg-blue-600 
+          {canJobBeAccepted && (
+            <div className="flex gap-3">
+              <button
+                onClick={() => handleAction("accept")}
+                className="flex-1 bg-blue-500 text-white px-4 py-2 rounded-lg hover:bg-blue-600 
                        transition-colors duration-200"
-            >
-              Accept
-            </button>
-            <button
-              onClick={() => handleAction("decline")}
-              className="flex-1 border border-gray-300 text-gray-700 px-4 py-2 rounded-lg 
+              >
+                Accept
+              </button>
+              <button
+                onClick={() => handleAction("decline")}
+                className="flex-1 border border-gray-300 text-gray-700 px-4 py-2 rounded-lg 
                        hover:bg-gray-50 transition-colors duration-200"
-            >
-              Decline
-            </button>
-          </div>
+              >
+                Decline
+              </button>
+            </div>
+          )}
         </div>
       </a>
 

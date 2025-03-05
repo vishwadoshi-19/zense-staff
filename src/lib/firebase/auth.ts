@@ -6,7 +6,13 @@ import {
   signOut as firebaseSignOut,
   User,
 } from "firebase/auth";
-import { doc, getDoc, setDoc, serverTimestamp } from "firebase/firestore";
+import {
+  doc,
+  getDoc,
+  setDoc,
+  serverTimestamp,
+  updateDoc,
+} from "firebase/firestore";
 import { useRouter } from "next/navigation";
 import { UserData } from "@/types/index";
 
@@ -57,11 +63,11 @@ export const verifyOTP = async (
       });
 
       // Create staff document in "staff" collection
-      await setDoc(doc(db, "staff", user.uid), {
-        id: user.uid,
-        phone_number: user.phoneNumber,
-        status: "unregistered",
-      });
+      // await setDoc(doc(db, "staff", user.uid), {
+      //   id: user.uid,
+      //   phone_number: user.phoneNumber,
+      //   status: "unregistered",
+      // });
       return { success: true, user, isNewUser: true };
     } else {
       return { success: true, user, isNewUser: false };
@@ -98,11 +104,8 @@ export const checkUserExists = async (userId: string) => {
 // Create user in Firestore
 export const createUser = async (user: User, userData: Partial<UserData>) => {
   try {
-    await setDoc(doc(db, "users", user.uid), {
-      phone: user.phoneNumber,
-      status: "unregistered",
-      createdAt: serverTimestamp(),
-      updatedAt: serverTimestamp(),
+    await updateDoc(doc(db, "users", user.uid), {
+      ...userData,
     });
     return { success: true };
   } catch (error) {
