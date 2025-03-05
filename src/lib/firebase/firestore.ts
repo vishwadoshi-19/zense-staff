@@ -83,11 +83,8 @@ export const saveFormData = async (userId: string, formData: FormState) => {
       updatedAt: serverTimestamp(),
     });
 
-    // Create staff details subcollection
-    const staffDetailsRef = doc(
-      collection(db, "users", userId, "staffDetails")
-    );
-    await setDoc(staffDetailsRef, {
+    // Update user data with staff details
+    await updateDoc(userRef, {
       providerId: formData.agency || "self",
       expectedWages: {
         "5hrs": formData.lessThan5Hours || 0,
@@ -134,16 +131,17 @@ export const saveFormData = async (userId: string, formData: FormState) => {
 // Get staff details from Firestore
 export const getStaffDetails = async (userId: string) => {
   try {
-    const staffDetailsSnapshot = await getDoc(
-      doc(collection(db, "users", userId, "staffDetails"))
-    );
-    if (staffDetailsSnapshot.exists()) {
-      return {
-        success: true,
-        data: staffDetailsSnapshot.data() as StaffDetails,
-      };
-    } else {
-      return { success: false, error: "Staff details not found" };
+    const userRef = doc(db, "users", userId);
+    const userSnapshot = await getDoc(userRef);
+    if (userSnapshot.exists()) {
+      const userData = userSnapshot.data();
+      if (userData && userData.providerId) {
+        console.log("Staff details found:", userData);
+        return {
+          success: true,
+          data: userData as StaffDetails,
+        };
+      }
     }
   } catch (error) {
     console.error("Error getting staff details:", error);

@@ -18,6 +18,7 @@ import {
   Check,
 } from "lucide-react";
 import { ProfileSection } from "@/components/profile/ProfileSection";
+import ReviewsSection from "@/components/ReviewsSection";
 import { StatsCard } from "@/components/profile/StatsCard";
 import { TestimonialCard } from "@/components/profile/TestimonialCard";
 import { useAuth } from "@/context/AuthContext";
@@ -47,14 +48,18 @@ export default function Profile() {
         setIsLoadingDetails(true);
         try {
           const result = await getStaffDetails(user.uid);
-          if (result.success) {
+          if (result && result.success) {
             if (result.data) {
+              console.log("Staff details fetched:", result.data);
               setStaffDetails(result.data);
+            } else {
+              console.log("No staff details found.");
             }
           }
         } catch (error) {
           console.error("Error fetching staff details:", error);
         } finally {
+          console.log("Staff details loading finished.");
           setIsLoadingDetails(false);
         }
       }
@@ -170,6 +175,7 @@ export default function Profile() {
                 </div>
               </div>
             )}
+            <ReviewsSection />
           </>
         )}
       </div>
