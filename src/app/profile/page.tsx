@@ -50,7 +50,7 @@ export default function Profile() {
           const result = await getStaffDetails(user.uid);
           if (result && result.success) {
             if (result.data) {
-              console.log("Staff details fetched:", result.data);
+              // console.log("Staff details fetched:", result.data);
               setStaffDetails(result.data);
             } else {
               console.log("No staff details found.");
@@ -59,7 +59,7 @@ export default function Profile() {
         } catch (error) {
           console.error("Error fetching staff details:", error);
         } finally {
-          console.log("Staff details loading finished.");
+          // console.log("Staff details loading finished.");
           setIsLoadingDetails(false);
         }
       }

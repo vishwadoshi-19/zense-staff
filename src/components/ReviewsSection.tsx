@@ -21,6 +21,7 @@ const ReviewsSection = () => {
   const { user, userData } = useAuth();
   const [reviews, setReviews] = useState<Review[]>([]);
   const [averageRating, setAverageRating] = useState<number | null>(null);
+  const [noOfReviews, setNoOfReviews] = useState(0);
 
   useEffect(() => {
     const fetchReviews = async () => {
@@ -33,6 +34,7 @@ const ReviewsSection = () => {
         reviewsData.push(doc.data() as Review);
       });
       setReviews(reviewsData);
+      setNoOfReviews(reviewsData.length);
 
       // Calculate average rating
       const totalStars = reviewsData.reduce(
@@ -48,16 +50,16 @@ const ReviewsSection = () => {
     }
   }, [user?.uid, userData]);
 
-  return (
+  return averageRating !== null && !isNaN(averageRating) ? (
     <div className="reviews-section p-6 bg-white rounded-lg shadow-md">
-      <h2 className="text-2xl font-bold mb-6 text-gray-800 flex items-center">
+      <h2 className="text-2xl font-bold mb-6 text-gray-800 flex justify-between items-center">
         Reviews
-        {averageRating !== null && (
-          <span className="ml-4 text-blue-500 flex items-center">
-            {averageRating.toFixed(1)}/5
-            <Star className="w-5 h-5 ml-1" />
-          </span>
-        )}
+        <span className="ml-4 text-blue-500 flex items-center">
+          {averageRating.toFixed(1)}/5 <Star className="w-5 h-5 ml-1" />
+        </span>
+        <span className="ml-4 text-sm text-gray-900 flex items-center">
+          ({noOfReviews} reviews)
+        </span>
       </h2>
       <div className="testimonials space-y-4">
         {reviews
@@ -79,7 +81,7 @@ const ReviewsSection = () => {
           ))}
       </div>
     </div>
-  );
+  ) : null;
 };
 
 export default ReviewsSection;

@@ -18,10 +18,12 @@ export default function SignIn() {
   });
 
   const handlePhoneVerified = () => {
-    if (isNewUser) {
-      router.push("/onboarding");
-    } else {
-      router.push("/jobs");
+    if (!isLoading) {
+      if (isNewUser) {
+        router.push("/onboarding");
+      } else {
+        router.push("/jobs");
+      }
     }
   };
 

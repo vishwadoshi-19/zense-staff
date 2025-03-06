@@ -136,7 +136,7 @@ export const getStaffDetails = async (userId: string) => {
     if (userSnapshot.exists()) {
       const userData = userSnapshot.data();
       if (userData && userData.providerId) {
-        console.log("Staff details found:", userData);
+        // console.log("Staff details found:", userData);
         return {
           success: true,
           data: userData as StaffDetails,

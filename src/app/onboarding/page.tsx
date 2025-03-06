@@ -211,7 +211,7 @@ export default function Onboarding() {
         // Redirect to dashboard after a short delay
         setTimeout(() => {
           router.push("/jobs");
-        }, 50);
+        }, 3000);
       } else {
         toast.error("Failed to save your profile. Please try again.");
       }

@@ -5,11 +5,13 @@ import { motion } from "framer-motion";
 import { ArrowLeft, Camera, Upload, X } from "lucide-react";
 import Image from "next/image";
 import { UserDetailsState } from "@/types";
+import { useRouter } from "next/navigation";
 import { AGENCIES } from "@/constants";
 import { db, storage } from "@/lib/firebase/config";
 import { doc, updateDoc, serverTimestamp } from "firebase/firestore";
 import { useAuth } from "@/context/AuthContext";
 import { getDownloadURL, ref, uploadBytes } from "firebase/storage";
+import toast from "react-hot-toast";
 
 const INDIAN_CITIES = [
   "Delhi",
@@ -37,7 +39,8 @@ export const UserDetails: React.FC<UserDetailsProps> = ({
 }) => {
   const fileInputRef = useRef<HTMLInputElement>(null);
   const cameraInputRef = useRef<HTMLInputElement>(null);
-  const { user } = useAuth();
+  const { user, isAuthenticated, signOut } = useAuth();
+  const router = useRouter();
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -86,6 +89,26 @@ export const UserDetails: React.FC<UserDetailsProps> = ({
     }));
   };
 
+  // const handleLeftArrowClick = async () => {
+  //   try {
+  //     await signOut();
+  //     toast.success("Signed out successfully");
+  //   } catch (error) {
+  //     toast.error("Failed to sign out");
+  //   router.push("/sign-in");
+  //   Router.push("/sign-in");
+  // };
+
+  const handleLeftArrowClick = async () => {
+    try {
+      await signOut();
+      toast.success("Signed out successfully");
+      router.push("/sign-in");
+    } catch (error) {
+      toast.error("Failed to sign out");
+    }
+  };
+
   return (
     <div className="min-h-screen bg-white px-4 py-6">
       <motion.div
@@ -95,7 +118,10 @@ export const UserDetails: React.FC<UserDetailsProps> = ({
       >
         {/* Header */}
         <div className="flex items-center mb-8">
-          <button className="p-2 hover:bg-gray-100 rounded-full transition-colors">
+          <button
+            onClick={handleLeftArrowClick}
+            className="p-2 hover:bg-gray-100 rounded-full transition-colors"
+          >
             <ArrowLeft className="w-6 h-6 text-gray-800" />
           </button>
           <h1 className="text-2xl font-bold text-gray-800 ml-4">
