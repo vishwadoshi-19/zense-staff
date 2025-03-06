@@ -3,8 +3,8 @@
 import { useState, useEffect } from "react";
 import { motion } from "framer-motion";
 import { Clock, MapPin, User, Calendar } from "lucide-react";
-import { JobCard } from "@/components/JobCard";
-import { StatusFilter } from "@/components/StatusFilter";
+import { JobCard } from "@/components/dashboard/JobCard";
+import { StatusFilter } from "@/components/dashboard/StatusFilter";
 import { useAuth } from "@/context/AuthContext";
 import { useRouter } from "next/navigation";
 

@@ -1,6 +1,6 @@
 import { useRouter } from "next/router";
 import { useEffect, useState } from "react";
-import { Job } from "@/components/JobCard";
+import { Job } from "@/components/dashboard/JobCard";
 // import { jobs } from "./page";
 
 const jobs = [
