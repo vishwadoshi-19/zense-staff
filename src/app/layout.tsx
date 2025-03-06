@@ -1,6 +1,5 @@
 "use client";
 
-import type { Metadata } from "next";
 import { Inter } from "next/font/google";
 import "./globals.css";
 import { Navigation } from "@/components/Navigation";
@@ -21,7 +20,7 @@ export default function RootLayout({
   children: React.ReactNode;
 }) {
   const pathname = usePathname();
-  const showNavigation = pathname !== "/onboarding";
+  const showNavigation = !["/sign-in", "/onboarding"].includes(pathname);
 
   return (
     <html lang="en">

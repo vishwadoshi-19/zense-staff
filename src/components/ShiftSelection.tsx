@@ -2,6 +2,7 @@ import React from "react";
 import { motion } from "framer-motion";
 import { ArrowLeft, Clock, Check } from "lucide-react";
 import { ShiftsState } from "../types";
+import { FormNavigation } from "./onboarding/FormNavigation";
 
 const SHIFT_OPTIONS = [
   "Morning Shift (6 AM - 2 PM)",
@@ -15,19 +16,20 @@ const SHIFT_OPTIONS = [
 interface ShiftSelectionProps {
   shiftsState: ShiftsState;
   setShiftsState: React.Dispatch<React.SetStateAction<ShiftsState>>;
-  onSubmit: () => void;
   onBack: () => void;
+  onNext: () => void;
 }
 
 export const ShiftSelection: React.FC<ShiftSelectionProps> = ({
   shiftsState,
   setShiftsState,
-  onSubmit,
+  onBack,
+  onNext,
 }) => {
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     if (shiftsState.preferredShifts.length > 0) {
-      onSubmit();
+      onNext();
     }
   };
 
@@ -113,7 +115,7 @@ export const ShiftSelection: React.FC<ShiftSelectionProps> = ({
             </div>
           </div>
 
-          <button
+          {/* <button
             type="submit"
             disabled={shiftsState.preferredShifts.length === 0}
             className="w-full bg-blue-500 text-white py-4 px-6 rounded-full font-semibold
@@ -121,8 +123,14 @@ export const ShiftSelection: React.FC<ShiftSelectionProps> = ({
                      disabled:bg-gray-300 disabled:cursor-not-allowed"
           >
             Continue
-          </button>
+          </button> */}
         </form>
+        <FormNavigation
+          onBack={onBack}
+          onNext={onNext}
+          currentStep="wages"
+          canProceed={shiftsState.preferredShifts.length > 0}
+        />
       </motion.div>
     </div>
   );

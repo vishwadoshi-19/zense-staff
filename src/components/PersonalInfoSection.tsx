@@ -2,7 +2,7 @@ import React from "react";
 import { motion } from "framer-motion";
 import { ArrowLeft, User } from "lucide-react";
 import { PersonalInfoState } from "../types";
-import { FormNavigation } from "./FormNavigation";
+import { FormNavigation } from "./onboarding/FormNavigation";
 
 interface PersonalInfoSectionProps {
   personalInfoState: PersonalInfoState;

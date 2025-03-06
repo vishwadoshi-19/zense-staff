@@ -3,7 +3,7 @@ import { motion } from "framer-motion";
 import { ArrowLeft, Stethoscope } from "lucide-react";
 import { SkillsState } from "../types";
 import { JOB_ROLES, SERVICES } from "../constants";
-import { FormNavigation } from "./FormNavigation";
+import { FormNavigation } from "./onboarding/FormNavigation";
 
 interface SkillsSectionProps {
   skillsState: SkillsState;

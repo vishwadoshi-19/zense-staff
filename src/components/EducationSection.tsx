@@ -3,8 +3,8 @@ import { motion } from "framer-motion";
 import { ArrowLeft, GraduationCap } from "lucide-react";
 import { EducationState } from "../types";
 import { EDUCATION_QUALIFICATIONS, INDIAN_LANGUAGES } from "../constants";
-import { FileUpload } from "./FileUpload";
-import { FormNavigation } from "./FormNavigation";
+import { FileUpload } from "./common/FileUpload";
+import { FormNavigation } from "./onboarding/FormNavigation";
 
 interface EducationSectionProps {
   educationState: EducationState;

@@ -211,7 +211,7 @@ export default function Onboarding() {
         // Redirect to dashboard after a short delay
         setTimeout(() => {
           router.push("/jobs");
-        }, 3000);
+        }, 50);
       } else {
         toast.error("Failed to save your profile. Please try again.");
       }
@@ -284,7 +284,7 @@ export default function Onboarding() {
             shiftsState={shiftsState}
             setShiftsState={setShiftsState}
             onBack={() => setStep("education")}
-            onSubmit={handleShiftsSubmitted}
+            onNext={handleShiftsSubmitted}
           />
         )}
 

@@ -1,9 +1,9 @@
-import React from 'react';
-import { motion } from 'framer-motion';
-import { ArrowLeft, Star } from 'lucide-react';
-import { TestimonialState } from '../types';
-import { FileUpload } from './FileUpload';
-import { FormNavigation } from './FormNavigation';
+import React from "react";
+import { motion } from "framer-motion";
+import { ArrowLeft, Star } from "lucide-react";
+import { TestimonialState } from "../types";
+import { FileUpload } from "./common/FileUpload";
+import { FormNavigation } from "./onboarding/FormNavigation";
 
 interface TestimonialSectionProps {
   testimonialState: TestimonialState;
@@ -19,9 +19,9 @@ export const TestimonialSection: React.FC<TestimonialSectionProps> = ({
   onNext,
 }) => {
   const handleFileChange = (file: File | null) => {
-    setTestimonialState(prev => ({
+    setTestimonialState((prev) => ({
       ...prev,
-      recording: file
+      recording: file,
     }));
   };
 
@@ -36,10 +36,15 @@ export const TestimonialSection: React.FC<TestimonialSectionProps> = ({
         className="max-w-md mx-auto pb-24"
       >
         <div className="flex items-center mb-8">
-          <button onClick={onBack} className="p-2 hover:bg-gray-100 rounded-full transition-colors">
+          <button
+            onClick={onBack}
+            className="p-2 hover:bg-gray-100 rounded-full transition-colors"
+          >
             <ArrowLeft className="w-6 h-6 text-gray-800" />
           </button>
-          <h1 className="text-2xl font-bold text-gray-800 ml-4">Testimonials</h1>
+          <h1 className="text-2xl font-bold text-gray-800 ml-4">
+            Testimonials
+          </h1>
         </div>
 
         <div className="mb-8 flex items-center justify-center">
@@ -49,8 +54,8 @@ export const TestimonialSection: React.FC<TestimonialSectionProps> = ({
         <div className="space-y-6">
           <div className="bg-blue-50 p-4 rounded-lg">
             <p className="text-blue-700 text-sm">
-              This section is optional. You can share testimonials from your previous customers
-              to increase your chances of getting hired.
+              This section is optional. You can share testimonials from your
+              previous customers to increase your chances of getting hired.
             </p>
           </div>
 
@@ -69,10 +74,12 @@ export const TestimonialSection: React.FC<TestimonialSectionProps> = ({
             <input
               type="text"
               value={testimonialState.customerName}
-              onChange={(e) => setTestimonialState(prev => ({
-                ...prev,
-                customerName: e.target.value
-              }))}
+              onChange={(e) =>
+                setTestimonialState((prev) => ({
+                  ...prev,
+                  customerName: e.target.value,
+                }))
+              }
               placeholder="Enter customer name"
               className="w-full px-4 py-3 rounded-xl border border-gray-300 focus:border-blue-500 
                        focus:ring-2 focus:ring-blue-200 transition-colors"
@@ -86,10 +93,12 @@ export const TestimonialSection: React.FC<TestimonialSectionProps> = ({
             <input
               type="tel"
               value={testimonialState.customerPhone}
-              onChange={(e) => setTestimonialState(prev => ({
-                ...prev,
-                customerPhone: e.target.value
-              }))}
+              onChange={(e) =>
+                setTestimonialState((prev) => ({
+                  ...prev,
+                  customerPhone: e.target.value,
+                }))
+              }
               placeholder="Enter customer phone number"
               className="w-full px-4 py-3 rounded-xl border border-gray-300 focus:border-blue-500 
                        focus:ring-2 focus:ring-blue-200 transition-colors"

@@ -9,7 +9,7 @@ import {
   signOut as firebaseSignOut,
 } from "@/lib/firebase/auth";
 import { UserData } from "@/types/index";
-import { useRouter } from "next/navigation";
+import { useRouter, usePathname } from "next/navigation";
 
 interface AuthContextType {
   user: User | null;
@@ -28,7 +28,7 @@ const AuthContext = createContext<AuthContextType>({
   isAuthenticated: false,
   isNewUser: false,
   setIsNewUser: () => {},
-  signOut: async () => {}, // Provide a default empty function
+  signOut: async () => {},
 });
 
 export const useAuth = () => useContext(AuthContext);
@@ -41,6 +41,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({
   const [isLoading, setIsLoading] = useState(true);
   const [isNewUser, setIsNewUser] = useState(false);
   const router = useRouter();
+  const pathname = usePathname();
 
   const signOut = async () => {
     await firebaseSignOut(router);
@@ -51,12 +52,10 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({
       setUser(currentUser);
 
       if (currentUser) {
-        // Check if user exists in Firestore
         const exists = await checkUserExists(currentUser.uid);
         setIsNewUser(!exists);
 
         if (exists) {
-          // Get user data from Firestore
           const result = await getUserData(currentUser.uid);
           if (result.success && result.data) {
             setUserData(result.data);
@@ -73,6 +72,28 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({
 
     return () => unsubscribe();
   }, []);
+
+  // Redirect users based on their authentication status
+  useEffect(() => {
+    if (isLoading) return;
+
+    if (!user) {
+      if (pathname !== "/sign-in") {
+        router.replace("/sign-in");
+      }
+    } else {
+      if (userData?.status === "unregistered" && pathname !== "/onboarding") {
+        router.replace("/onboarding");
+      }
+
+      if (
+        userData?.status === "registered" &&
+        ["/sign-in", "/onboarding"].includes(pathname)
+      ) {
+        router.replace("/jobs");
+      }
+    }
+  }, [user, userData, pathname, isLoading, router]);
 
   const value = {
     user,
