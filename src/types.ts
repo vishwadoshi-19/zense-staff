@@ -46,7 +46,7 @@ export interface EducationState {
   qualification: string;
   certificate: File | null;
   certificatePreview: string;
-  experience: number;
+  experience: string;
   maritalStatus: string;
   languages: string[];
 }

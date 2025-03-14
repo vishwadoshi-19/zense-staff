@@ -42,7 +42,7 @@ export const EducationSection: React.FC<EducationSectionProps> = ({
   const canProceed = !!(
     educationState.qualification &&
     (educationState.certificate || educationState.certificatePreview) &&
-    educationState.experience >= 0 &&
+    educationState.experience &&
     educationState.maritalStatus &&
     educationState.languages.length > 0
   );
@@ -110,20 +110,25 @@ export const EducationSection: React.FC<EducationSectionProps> = ({
             <label className="block text-gray-700 font-medium mb-2">
               Years of Experience <span className="text-red-500">*</span>
             </label>
-            <input
-              type="number"
+            <select
               value={educationState.experience || ""}
               onChange={(e) =>
                 setEducationState((prev) => ({
                   ...prev,
-                  experience: parseInt(e.target.value) || 0,
+                  experience: e.target.value, // Ensure it remains a string
                 }))
               }
-              min="0"
-              className="w-full px-4 py-3 rounded-xl border border-gray-300 focus:border-teal-700 
-                       focus:ring-2 focus:ring-teal-200 transition-colors"
               required
-            />
+              className="w-full px-4 py-3 rounded-xl border border-gray-300 focus:border-teal-700 
+               focus:ring-2 focus:ring-teal-200 transition-colors bg-white appearance-none"
+            >
+              <option value="">Select experience</option>
+              <option value="less_than_1">Less than 1 year</option>
+              <option value="1-2">1-2 years</option>
+              <option value="2-5">2-5 years</option>
+              <option value="5-10">5-10 years</option>
+              <option value="10_plus">10+ years</option>
+            </select>
           </div>
 
           <div>

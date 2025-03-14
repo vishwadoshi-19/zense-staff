@@ -88,7 +88,7 @@ export default function Onboarding() {
     qualification: "",
     certificate: null,
     certificatePreview: "",
-    experience: 0,
+    experience: "",
     maritalStatus: "",
     languages: [],
   });
@@ -147,7 +147,7 @@ export default function Onboarding() {
           ...prev,
           qualification: res?.data?.educationQualification ?? "",
           certificatePreview: res?.data?.educationCertificate ?? "",
-          experience: res?.data?.experienceYears ?? 0,
+          experience: res?.data?.experienceYears ?? "",
           maritalStatus: res?.data?.maritalStatus ?? "",
           languages: res?.data?.languagesKnown ?? [],
         }));

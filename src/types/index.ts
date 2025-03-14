@@ -127,7 +127,7 @@ export interface StaffDetails {
   };
   educationQualification: string;
   educationCertificate: string;
-  experienceYears: number;
+  experienceYears: string;
   maritalStatus: string;
   languagesKnown: string[];
   preferredShifts: string[];
