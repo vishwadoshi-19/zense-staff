@@ -1,7 +1,7 @@
-'use client';
+"use client";
 
-import { DivideIcon as LucideIcon } from 'lucide-react';
-import { ChevronRight } from 'lucide-react';
+import { DivideIcon as LucideIcon } from "lucide-react";
+import { ChevronRight } from "lucide-react";
 
 interface ProfileItem {
   label?: string;
@@ -24,7 +24,7 @@ export const ProfileSection = ({
     <div className="bg-white rounded-xl border border-gray-200 overflow-hidden">
       <div className="p-4 border-b border-gray-200">
         <div className="flex items-center gap-3">
-          <Icon className="w-5 h-5 text-blue-500" />
+          <Icon className="w-5 h-5 text-teal-700" />
           <h2 className="font-semibold text-gray-900">{title}</h2>
         </div>
       </div>

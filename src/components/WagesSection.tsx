@@ -42,7 +42,7 @@ export const WagesSection: React.FC<WagesSectionProps> = ({
         </div>
 
         <div className="mb-8 flex items-center justify-center">
-          <DollarSign className="w-16 h-16 text-blue-500" />
+          <DollarSign className="w-16 h-16 text-teal-700" />
         </div>
 
         <div className="space-y-6">
@@ -61,8 +61,8 @@ export const WagesSection: React.FC<WagesSectionProps> = ({
               }
               min="0"
               placeholder="Enter amount"
-              className="w-full px-4 py-3 rounded-xl border border-gray-300 focus:border-blue-500 
-                       focus:ring-2 focus:ring-blue-200 transition-colors"
+              className="w-full px-4 py-3 rounded-xl border border-gray-300 focus:border-teal-700 
+                       focus:ring-2 focus:ring-teal-200 transition-colors"
               required
             />
           </div>
@@ -82,8 +82,8 @@ export const WagesSection: React.FC<WagesSectionProps> = ({
               }
               min="0"
               placeholder="Enter amount"
-              className="w-full px-4 py-3 rounded-xl border border-gray-300 focus:border-blue-500 
-                       focus:ring-2 focus:ring-blue-200 transition-colors"
+              className="w-full px-4 py-3 rounded-xl border border-gray-300 focus:border-teal-700 
+                       focus:ring-2 focus:ring-teal-200 transition-colors"
               required
             />
           </div>
@@ -103,8 +103,8 @@ export const WagesSection: React.FC<WagesSectionProps> = ({
               }
               min="0"
               placeholder="Enter amount"
-              className="w-full px-4 py-3 rounded-xl border border-gray-300 focus:border-blue-500 
-                       focus:ring-2 focus:ring-blue-200 transition-colors"
+              className="w-full px-4 py-3 rounded-xl border border-gray-300 focus:border-teal-700 
+                       focus:ring-2 focus:ring-teal-200 transition-colors"
               required
             />
           </div>

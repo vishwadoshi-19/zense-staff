@@ -108,9 +108,9 @@ export const PhoneVerification: React.FC<PhoneVerificationProps> = ({
         className="w-full max-w-md bg-white rounded-xl shadow-md p-8"
       >
         <div className="text-center mb-8">
-          <div className="w-24 h-24 mx-auto mb-4 rounded-full overflow-hidden relative">
+          <div className="w-30 h-30 mx-auto mb-4 rounded-full overflow-hidden relative">
             <Image
-              src="https://images.unsplash.com/photo-1576091160550-2173dba999ef?auto=format&fit=crop&w=200&h=200"
+              src="https://firebasestorage.googleapis.com/v0/b/airy-adapter-451212-b8.firebasestorage.app/o/assets%2Fzense_logo.png?alt=media&token=5ed099ff-e892-472b-a37c-e6f572bb95e5"
               alt="Healthcare"
               width={96}
               height={96}
@@ -118,7 +118,7 @@ export const PhoneVerification: React.FC<PhoneVerificationProps> = ({
               style={{ objectFit: "cover" }}
             />
           </div>
-          <h2 className="text-2xl font-bold text-gray-800">
+          <h2 className="text-3xl text-nowrap font-bold text-gray-800">
             Phone Verification
           </h2>
         </div>
@@ -134,7 +134,7 @@ export const PhoneVerification: React.FC<PhoneVerificationProps> = ({
                 <Phone className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-500" />
                 <input
                   type="tel"
-                  className="w-full pl-10 pr-4 py-3 rounded-xl border border-gray-300 text-gray-900 placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                  className="w-full pl-10 pr-4 py-3 rounded-xl border border-gray-300 text-gray-900 placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-cyan-700 focus:border-cyan-700"
                   placeholder="Enter your phone number"
                   value={verificationState.phoneNumber}
                   onChange={(e) =>
@@ -154,7 +154,7 @@ export const PhoneVerification: React.FC<PhoneVerificationProps> = ({
                 <KeyRound className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-500" />
                 <input
                   type="text"
-                  className="w-full pl-10 pr-4 py-3 rounded-xl border border-gray-300 text-gray-900 placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                  className="w-full pl-10 pr-4 py-3 rounded-xl border border-gray-300 text-gray-900 placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-cyan-700 focus:border-cyan-700 text-xl"
                   placeholder="Enter OTP"
                   value={verificationState.otp}
                   onChange={(e) =>
@@ -170,7 +170,7 @@ export const PhoneVerification: React.FC<PhoneVerificationProps> = ({
           )}
           <button
             type="submit"
-            className="w-full py-3 px-4 bg-blue-600 text-white rounded-xl hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-1"
+            className="w-full py-3 px-4 bg-cyan-600 text-white rounded-xl hover:bg-cyan-700 focus:outline-none focus:ring-2 focus:ring-cyan-700 focus:ring-offset-1 text-xl"
           >
             {verificationState.showOTP ? "Verify OTP" : "Send OTP"}
           </button>

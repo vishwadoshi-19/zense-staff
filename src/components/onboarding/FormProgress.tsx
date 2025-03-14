@@ -45,7 +45,7 @@ export const FormProgress: React.FC<FormProgressProps> = ({
               <div
                 className={`w-8 h-8 rounded-full flex items-center justify-center ${
                   index <= currentIndex
-                    ? "bg-blue-500 text-white"
+                    ? "bg-teal-700 text-white"
                     : "bg-gray-200 text-gray-500"
                 }`}
               >
@@ -54,7 +54,7 @@ export const FormProgress: React.FC<FormProgressProps> = ({
               {index < steps.length - 1 && (
                 <div
                   className={`h-1 w-12 ${
-                    index < currentIndex ? "bg-blue-500" : "bg-gray-200"
+                    index < currentIndex ? "bg-teal-700" : "bg-gray-200"
                   }`}
                 />
               )}

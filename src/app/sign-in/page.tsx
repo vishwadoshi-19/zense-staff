@@ -18,18 +18,18 @@ export default function SignIn() {
     isVerified: false,
   });
 
-  useEffect(() => {
-    const handleDefaultRouteBehaviour = async () => {
-      try {
-        await signOut();
-        // toast.success("Signed out successfully");
-        router.push("/sign-in");
-      } catch (error) {
-        toast.error("Failed to sign out");
-      }
-    };
-    handleDefaultRouteBehaviour();
-  });
+  // useEffect(() => {
+  //   const handleDefaultRouteBehaviour = async () => {
+  //     try {
+  //       await signOut();
+  //       // toast.success("Signed out successfully");
+  //       router.push("/sign-in");
+  //     } catch (error) {
+  //       toast.error("Failed to sign out");
+  //     }
+  //   };
+  //   handleDefaultRouteBehaviour();
+  // });
 
   const handlePhoneVerified = () => {
     if (!isLoading) {

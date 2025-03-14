@@ -41,7 +41,7 @@ export const Navigation = () => {
                 href={href}
                 className={`flex flex-col items-center space-y-1 ${
                   isActive
-                    ? "text-blue-500"
+                    ? "text-teal-700"
                     : "text-gray-500 hover:text-gray-900"
                 }`}
               >

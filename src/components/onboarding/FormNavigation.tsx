@@ -1,6 +1,6 @@
-import React from 'react';
-import { ArrowLeft, ArrowRight } from 'lucide-react';
-import { FormStep } from '@/types';
+import React from "react";
+import { ArrowLeft, ArrowRight } from "lucide-react";
+import { FormStep } from "@/types";
 
 interface FormNavigationProps {
   onBack: () => void;
@@ -36,7 +36,7 @@ export const FormNavigation: React.FC<FormNavigationProps> = ({
           onClick={onNext}
           disabled={!canProceed || isSubmitting}
           className="flex-1 flex items-center justify-center gap-2 py-3 px-4 rounded-full
-                   bg-blue-500 text-white hover:bg-blue-600 transition-colors
+                   bg-teal-700 text-white hover:bg-teal-600 transition-colors
                    disabled:bg-gray-300 disabled:cursor-not-allowed"
         >
           {isSubmitting ? (
@@ -46,7 +46,7 @@ export const FormNavigation: React.FC<FormNavigationProps> = ({
             </div>
           ) : (
             <>
-              <span>{isLastStep ? 'Finish' : 'Continue'}</span>
+              <span>{isLastStep ? "Finish" : "Continue"}</span>
               <ArrowRight className="w-5 h-5" />
             </>
           )}

@@ -43,36 +43,42 @@ export const sendOTP = async (
 };
 
 // Verify OTP and sign in
-// export const verifyOTP = async (
-//   verificationId: string,
-//   otp: string,
-//   router: any
-// ) => {
-//   try {
-//     const credential = PhoneAuthProvider.credential(verificationId, otp);
-//     const result = await signInWithCredential(auth, credential);
-//     const user = result.user;
-//     const userDoc = await getDoc(doc(db, "users", user.uid));
-//     if (!userDoc.exists()) {
-//       // Create user document in "users" collection
-//       await setDoc(doc(db, "users", user.uid), {
-//         phone: user.phoneNumber,
-//         status: "unregistered",
-//         createdAt: serverTimestamp(),
-//         updatedAt: serverTimestamp(),
-//       });
-
-//       return { success: true, user, isNewUser: true };
-//     } else {
-//       return { success: true, user, isNewUser: false };
-//     }
-//   } catch (error) {
-//     console.error("Error verifying OTP:", error);
-//     return { success: false, error };
-//   }
-// };
-
 export const verifyOTP = async (
+  verificationId: string,
+  otp: string,
+  router: any
+) => {
+  try {
+    const credential = PhoneAuthProvider.credential(verificationId, otp);
+    const result = await signInWithCredential(auth, credential);
+    const user = result.user;
+    const userDoc = await getDoc(doc(db, "users", user.uid));
+    if (!userDoc.exists()) {
+      // Create user document in "users" collection
+      await setDoc(doc(db, "users", user.uid), {
+        phone: user.phoneNumber,
+        status: "unregistered",
+        createdAt: serverTimestamp(),
+        updatedAt: serverTimestamp(),
+      });
+      const status = userDoc.data()?.status || "unregistered"; // Get status if it exists
+      if (status === "registered") {
+        router.replace("/jobs");
+      } else {
+        router.replace("/onboarding");
+      }
+
+      return { success: true, user, isNewUser: true };
+    } else {
+      return { success: true, user, isNewUser: false };
+    }
+  } catch (error) {
+    console.error("Error verifying OTP:", error);
+    return { success: false, error };
+  }
+};
+
+export const verifyOTP2 = async (
   verificationId: string,
   otp: string,
   router: any
@@ -99,6 +105,9 @@ export const verifyOTP = async (
       isNewUser = true;
     } else {
       status = userDoc.data().status || "unregistered"; // Get status if it exists
+      console.log("User status:", status);
+      console.log("User data:", userDoc, userDoc.data());
+
       // Update last login timestamp
       await updateDoc(userRef, {
         updatedAt: serverTimestamp(),

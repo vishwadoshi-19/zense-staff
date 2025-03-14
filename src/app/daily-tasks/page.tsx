@@ -129,7 +129,7 @@ export default function DailyTasks() {
           <h2 className="text-lg font-semibold text-gray-900">
             Patient Vitals
           </h2>
-          <button className="text-blue-500 hover:text-blue-600">
+          <button className="text-teal-700 hover:text-teal-600">
             <Plus className="w-5 h-5" />
           </button>
         </div>
@@ -171,7 +171,7 @@ export default function DailyTasks() {
       <div className="mb-8">
         <div className="flex items-center justify-between mb-4">
           <h2 className="text-lg font-semibold text-gray-900">Tasks</h2>
-          <button className="text-blue-500 hover:text-blue-600">
+          <button className="text-teal-700 hover:text-teal-600">
             <Plus className="w-5 h-5" />
           </button>
         </div>
@@ -196,7 +196,7 @@ export default function DailyTasks() {
               key={meal}
               className={`p-4 border rounded-lg ${
                 diet[meal as keyof typeof diet]
-                  ? "bg-blue-500 text-white"
+                  ? "bg-teal-700 text-white"
                   : "bg-white text-gray-900"
               }`}
               onClick={() => handleDietClick(meal as keyof typeof diet)}
@@ -215,11 +215,11 @@ export default function DailyTasks() {
             type="text"
             value={newActivity}
             onChange={(e) => setNewActivity(e.target.value)}
-            className="p-3 border border-blue-500 rounded-lg w-full"
+            className="p-3 border border-teal-700 rounded-lg w-full"
             placeholder="Add new activity"
           />
           <button
-            className="mt-3 p-2 bg-blue-500 text-white rounded-lg"
+            className="mt-3 p-2 bg-teal-700 text-white rounded-lg"
             onClick={handleAddActivity}
           >
             Add Activity
@@ -241,7 +241,7 @@ export default function DailyTasks() {
               key={mood.name}
               className={`p-4 border rounded-lg flex items-center justify-center ${
                 selectedMood === mood.name
-                  ? "bg-blue-500 text-white"
+                  ? "bg-teal-700 text-white"
                   : "bg-white text-gray-900"
               }`}
               onClick={() => handleMoodSelect(mood.name)}

@@ -13,7 +13,7 @@ export const AttendanceBar = ({ attendance }: AttendanceProps) => {
     <div className="bg-white rounded-xl border border-gray-200 p-4">
       <div className="flex items-center justify-between mb-4">
         <div className="flex items-center gap-2">
-          <Clock className="w-5 h-5 text-blue-500" />
+          <Clock className="w-5 h-5 text-teal-700" />
           <span className="font-medium text-gray-900">Shift Hours</span>
         </div>
         <span className="text-sm text-gray-500">
@@ -21,9 +21,9 @@ export const AttendanceBar = ({ attendance }: AttendanceProps) => {
         </span>
       </div>
       <div className="space-y-2">
-        <div className="h-2 bg-blue-100 rounded-full overflow-hidden">
+        <div className="h-2 bg-teal-100 rounded-full overflow-hidden">
           <div
-            className="h-full bg-blue-500 rounded-full"
+            className="h-full bg-teal-700 rounded-full"
             style={{ width: `${(attendance.totalHours / 12) * 100}%` }}
           />
         </div>

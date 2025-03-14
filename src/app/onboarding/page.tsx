@@ -434,14 +434,14 @@ export default function Onboarding() {
   if (step === "completed") {
     // router.push("/jobs");
     return (
-      <div className="min-h-screen bg-gradient-to-br from-blue-600 to-blue-400 flex items-center justify-center p-6">
+      <div className="min-h-screen bg-gradient-to-br from-teal-600 to-teal-400 flex items-center justify-center p-6">
         <div className="text-center text-white space-y-6">
           <Heart className="w-16 h-16 mx-auto text-red-400 animate-pulse" />
           <h1 className="text-4xl font-bold">Thank you!</h1>
-          <p className="text-xl text-blue-50">
+          <p className="text-xl text-teal-50">
             Your application has been received.
           </p>
-          <Link href="/jobs" className="text-blue-500 hover:underline">
+          <Link href="/jobs" className="text-teal-700 hover:underline">
             Redirecting to dashboard...
           </Link>
         </div>

@@ -58,7 +58,7 @@ export const JobCard = ({ job }: JobCardProps) => {
                 job.status === "available"
                   ? "bg-green-100 text-green-800"
                   : job.status === "assigned"
-                  ? "bg-blue-100 text-blue-800"
+                  ? "bg-teal-100 text-teal-800"
                   : "bg-gray-100 text-gray-800"
               }`}
             >
@@ -87,7 +87,7 @@ export const JobCard = ({ job }: JobCardProps) => {
                   key={index}
                   className="text-sm text-gray-600 flex items-center"
                 >
-                  <span className="w-1.5 h-1.5 bg-blue-500 rounded-full mr-2" />
+                  <span className="w-1.5 h-1.5 bg-teal-700 rounded-full mr-2" />
                   {req}
                 </li>
               ))}
@@ -97,7 +97,7 @@ export const JobCard = ({ job }: JobCardProps) => {
             <div className="flex gap-3">
               <button
                 onClick={() => handleAction("accept")}
-                className="flex-1 bg-blue-500 text-white px-4 py-2 rounded-lg hover:bg-blue-600 
+                className="flex-1 bg-teal-700 text-white px-4 py-2 rounded-lg hover:bg-teal-600 
                        transition-colors duration-200"
               >
                 Accept

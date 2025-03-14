@@ -54,7 +54,7 @@ export const IdProofSection: React.FC<IdProofSectionProps> = ({
         </div>
 
         <div className="mb-8 flex items-center justify-center">
-          <FileCheck className="w-16 h-16 text-blue-500" />
+          <FileCheck className="w-16 h-16 text-teal-700" />
         </div>
 
         <div className="space-y-6">
@@ -73,8 +73,8 @@ export const IdProofSection: React.FC<IdProofSectionProps> = ({
               }
               placeholder="Enter your Aadhar number"
               pattern="[0-9]{12}"
-              className="w-full px-4 py-3 rounded-xl border border-gray-300 focus:border-blue-500 
-                       focus:ring-2 focus:ring-blue-200 transition-colors"
+              className="w-full px-4 py-3 rounded-xl border border-gray-300 focus:border-teal-700 
+                       focus:ring-2 focus:ring-teal-200 transition-colors"
               required
               disabled={isSubmitting}
             />
@@ -113,8 +113,8 @@ export const IdProofSection: React.FC<IdProofSectionProps> = ({
               }
               placeholder="Enter your PAN number"
               pattern="[A-Z]{5}[0-9]{4}[A-Z]{1}"
-              className="w-full px-4 py-3 rounded-xl border border-gray-300 focus:border-blue-500 
-                       focus:ring-2 focus:ring-blue-200 transition-colors"
+              className="w-full px-4 py-3 rounded-xl border border-gray-300 focus:border-teal-700 
+                       focus:ring-2 focus:ring-teal-200 transition-colors"
               disabled={isSubmitting}
             />
           </div>

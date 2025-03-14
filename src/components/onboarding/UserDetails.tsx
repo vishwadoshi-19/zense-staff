@@ -143,7 +143,7 @@ export const UserDetails: React.FC<UserDetailsProps> = ({
                 <Image
                   src={userDetails.previewUrl}
                   alt="Profile Preview"
-                  className="w-32 h-32 rounded-full object-cover border-4 border-blue-500"
+                  className="w-32 h-32 rounded-full object-cover border-4 border-teal-700"
                   width={128}
                   height={128}
                 />
@@ -182,7 +182,7 @@ export const UserDetails: React.FC<UserDetailsProps> = ({
             <button
               type="button"
               onClick={() => cameraInputRef.current?.click()}
-              className="flex items-center gap-2 px-4 py-2 bg-blue-500 text-white rounded-lg hover:bg-blue-600 transition-colors"
+              className="flex items-center gap-2 px-4 py-2 bg-teal-700 text-white rounded-lg hover:bg-teal-600 transition-colors"
             >
               <Camera className="w-4 h-4" />
               <span>Camera</span>
@@ -219,8 +219,8 @@ export const UserDetails: React.FC<UserDetailsProps> = ({
               }
               placeholder="Enter your full name"
               required
-              className="w-full px-4 py-3 rounded-xl border border-gray-300 focus:border-blue-500 
-                       focus:ring-2 focus:ring-blue-200 transition-colors"
+              className="w-full px-4 py-3 rounded-xl border border-gray-300 focus:border-teal-700 
+                       focus:ring-2 focus:ring-teal-200 transition-colors"
             />
           </div>
 
@@ -235,8 +235,8 @@ export const UserDetails: React.FC<UserDetailsProps> = ({
                 setUserDetails((prev) => ({ ...prev, agency: e.target.value }))
               }
               required
-              className="w-full px-4 py-3 rounded-xl border border-gray-300 focus:border-blue-500 
-                       focus:ring-2 focus:ring-blue-200 transition-colors appearance-none bg-white"
+              className="w-full px-4 py-3 rounded-xl border border-gray-300 focus:border-teal-700 
+                       focus:ring-2 focus:ring-teal-200 transition-colors appearance-none bg-white"
             >
               <option value="">Select agency</option>
               {AGENCIES.map((agency) => (
@@ -261,8 +261,8 @@ export const UserDetails: React.FC<UserDetailsProps> = ({
                 }))
               }
               required
-              className="w-full px-4 py-3 rounded-xl border border-gray-300 focus:border-blue-500 
-                       focus:ring-2 focus:ring-blue-200 transition-colors appearance-none bg-white"
+              className="w-full px-4 py-3 rounded-xl border border-gray-300 focus:border-teal-700 
+                       focus:ring-2 focus:ring-teal-200 transition-colors appearance-none bg-white"
             >
               <option value="">Select city</option>
               {INDIAN_CITIES.map((city) => (
@@ -296,7 +296,7 @@ export const UserDetails: React.FC<UserDetailsProps> = ({
                       }))
                     }
                     required
-                    className="w-4 h-4 text-blue-500 border-gray-300 focus:ring-blue-500"
+                    className="w-4 h-4 text-teal-700 border-gray-300 focus:ring-teal-700"
                   />
                   <span className="text-gray-700">{option}</span>
                 </label>
@@ -314,8 +314,8 @@ export const UserDetails: React.FC<UserDetailsProps> = ({
               (!userDetails.profilePhoto && !userDetails.previewUrl) ||
               !userDetails.agency
             }
-            className="w-full bg-blue-500 text-white py-4 px-6 rounded-full font-semibold
-                     hover:bg-blue-600 transition-colors duration-200 mt-8
+            className="w-full bg-teal-700 text-white py-4 px-6 rounded-full font-semibold
+                     hover:bg-teal-600 transition-colors duration-200 mt-8
                      disabled:bg-gray-300 disabled:cursor-not-allowed"
           >
             Continue

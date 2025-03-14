@@ -52,7 +52,7 @@ export const SkillsSection: React.FC<SkillsSectionProps> = ({
         </div>
 
         <div className="mb-8 flex items-center justify-center">
-          <Stethoscope className="w-16 h-16 text-blue-500" />
+          <Stethoscope className="w-16 h-16 text-teal-700" />
         </div>
 
         <div className="space-y-8">
@@ -68,8 +68,8 @@ export const SkillsSection: React.FC<SkillsSectionProps> = ({
                   jobRole: e.target.value,
                 }))
               }
-              className="w-full px-4 py-3 rounded-xl border border-gray-300 focus:border-blue-500 
-                       focus:ring-2 focus:ring-blue-200 transition-colors"
+              className="w-full px-4 py-3 rounded-xl border border-gray-300 focus:border-teal-700 
+                       focus:ring-2 focus:ring-teal-200 transition-colors"
               required
             >
               <option value="">Select your role</option>
@@ -92,8 +92,8 @@ export const SkillsSection: React.FC<SkillsSectionProps> = ({
                   className={`flex items-center p-4 rounded-xl border-2 cursor-pointer
                            transition-colors ${
                              skillsState.services.includes(service)
-                               ? "border-blue-500 bg-blue-50 text-blue-700"
-                               : "border-gray-200 hover:border-blue-200"
+                               ? "border-teal-700 bg-teal-50 text-teal-700"
+                               : "border-gray-200 hover:border-teal-200"
                            }`}
                 >
                   <input

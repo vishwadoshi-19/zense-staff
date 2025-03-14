@@ -1,8 +1,8 @@
-'use client';
+"use client";
 
-import React, { useRef } from 'react';
-import Image from 'next/image';
-import { Upload, X } from 'lucide-react';
+import React, { useRef } from "react";
+import Image from "next/image";
+import { Upload, X } from "lucide-react";
 
 interface FileUploadProps {
   label: string;
@@ -41,7 +41,7 @@ export const FileUpload: React.FC<FileUploadProps> = ({
   const handleRemove = () => {
     onChange(null);
     if (fileInputRef.current) {
-      fileInputRef.current.value = '';
+      fileInputRef.current.value = "";
     }
   };
 
@@ -61,7 +61,7 @@ export const FileUpload: React.FC<FileUploadProps> = ({
         />
         {value ? (
           <div className="flex items-center gap-2 p-2 border rounded-lg">
-            {accept.includes('image') && (
+            {accept.includes("image") && (
               <div className="w-12 h-12 relative overflow-hidden rounded">
                 <Image
                   src={URL.createObjectURL(value)}
@@ -87,9 +87,9 @@ export const FileUpload: React.FC<FileUploadProps> = ({
             type="button"
             onClick={() => fileInputRef.current?.click()}
             className={`w-full flex items-center justify-center gap-2 p-3 border-2 border-dashed
-                     border-gray-300 rounded-lg text-gray-600 hover:border-blue-500
-                     hover:text-blue-500 transition-colors ${
-                       disabled ? 'opacity-50 cursor-not-allowed' : ''
+                     border-gray-300 rounded-lg text-gray-600 hover:border-teal-700
+                     hover:text-teal-700 transition-colors ${
+                       disabled ? "opacity-50 cursor-not-allowed" : ""
                      }`}
             disabled={disabled}
           >

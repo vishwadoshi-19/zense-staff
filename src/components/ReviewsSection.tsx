@@ -54,7 +54,7 @@ const ReviewsSection = () => {
     <div className="reviews-section p-6 bg-white rounded-lg shadow-md">
       <h2 className="text-2xl font-bold mb-6 text-gray-800 flex justify-between items-center">
         Reviews
-        <span className="ml-4 text-blue-500 flex items-center">
+        <span className="ml-4 text-teal-700 flex items-center">
           {averageRating.toFixed(1)}/5 <Star className="w-5 h-5 ml-1" />
         </span>
         <span className="ml-4 text-sm text-gray-900 flex items-center">
@@ -70,7 +70,7 @@ const ReviewsSection = () => {
               className="testimonial p-4 bg-gray-50 rounded-lg shadow-sm"
             >
               <div className="text text-gray-700 mb-2">{review.text}</div>
-              <div className="stars text-blue-500 font-semibold flex items-center">
+              <div className="stars text-teal-700 font-semibold flex items-center">
                 Rating: {review.stars}/5
                 <Star className="w-4 h-4 ml-1" />
               </div>

@@ -24,7 +24,7 @@ export const ConfirmationDialog = ({
   confirmColor = "blue",
 }: ConfirmationDialogProps) => {
   const colorClasses = {
-    blue: "bg-blue-500 hover:bg-blue-600",
+    blue: "bg-teal-700 hover:bg-teal-600",
     red: "bg-red-500 hover:bg-red-600",
     gray: "bg-gray-500 hover:bg-gray-600",
   };
@@ -57,7 +57,7 @@ export const ConfirmationDialog = ({
             <Dialog.Panel className="bg-white rounded-lg max-w-md w-full p-6">
               <div className="flex items-center gap-4 mb-4">
                 <div className="flex-shrink-0">
-                  <AlertCircle className="w-6 h-6 text-blue-500" />
+                  <AlertCircle className="w-6 h-6 text-teal-700" />
                 </div>
                 <Dialog.Title className="text-lg font-semibold text-gray-900">
                   {title}

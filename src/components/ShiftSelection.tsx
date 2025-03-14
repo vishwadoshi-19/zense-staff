@@ -68,7 +68,7 @@ export const ShiftSelection: React.FC<ShiftSelectionProps> = ({
         </h2>
 
         <div className="mb-8 flex items-center justify-center">
-          <Clock className="w-16 h-16 text-blue-500" />
+          <Clock className="w-16 h-16 text-teal-700" />
         </div>
 
         <form onSubmit={handleSubmit} className="space-y-6">
@@ -87,8 +87,8 @@ export const ShiftSelection: React.FC<ShiftSelectionProps> = ({
                     key={shift}
                     className={`flex items-center p-4 rounded-xl border-2 cursor-pointer transition-all duration-200 ${
                       isSelected
-                        ? "border-blue-500 bg-blue-50"
-                        : "border-gray-200 hover:border-blue-200"
+                        ? "border-teal-700 bg-teal-50"
+                        : "border-gray-200 hover:border-teal-200"
                     }`}
                   >
                     <input
@@ -100,13 +100,13 @@ export const ShiftSelection: React.FC<ShiftSelectionProps> = ({
                     <div className="flex items-center justify-between w-full">
                       <span
                         className={`text-lg ${
-                          isSelected ? "text-blue-700" : "text-gray-700"
+                          isSelected ? "text-teal-700" : "text-gray-700"
                         }`}
                       >
                         {shift}
                       </span>
                       {isSelected && (
-                        <Check className="w-5 h-5 text-blue-500" />
+                        <Check className="w-5 h-5 text-teal-700" />
                       )}
                     </div>
                   </label>
@@ -118,8 +118,8 @@ export const ShiftSelection: React.FC<ShiftSelectionProps> = ({
           {/* <button
             type="submit"
             disabled={shiftsState.preferredShifts.length === 0}
-            className="w-full bg-blue-500 text-white py-4 px-6 rounded-full font-semibold
-                     hover:bg-blue-600 transition-colors duration-200 mt-8
+            className="w-full bg-teal-700 text-white py-4 px-6 rounded-full font-semibold
+                     hover:bg-teal-600 transition-colors duration-200 mt-8
                      disabled:bg-gray-300 disabled:cursor-not-allowed"
           >
             Continue

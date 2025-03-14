@@ -81,13 +81,13 @@ export default function Profile() {
   return (
     <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 pb-24">
       {/* Header Section */}
-      <div className="bg-blue-500 -mx-4 sm:-mx-6 lg:-mx-8 px-4 sm:px-6 lg:px-8 py-8 mb-8">
+      <div className="bg-teal-700 -mx-4 sm:-mx-6 lg:-mx-8 px-4 sm:px-6 lg:px-8 py-8 mb-8">
         <div className="flex items-center gap-6">
           <div className="relative">
             <Image
               src={
                 userData.profilePhoto ||
-                "https://images.unsplash.com/photo-1559839734-2b71ea197ec2?auto=format&fit=crop&w=300&h=300"
+                "https://firebasestorage.googleapis.com/v0/b/airy-adapter-451212-b8.firebasestorage.app/o/assets%2Fzense_logo.png?alt=media&token=5ed099ff-e892-472b-a37c-e6f572bb95e5"
               }
               alt={userData.name}
               width={100}
@@ -95,15 +95,15 @@ export default function Profile() {
               className="rounded-full border-4 border-white"
             />
             <button className="absolute bottom-0 right-0 bg-white p-2 rounded-full shadow-lg">
-              <Edit2 className="w-4 h-4 text-blue-500" />
+              <Edit2 className="w-4 h-4 text-teal-700" />
             </button>
           </div>
           <div className="text-white">
             <h1 className="text-2xl font-bold">{userData.name}</h1>
-            <p className="text-blue-100">
+            <p className="text-teal-100">
               {staffDetails?.jobRole || "Healthcare Professional"}
             </p>
-            <p className="text-blue-100">
+            <p className="text-teal-100">
               {staffDetails?.agency || "Zense Agency"}
             </p>
           </div>

@@ -67,7 +67,7 @@ export const EducationSection: React.FC<EducationSectionProps> = ({
         </div>
 
         <div className="mb-8 flex items-center justify-center">
-          <GraduationCap className="w-16 h-16 text-blue-500" />
+          <GraduationCap className="w-16 h-16 text-teal-700" />
         </div>
 
         <div className="space-y-6">
@@ -84,8 +84,8 @@ export const EducationSection: React.FC<EducationSectionProps> = ({
                   qualification: e.target.value,
                 }))
               }
-              className="w-full px-4 py-3 rounded-xl border border-gray-300 focus:border-blue-500 
-                       focus:ring-2 focus:ring-blue-200 transition-colors"
+              className="w-full px-4 py-3 rounded-xl border border-gray-300 focus:border-teal-700 
+                       focus:ring-2 focus:ring-teal-200 transition-colors"
               required
             >
               <option value="">Select qualification</option>
@@ -120,8 +120,8 @@ export const EducationSection: React.FC<EducationSectionProps> = ({
                 }))
               }
               min="0"
-              className="w-full px-4 py-3 rounded-xl border border-gray-300 focus:border-blue-500 
-                       focus:ring-2 focus:ring-blue-200 transition-colors"
+              className="w-full px-4 py-3 rounded-xl border border-gray-300 focus:border-teal-700 
+                       focus:ring-2 focus:ring-teal-200 transition-colors"
               required
             />
           </div>
@@ -138,8 +138,8 @@ export const EducationSection: React.FC<EducationSectionProps> = ({
                            transition-colors ${
                              educationState.maritalStatus ===
                              status.toLowerCase()
-                               ? "border-blue-500 bg-blue-50 text-blue-700"
-                               : "border-gray-200 hover:border-blue-200"
+                               ? "border-teal-700 bg-teal-50 text-teal-700"
+                               : "border-gray-200 hover:border-teal-200"
                            }`}
                 >
                   <input
@@ -174,8 +174,8 @@ export const EducationSection: React.FC<EducationSectionProps> = ({
                   className={`flex items-center p-3 rounded-xl border-2 cursor-pointer
                            transition-colors ${
                              educationState.languages.includes(language)
-                               ? "border-blue-500 bg-blue-50 text-blue-700"
-                               : "border-gray-200 hover:border-blue-200"
+                               ? "border-teal-700 bg-teal-50 text-teal-700"
+                               : "border-gray-200 hover:border-teal-200"
                            }`}
                 >
                   <input
