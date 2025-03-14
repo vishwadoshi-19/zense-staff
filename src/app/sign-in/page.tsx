@@ -22,7 +22,7 @@ export default function SignIn() {
     const handleDefaultRouteBehaviour = async () => {
       try {
         await signOut();
-        toast.success("Signed out successfully");
+        // toast.success("Signed out successfully");
         router.push("/sign-in");
       } catch (error) {
         toast.error("Failed to sign out");
