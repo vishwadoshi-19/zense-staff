@@ -76,10 +76,11 @@ export const saveFormData = async (userId: string, formData: FormState) => {
     // Update user data
     const userRef = doc(db, "users", userId);
     await updateDoc(userRef, {
-      name: formData.fullName,
-      location: formData.jobLocation,
-      gender: formData.gender,
-      profilePhoto: formData.profilePhoto, // Use the URL directly
+      name: formData.fullName || "",
+      location: formData.jobLocation || "",
+      gender: formData.gender || "",
+      // profilePhoto: formData.profilePhoto || "", // Use the URL directly
+      lastStep: formData.lastStep || "details",
       updatedAt: serverTimestamp(),
     });
 
@@ -92,7 +93,7 @@ export const saveFormData = async (userId: string, formData: FormState) => {
         "24hrs": formData.hours24 || 0,
       },
       educationQualification: formData.qualification || "",
-      educationCertificate: certificateURL,
+      educationCertificate: certificateURL || "",
       experienceYears: formData.experience || 0,
       maritalStatus: formData.maritalStatus || "",
       languagesKnown: formData.languages || [],
@@ -107,13 +108,13 @@ export const saveFormData = async (userId: string, formData: FormState) => {
         ? {
             customerName: formData.customerName || "",
             customerPhone: formData.customerPhone || "",
-            recording: recordingURL,
+            recording: recordingURL || "",
           }
         : null,
       identityDocuments: {
         aadharNumber: formData.aadharNumber || "",
-        aadharFront: aadharFrontURL,
-        aadharBack: aadharBackURL,
+        aadharFront: aadharFrontURL || "",
+        aadharBack: aadharBackURL || "",
         panNumber: formData.panNumber || "",
         panDocument: panCardURL,
       },

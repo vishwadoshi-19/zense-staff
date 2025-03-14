@@ -50,6 +50,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({
   useEffect(() => {
     const unsubscribe = onAuthStateChanged(auth, async (currentUser) => {
       setUser(currentUser);
+      setIsLoading(true); // Ensure loading is true until we fetch data
 
       if (currentUser) {
         const exists = await checkUserExists(currentUser.uid);
@@ -73,27 +74,20 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({
     return () => unsubscribe();
   }, []);
 
-  // Redirect users based on their authentication status
+  // Redirect users based on authentication and registration status
   useEffect(() => {
     if (isLoading) return;
 
     if (!user) {
-      if (pathname !== "/sign-in") {
-        router.replace("/sign-in");
-      }
-    } else {
-      if (userData?.status === "unregistered" && pathname !== "/onboarding") {
-        router.replace("/onboarding");
-      }
-
-      if (
-        userData?.status === "registered" &&
-        ["/sign-in", "/onboarding"].includes(pathname)
-      ) {
-        router.replace("/jobs");
+      if (pathname !== "/sign-in") router.replace("/sign-in");
+    } else if (userData?.status === "unregistered") {
+      if (pathname !== "/onboarding") router.replace("/onboarding");
+    } else if (userData?.status === "registered") {
+      if (pathname === "/sign-in" || pathname === "/onboarding") {
+        router.replace("/jobs"); // Default for registered users
       }
     }
-  }, [user, userData, pathname, isLoading, router]);
+  }, [user, userData?.status, pathname, isLoading, router]);
 
   const value = {
     user,

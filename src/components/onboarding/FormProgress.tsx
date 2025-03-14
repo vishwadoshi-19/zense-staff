@@ -3,6 +3,9 @@ import { FormStep } from "@/types";
 import { db } from "@/lib/firebase/config";
 import { doc, updateDoc, serverTimestamp } from "firebase/firestore";
 import { useAuth } from "@/context/AuthContext";
+import { saveFormData, uploadFile } from "@/lib/firebase/firestore";
+import toast from "react-hot-toast";
+import { form } from "framer-motion/client";
 
 interface FormProgressProps {
   currentStep: FormStep;
@@ -18,17 +21,20 @@ export const FormProgress: React.FC<FormProgressProps> = ({
   const { user } = useAuth();
   const currentIndex = steps.findIndex((step) => step.id === currentStep);
 
-  useEffect(() => {
-    const saveFormData = async () => {
-      if (user) {
-        await updateDoc(doc(db, "users", user.uid), {
-          formData,
-          updatedAt: serverTimestamp(),
-        });
-      }
-    };
-    saveFormData();
-  }, [currentStep, formData, user]);
+  // useEffect(() => {
+  //   const savee = async () => {
+  //     if (user) {
+  //       console.log(formData);
+  //       const result = await saveFormData(user.uid, formData);
+
+  //       if (result.success) {
+  //         toast.success("Details saved");
+  //       }
+  //     }
+  //   };
+
+  //   savee();
+  // }, [currentStep, formData, user]);
 
   return (
     <div className="fixed top-0 left-0 w-full bg-white shadow-sm z-50">

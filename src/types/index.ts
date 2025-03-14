@@ -95,17 +95,28 @@ export type FormStep =
 // Firebase User Data Types
 export interface UserData {
   name: string;
+  status: "unregistered" | "registered" | "onboarding";
   phone: string;
   profilePhoto?: string;
+  previewUrl?: string;
   location?: string;
   gender?: string;
   role: "user" | "provider" | "staff" | "admin";
-  status: "unregistered" | "registered" | "onboarding";
+  lastStep: "details";
   createdAt: any; // Firestore Timestamp
   updatedAt: any; // Firestore Timestamp
 }
-
+// https://firebasestorage.googleapis.com/v0/b/airy-adapter-451212-b8.firebasestorage.app/o/profile-photos%2F2R5Z4qL5mLU7Tw3n5w1P6f2avNe2?alt=media&token=c2c3ee04-01cc-4de0-a37d-1997e267973a
+// https://firebasestorage.googleapis.com/v0/b/airy-adapter-451212-b8.firebasestorage.app/o/profile-photos%2F2R5Z4qL5mLU7Tw3n5w1P6f2avNe2?alt=media&token=c2c3ee04-01cc-4de0-a37d-1997e267973a
 export interface StaffDetails {
+  lastStep: FormStep;
+  name: string;
+  phone: string;
+  agency: string;
+  profilePhoto: string | null;
+  location: string;
+  gender: string;
+
   providerId: string;
   expectedWages: {
     "5hrs": number;

@@ -1,10 +1,12 @@
 "use client";
 
 import { FormStep } from "@/types";
-import { useEffect, useState } from "react";
+import { use, useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import { useAuth } from "@/context/AuthContext";
 import { AnimatePresence } from "framer-motion";
+import { User } from "firebase/auth"; // Import Firebase User type if using Firebase
+
 import { Heart } from "lucide-react";
 import toast from "react-hot-toast";
 import {
@@ -28,9 +30,16 @@ import { PersonalInfoSection } from "@/components/PersonalInfoSection";
 import { TestimonialSection } from "@/components/TestimonialSection";
 import { IdProofSection } from "@/components/onboarding/IdProofSection";
 import { FormProgress } from "@/components/onboarding/FormProgress";
-import { saveFormData, updateDoc, doc, db } from "@/lib/firebase/firestore";
+import {
+  saveFormData,
+  updateDoc,
+  doc,
+  db,
+  getStaffDetails,
+} from "@/lib/firebase/firestore";
 import { createUser } from "@/lib/firebase/auth";
 import LoadingScreen from "@/components/common/LoadingScreen";
+import Link from "next/link";
 
 const FORM_STEPS: { id: FormStep; label: string }[] = [
   { id: "details", label: "Details" },
@@ -43,22 +52,22 @@ const FORM_STEPS: { id: FormStep; label: string }[] = [
   { id: "idproof", label: "ID Proof" },
 ];
 
+interface Props {
+  user: User | null; // Ensure user has a proper type
+}
+
 export default function Onboarding() {
-  const { user, isAuthenticated, isLoading, isNewUser } = useAuth();
+  const { user, isAuthenticated, isLoading, isNewUser, userData } = useAuth();
   const router = useRouter();
   const [isSubmitting, setIsSubmitting] = useState(false);
 
-  const [step, setStep] = useState<
-    | "details"
-    | "wages"
-    | "education"
-    | "shifts"
-    | "skills"
-    | "personal"
-    | "testimonial"
-    | "idproof"
-    | "completed"
-  >("details");
+  // useEffect(() => {
+  //   if (!isLoading && userData?.status !== "unregistered") {
+  //     router.push("/jobs");
+  //   }
+  // }, [isAuthenticated, isLoading, userData?.status]);
+
+  const [step, setStep] = useState<FormStep>("details");
   const [formState, setFormState] = useState<FormState>({});
   const [userDetails, setUserDetails] = useState<UserDetailsState>({
     fullName: "",
@@ -110,68 +119,252 @@ export default function Onboarding() {
   });
 
   useEffect(() => {
-    if (!isLoading) {
-      if (isAuthenticated && !isNewUser) {
-        router.push("/jobs");
-      }
-    }
-  }, [isAuthenticated, isLoading, isNewUser, router]);
+    const fetchStaffDetails = async () => {
+      if (user?.uid) {
+        const res = await getStaffDetails(user.uid);
+        console.log(res);
+        setStep(res?.data?.lastStep ?? "details");
+        console.log("step : ", step);
+        setUserDetails((prev) => ({
+          ...prev,
+          fullName: res?.data?.name ?? "",
+          jobLocation: res?.data?.location ?? "",
+          agency: res?.data?.agency ?? "",
+          gender: res?.data?.gender ?? "",
+          previewUrl: res?.data?.profilePhoto ?? "",
+        }));
 
-  const handleDetailsSubmitted = (profilePhotoURL: string) => {
-    setFormState((prev) => ({
-      ...prev,
+        setWagesState((prev) => ({
+          ...prev,
+          lessThan5Hours: res?.data?.expectedWages["5hrs"] ?? 0,
+          hours12: res?.data?.expectedWages["12hrs"] ?? 0,
+          hours24: res?.data?.expectedWages["24hrs"] ?? 0,
+        }));
+        setEducationState((prev) => ({
+          ...prev,
+          qualification: res?.data?.educationQualification ?? "",
+          certificatePreview: res?.data?.educationCertificate ?? "",
+          experience: res?.data?.experienceYears ?? 0,
+          maritalStatus: res?.data?.maritalStatus ?? "",
+          languages: res?.data?.languagesKnown ?? [],
+        }));
+        setShiftsState((prev) => ({
+          ...prev,
+          preferredShifts: res?.data?.preferredShifts ?? [],
+        }));
+        setSkillsState((prev) => ({
+          ...prev,
+          jobRole: res?.data?.jobRole ?? "",
+          services: res?.data?.extraServicesOffered ?? [],
+        }));
+        setPersonalInfoState((prev) => ({
+          ...prev,
+          foodPreference: res?.data?.foodPreference ?? "",
+          smoking: res?.data?.smokes ?? "",
+          carryFood: res?.data?.carryOwnFood12hrs ?? "",
+          additionalInfo: res?.data?.additionalInfo ?? "",
+        }));
+        setTestimonialState((prev) => ({
+          ...prev,
+          customerName: res?.data?.selfTestimonial?.customerName ?? "",
+          customerPhone: res?.data?.selfTestimonial?.customerPhone ?? "",
+        }));
+        setIdProofState((prev) => ({
+          ...prev,
+          aadharNumber: res?.data?.identityDocuments?.aadharNumber ?? "",
+          panNumber: res?.data?.identityDocuments?.panNumber ?? "",
+        }));
+        setFormState((prev) => ({
+          ...userDetails,
+          ...wagesState,
+          ...educationState,
+          ...shiftsState,
+          ...skillsState,
+          ...personalInfoState,
+          ...testimonialState,
+          lastStep: res?.data?.lastStep ?? "details",
+        }));
+        console.log("formState altered in fetchStaffDetails", formState);
+      }
+    };
+    fetchStaffDetails();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+
+  const handleDetailsSubmitted = async (profilePhotoURL: string) => {
+    console.log(userDetails);
+    setFormState(() => ({
       ...userDetails,
       profilePhoto: profilePhotoURL,
+      lastStep: "wages",
     }));
+    console.log("formState altered in details", formState, userDetails);
     setStep("wages");
+    if (user) {
+      console.log(formState);
+      const result = await saveFormData(user.uid, formState);
+
+      if (result.success) {
+        console.log("save form data called with details : ", formState);
+        toast.success("Details saved");
+      }
+    }
   };
 
-  const handleWagesSubmitted = () => {
-    setFormState((prev) => ({
-      ...prev,
+  const handleWagesSubmitted = async () => {
+    console.log(wagesState);
+    setFormState(() => ({
+      ...userDetails,
       ...wagesState,
-    }));
-    setStep("education");
-  };
-
-  const handleEducationSubmitted = () => {
-    setFormState((prev) => ({
-      ...prev,
       ...educationState,
-    }));
-    setStep("shifts");
-  };
-
-  const handleShiftsSubmitted = () => {
-    setFormState((prev) => ({
-      ...prev,
       ...shiftsState,
-    }));
-    setStep("skills");
-  };
-
-  const handleSkillsSubmitted = () => {
-    setFormState((prev) => ({
-      ...prev,
       ...skillsState,
-    }));
-    setStep("personal");
-  };
-
-  const handlePersonalInfoSubmitted = () => {
-    setFormState((prev) => ({
-      ...prev,
       ...personalInfoState,
+      ...testimonialState,
+      ...idProofState,
+      lastStep: "education",
     }));
-    setStep("testimonial");
+    console.log("formState altered in wages", formState, wagesState);
+
+    setStep("education");
+    if (user) {
+      console.log(formState);
+      const result = await saveFormData(user.uid, formState);
+
+      if (result.success) {
+        console.log("save form data called with wages : ", formState);
+        toast.success("Details saved");
+      }
+    }
   };
 
-  const handleTestimonialSubmitted = () => {
+  const handleEducationSubmitted = async () => {
+    console.log(educationState);
     setFormState((prev) => ({
-      ...prev,
+      ...userDetails,
+      ...wagesState,
+      ...educationState,
+      ...shiftsState,
+      ...skillsState,
+      ...personalInfoState,
       ...testimonialState,
+      ...idProofState,
+      lastStep: "shifts",
     }));
+    console.log("formState altered in education", formState, educationState);
+
+    setStep("shifts");
+    if (user) {
+      console.log(formState);
+      const result = await saveFormData(user.uid, formState);
+
+      if (result.success) {
+        console.log("save form data called with edu : ", formState);
+        toast.success("Details saved");
+      }
+    }
+  };
+
+  const handleShiftsSubmitted = async () => {
+    setFormState((prev) => ({
+      ...userDetails,
+      ...wagesState,
+      ...educationState,
+      ...shiftsState,
+      ...skillsState,
+      ...personalInfoState,
+      ...testimonialState,
+      ...idProofState,
+      lastStep: "skills",
+    }));
+    console.log("formState altered in shifts", formState, educationState);
+
+    setStep("skills");
+    if (user) {
+      const result = await saveFormData(user.uid, formState);
+
+      if (result.success) {
+        console.log("save form data called with shifts : ", formState);
+        toast.success("Details saved");
+      }
+    }
+  };
+
+  const handleSkillsSubmitted = async () => {
+    setFormState((prev) => ({
+      ...userDetails,
+      ...wagesState,
+      ...educationState,
+      ...shiftsState,
+      ...skillsState,
+      ...personalInfoState,
+      ...testimonialState,
+      ...idProofState,
+      lastStep: "personal",
+    }));
+    console.log("formState altered in skills", formState, educationState);
+
+    setStep("personal");
+    if (user) {
+      const result = await saveFormData(user.uid, formState);
+
+      if (result.success) {
+        console.log("save form data called with skills : ", formState);
+        toast.success("Details saved");
+      }
+    }
+  };
+
+  const handlePersonalInfoSubmitted = async () => {
+    setFormState((prev) => ({
+      ...userDetails,
+      ...wagesState,
+      ...educationState,
+      ...shiftsState,
+      ...skillsState,
+      ...personalInfoState,
+      ...testimonialState,
+      ...idProofState,
+      lastStep: "testimonial",
+    }));
+    console.log("formState altered in personal", formState, educationState);
+
+    setStep("testimonial");
+
+    if (user) {
+      const result = await saveFormData(user.uid, formState);
+
+      if (result.success) {
+        console.log("save form data called with personal : ", formState);
+        toast.success("Details saved");
+      }
+    }
+  };
+
+  const handleTestimonialSubmitted = async () => {
+    setFormState((prev) => ({
+      ...userDetails,
+      ...wagesState,
+      ...educationState,
+      ...shiftsState,
+      ...skillsState,
+      ...personalInfoState,
+      ...testimonialState,
+      ...idProofState,
+      lastStep: "idproof",
+    }));
+    console.log("formState altered in testimonials", formState, educationState);
+
     setStep("idproof");
+
+    if (user) {
+      const result = await saveFormData(user.uid, formState);
+
+      if (result.success) {
+        console.log("save form data called with testimonials : ", formState);
+        toast.success("Details saved");
+      }
+    }
   };
 
   const handleIdProofSubmitted = async () => {
@@ -181,7 +374,13 @@ export default function Onboarding() {
 
     // Update form state with ID proof data
     const updatedFormState = {
-      ...formState,
+      ...userDetails,
+      ...wagesState,
+      ...educationState,
+      ...shiftsState,
+      ...skillsState,
+      ...personalInfoState,
+      ...testimonialState,
       ...idProofState,
     };
 
@@ -210,8 +409,13 @@ export default function Onboarding() {
 
         // Redirect to dashboard after a short delay
         setTimeout(() => {
-          router.push("/jobs");
-        }, 3000);
+          console.log("Effect Triggered", {
+            isLoading,
+            userData,
+            userStatus: userData?.status,
+          });
+          router.replace("/jobs");
+        });
       } else {
         toast.error("Failed to save your profile. Please try again.");
       }
@@ -228,6 +432,7 @@ export default function Onboarding() {
   }
 
   if (step === "completed") {
+    // router.push("/jobs");
     return (
       <div className="min-h-screen bg-gradient-to-br from-blue-600 to-blue-400 flex items-center justify-center p-6">
         <div className="text-center text-white space-y-6">
@@ -236,7 +441,9 @@ export default function Onboarding() {
           <p className="text-xl text-blue-50">
             Your application has been received.
           </p>
-          <p className="text-blue-50">Redirecting to dashboard...</p>
+          <Link href="/jobs" className="text-blue-500 hover:underline">
+            Redirecting to dashboard...
+          </Link>
         </div>
       </div>
     );

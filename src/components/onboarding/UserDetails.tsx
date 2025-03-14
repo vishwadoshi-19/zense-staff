@@ -45,28 +45,32 @@ export const UserDetails: React.FC<UserDetailsProps> = ({
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
 
-    if (!userDetails.profilePhoto) {
+    if (!userDetails.profilePhoto && !userDetails.previewUrl) {
       alert("Please upload a profile photo.");
       return;
     }
 
-    try {
-      const storageRef = ref(storage, `profile-photos/${user?.uid}`);
-      await uploadBytes(storageRef, userDetails.profilePhoto);
-      const profilePhotoURL = await getDownloadURL(storageRef);
+    if (userDetails.profilePhoto) {
+      try {
+        const storageRef = ref(storage, `profile-photos/${user?.uid}`);
 
-      if (user) {
-        await updateDoc(doc(db, "users", user.uid), {
-          ...userDetails,
-          profilePhoto: profilePhotoURL,
-          // status: "registered",
-          updatedAt: serverTimestamp(),
-        });
+        await uploadBytes(storageRef, userDetails.profilePhoto);
+
+        const profilePhotoURL = await getDownloadURL(storageRef);
+
+        if (user) {
+          await updateDoc(doc(db, "users", user.uid), {
+            ...userDetails,
+            profilePhoto: profilePhotoURL,
+            // status: "registered",
+            updatedAt: serverTimestamp(),
+          });
+        }
+        onSubmit(profilePhotoURL);
+      } catch (error) {
+        console.error("Error uploading profile photo:", error);
+        alert("Failed to upload profile photo. Please try again.");
       }
-      onSubmit(profilePhotoURL);
-    } catch (error) {
-      console.error("Error uploading profile photo:", error);
-      alert("Failed to upload profile photo. Please try again.");
     }
   };
 
@@ -108,6 +112,8 @@ export const UserDetails: React.FC<UserDetailsProps> = ({
       toast.error("Failed to sign out");
     }
   };
+
+  // console.log(userDetails);
 
   return (
     <div className="min-h-screen bg-white px-4 py-6">
@@ -305,7 +311,7 @@ export const UserDetails: React.FC<UserDetailsProps> = ({
               !userDetails.fullName ||
               !userDetails.jobLocation ||
               !userDetails.gender ||
-              !userDetails.profilePhoto ||
+              (!userDetails.profilePhoto && !userDetails.previewUrl) ||
               !userDetails.agency
             }
             className="w-full bg-blue-500 text-white py-4 px-6 rounded-full font-semibold

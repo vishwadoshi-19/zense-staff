@@ -50,7 +50,7 @@ export default function Profile() {
           const result = await getStaffDetails(user.uid);
           if (result && result.success) {
             if (result.data) {
-              // console.log("Staff details fetched:", result.data);
+              console.log("Staff details fetched:", result.data);
               setStaffDetails(result.data);
             } else {
               console.log("No staff details found.");
@@ -102,6 +102,9 @@ export default function Profile() {
             <h1 className="text-2xl font-bold">{userData.name}</h1>
             <p className="text-blue-100">
               {staffDetails?.jobRole || "Healthcare Professional"}
+            </p>
+            <p className="text-blue-100">
+              {staffDetails?.agency || "Zense Agency"}
             </p>
           </div>
         </div>

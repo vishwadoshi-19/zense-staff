@@ -43,6 +43,35 @@ export const sendOTP = async (
 };
 
 // Verify OTP and sign in
+// export const verifyOTP = async (
+//   verificationId: string,
+//   otp: string,
+//   router: any
+// ) => {
+//   try {
+//     const credential = PhoneAuthProvider.credential(verificationId, otp);
+//     const result = await signInWithCredential(auth, credential);
+//     const user = result.user;
+//     const userDoc = await getDoc(doc(db, "users", user.uid));
+//     if (!userDoc.exists()) {
+//       // Create user document in "users" collection
+//       await setDoc(doc(db, "users", user.uid), {
+//         phone: user.phoneNumber,
+//         status: "unregistered",
+//         createdAt: serverTimestamp(),
+//         updatedAt: serverTimestamp(),
+//       });
+
+//       return { success: true, user, isNewUser: true };
+//     } else {
+//       return { success: true, user, isNewUser: false };
+//     }
+//   } catch (error) {
+//     console.error("Error verifying OTP:", error);
+//     return { success: false, error };
+//   }
+// };
+
 export const verifyOTP = async (
   verificationId: string,
   otp: string,
@@ -52,26 +81,38 @@ export const verifyOTP = async (
     const credential = PhoneAuthProvider.credential(verificationId, otp);
     const result = await signInWithCredential(auth, credential);
     const user = result.user;
-    const userDoc = await getDoc(doc(db, "users", user.uid));
+
+    const userRef = doc(db, "users", user.uid);
+    const userDoc = await getDoc(userRef);
+
+    let isNewUser = false;
+    let status = "unregistered";
+
     if (!userDoc.exists()) {
       // Create user document in "users" collection
-      await setDoc(doc(db, "users", user.uid), {
+      await setDoc(userRef, {
         phone: user.phoneNumber,
         status: "unregistered",
         createdAt: serverTimestamp(),
         updatedAt: serverTimestamp(),
       });
-
-      // Create staff document in "staff" collection
-      // await setDoc(doc(db, "staff", user.uid), {
-      //   id: user.uid,
-      //   phone_number: user.phoneNumber,
-      //   status: "unregistered",
-      // });
-      return { success: true, user, isNewUser: true };
+      isNewUser = true;
     } else {
-      return { success: true, user, isNewUser: false };
+      status = userDoc.data().status || "unregistered"; // Get status if it exists
+      // Update last login timestamp
+      await updateDoc(userRef, {
+        updatedAt: serverTimestamp(),
+      });
     }
+
+    // Redirect based on user status
+    if (status === "registered") {
+      router.replace("/jobs");
+    } else {
+      router.replace("/onboarding");
+    }
+
+    return { success: true, user, isNewUser };
   } catch (error) {
     console.error("Error verifying OTP:", error);
     return { success: false, error };

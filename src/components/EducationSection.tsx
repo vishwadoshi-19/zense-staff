@@ -41,7 +41,7 @@ export const EducationSection: React.FC<EducationSectionProps> = ({
 
   const canProceed = !!(
     educationState.qualification &&
-    educationState.certificate &&
+    (educationState.certificate || educationState.certificatePreview) &&
     educationState.experience >= 0 &&
     educationState.maritalStatus &&
     educationState.languages.length > 0
