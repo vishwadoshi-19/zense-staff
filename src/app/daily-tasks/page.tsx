@@ -246,7 +246,7 @@ export default function DailyTasks() {
               }`}
               onClick={() => handleMoodSelect(mood.name)}
             >
-              <span className="mr-6 text-2xl">{mood.emoji}</span>
+              <span className="mr-6 text-3xl">{mood.emoji}</span>
               {mood.name}
             </button>
           ))}

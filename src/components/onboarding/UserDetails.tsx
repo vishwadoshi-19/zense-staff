@@ -13,18 +13,65 @@ import { useAuth } from "@/context/AuthContext";
 import { getDownloadURL, ref, uploadBytes } from "firebase/storage";
 import toast from "react-hot-toast";
 
-const INDIAN_CITIES = [
-  "Delhi",
-  "Mumbai",
-  "Bangalore",
-  "Hyderabad",
-  "Chennai",
-  "Kolkata",
-  "Pune",
-  "Ahmedabad",
-  "Jaipur",
-  "Surat",
-];
+// const INDIAN_CITIES = [
+//   "Delhi",
+//   "Mumbai",
+//   "Bangalore",
+//   "Hyderabad",
+//   "Chennai",
+//   "Kolkata",
+//   "Pune",
+//   "Ahmedabad",
+//   "Jaipur",
+//   "Surat",
+// ];
+
+type District = "delhi" | "mumbai" | "bangalore";
+
+const DISTRICTS: string[] = ["Delhi", "Mumbai", "Bangalore"];
+
+const SUB_DISTRICTS: Record<District, string[]> = {
+  delhi: [
+    "Central Delhi",
+    "East Delhi",
+    "New Delhi",
+    "North Delhi",
+    "North East Delhi",
+    "North West Delhi",
+    "Shahdara",
+    "South Delhi",
+    "South East Delhi",
+    "South West Delhi",
+    "West Delhi",
+  ],
+  mumbai: [
+    "Colaba",
+    "Dadar",
+    "Andheri",
+    "Bandra",
+    "Borivali",
+    "Goregaon",
+    "Juhu",
+    "Kurla",
+    "Mulund",
+    "Powai",
+    "Vikhroli",
+  ],
+  bangalore: [
+    "Bangalore East",
+    "Bangalore North",
+    "Bangalore South",
+    "Yelahanka",
+    "KR Puram",
+    "Jayanagar",
+    "Rajajinagar",
+    "BTM Layout",
+    "Malleswaram",
+    "Basavanagudi",
+    "Whitefield",
+    "Electronic City",
+  ],
+};
 
 interface UserDetailsProps {
   userDetails: UserDetailsState;
@@ -235,6 +282,7 @@ export const UserDetails: React.FC<UserDetailsProps> = ({
                 setUserDetails((prev) => ({ ...prev, agency: e.target.value }))
               }
               required
+              defaultValue={"Zense"}
               className="w-full px-4 py-3 rounded-xl border border-gray-300 focus:border-teal-700 
                        focus:ring-2 focus:ring-teal-200 transition-colors appearance-none bg-white"
             >
@@ -248,7 +296,7 @@ export const UserDetails: React.FC<UserDetailsProps> = ({
           </div>
 
           {/* Job Location */}
-          <div className="space-y-2">
+          {/* <div className="space-y-2">
             <label className="block text-gray-700 font-medium">
               Job Location <span className="text-red-500">*</span>
             </label>
@@ -271,6 +319,147 @@ export const UserDetails: React.FC<UserDetailsProps> = ({
                 </option>
               ))}
             </select>
+          </div> */}
+
+          {/* Job Location */}
+          <div className="space-y-4">
+            {/* District Selection */}
+            <div>
+              <label className="block text-gray-700 font-medium">
+                District <span className="text-red-500">*</span>
+              </label>
+              <select
+                value={userDetails.district}
+                onChange={(e) =>
+                  setUserDetails((prev) => ({
+                    ...prev,
+                    district: e.target.value,
+                    subDistricts: [], // Reset sub-districts on district change
+                  }))
+                }
+                required
+                className="w-full px-4 py-3 rounded-xl border border-gray-300 focus:border-teal-700 
+                 focus:ring-2 focus:ring-teal-200 transition-colors appearance-none bg-white"
+              >
+                <option value="">Select district</option>
+                {DISTRICTS.map((district) => (
+                  <option key={district} value={district.toLowerCase()}>
+                    {district}
+                  </option>
+                ))}
+              </select>
+            </div>
+
+            {/* Sub-District Selection (Multi-Select)
+            <div>
+              <label className="block text-gray-700 font-medium">
+                Sub-District
+              </label>
+              <select
+                multiple
+                value={userDetails.subDistricts}
+                onChange={(e) => {
+                  const selectedOptions = Array.from(
+                    e.target.selectedOptions,
+                    (opt) => opt.value
+                  );
+                  setUserDetails((prev) => ({
+                    ...prev,
+                    subDistricts: selectedOptions.includes("all")
+                      ? ["all"]
+                      : selectedOptions,
+                  }));
+                }}
+                className="w-full px-4 py-3 rounded-xl border border-gray-300 focus:border-teal-700 
+                 focus:ring-2 focus:ring-teal-200 transition-colors appearance-none bg-white"
+              >
+                <option value="all">All</option>
+                {SUB_DISTRICTS[userDetails.district as District]?.map(
+                  (subDistrict) => (
+                    <option key={subDistrict} value={subDistrict.toLowerCase()}>
+                      {subDistrict}
+                    </option>
+                  )
+                )}
+              </select>
+            </div> */}
+            {/* Sub-District Selection (Multi-Select with Checkboxes) */}
+            <div>
+              <label className="block text-gray-700 font-medium">
+                Sub-District
+              </label>
+              <div className="w-full border border-gray-300 rounded-xl p-3 bg-white focus-within:ring-2 focus-within:ring-teal-200">
+                {SUB_DISTRICTS[userDetails.district as District]?.length ? (
+                  <div className="max-h-40 overflow-y-auto space-y-2">
+                    {/* "All" Checkbox */}
+                    <label className="flex items-center space-x-2 cursor-pointer">
+                      <input
+                        type="checkbox"
+                        checked={userDetails.subDistricts?.includes("all")}
+                        onChange={() => {
+                          setUserDetails((prev) => ({
+                            ...prev,
+                            subDistricts: prev.subDistricts?.includes("all")
+                              ? []
+                              : [
+                                  "all",
+                                  ...SUB_DISTRICTS[
+                                    userDetails.district as District
+                                  ],
+                                ],
+                          }));
+                        }}
+                        className="w-4 h-4 text-teal-600 border-gray-300 rounded focus:ring-teal-500"
+                      />
+                      <span>All</span>
+                    </label>
+
+                    {/* Individual Sub-Districts */}
+                    {SUB_DISTRICTS[userDetails.district as District].map(
+                      (subDistrict) => (
+                        <label
+                          key={subDistrict}
+                          className="flex items-center space-x-2 cursor-pointer"
+                        >
+                          <input
+                            type="checkbox"
+                            value={subDistrict.toLowerCase()}
+                            checked={userDetails.subDistricts?.includes(
+                              subDistrict
+                            )}
+                            onChange={(e) => {
+                              const { checked, value } = e.target;
+                              setUserDetails((prev) => {
+                                let updatedSubDistricts =
+                                  prev.subDistricts?.filter(
+                                    (sd) => sd !== "all"
+                                  );
+                                if (checked) {
+                                  updatedSubDistricts?.push(subDistrict);
+                                } else {
+                                  updatedSubDistricts =
+                                    updatedSubDistricts?.filter(
+                                      (sd) => sd !== subDistrict
+                                    );
+                                }
+                                return {
+                                  ...prev,
+                                  subDistricts: updatedSubDistricts,
+                                };
+                              });
+                            }}
+                            className="w-4 h-4 text-teal-600 border-gray-300 rounded focus:ring-teal-500"
+                          />
+                          <span>{subDistrict}</span>
+                        </label>
+                      )
+                    )}
+                  </div>
+                ) : (
+                  <p className="text-gray-500">Select a district first</p>
+                )}
+              </div>
+            </div>
           </div>
 
           {/* Gender */}
@@ -309,7 +498,7 @@ export const UserDetails: React.FC<UserDetailsProps> = ({
             type="submit"
             disabled={
               !userDetails.fullName ||
-              !userDetails.jobLocation ||
+              !userDetails.district ||
               !userDetails.gender ||
               (!userDetails.profilePhoto && !userDetails.previewUrl) ||
               !userDetails.agency

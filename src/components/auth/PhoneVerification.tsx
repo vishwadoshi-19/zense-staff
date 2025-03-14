@@ -154,7 +154,7 @@ export const PhoneVerification: React.FC<PhoneVerificationProps> = ({
                 <KeyRound className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-500" />
                 <input
                   type="text"
-                  className="w-full pl-10 pr-4 py-3 rounded-xl border border-gray-300 text-gray-900 placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-cyan-700 focus:border-cyan-700 text-xl"
+                  className="w-full pl-10 pr-4 py-3 rounded-xl border border-gray-300 text-gray-900 placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-cyan-700 focus:border-cyan-700"
                   placeholder="Enter OTP"
                   value={verificationState.otp}
                   onChange={(e) =>

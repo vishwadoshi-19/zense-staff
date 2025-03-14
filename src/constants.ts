@@ -23,7 +23,7 @@ export const INDIAN_LANGUAGES = [
   "Malayalam",
 ];
 
-export const JOB_ROLES = ["Attendant", "Nurse", "Semi-Nurse"];
+export const JOB_ROLES = ["Attendant", "Nurse"];
 
 export const SERVICES = [
   "Bathing & sponge the customer",

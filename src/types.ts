@@ -27,8 +27,9 @@ export interface PhoneVerificationState {
 }
 
 export interface UserDetailsState {
+  district: string;
+  subDistricts: string[];
   fullName: string;
-  jobLocation: string;
   gender: string;
   profilePhoto: File | null;
   previewUrl: string;

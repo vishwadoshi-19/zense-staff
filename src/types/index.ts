@@ -116,6 +116,8 @@ export interface StaffDetails {
   profilePhoto: string | null;
   location: string;
   gender: string;
+  district: string;
+  subDistricts: string[];
 
   providerId: string;
   expectedWages: {

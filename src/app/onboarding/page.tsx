@@ -50,6 +50,7 @@ const FORM_STEPS: { id: FormStep; label: string }[] = [
   { id: "personal", label: "Personal" },
   { id: "testimonial", label: "Testimonial" },
   { id: "idproof", label: "ID Proof" },
+  { id: "completed", label: "Completed" },
 ];
 
 interface Props {
@@ -71,7 +72,8 @@ export default function Onboarding() {
   const [formState, setFormState] = useState<FormState>({});
   const [userDetails, setUserDetails] = useState<UserDetailsState>({
     fullName: "",
-    jobLocation: "",
+    district: "",
+    subDistricts: [] as string[],
     gender: "",
     profilePhoto: null,
     previewUrl: "",
@@ -128,7 +130,8 @@ export default function Onboarding() {
         setUserDetails((prev) => ({
           ...prev,
           fullName: res?.data?.name ?? "",
-          jobLocation: res?.data?.location ?? "",
+          district: res?.data?.district ?? "",
+          subDistricts: res?.data?.subDistricts ?? [],
           agency: res?.data?.agency ?? "",
           gender: res?.data?.gender ?? "",
           previewUrl: res?.data?.profilePhoto ?? "",
@@ -342,7 +345,7 @@ export default function Onboarding() {
   };
 
   const handleTestimonialSubmitted = async () => {
-    setFormState((prev) => ({
+    setFormState(() => ({
       ...userDetails,
       ...wagesState,
       ...educationState,
@@ -424,6 +427,7 @@ export default function Onboarding() {
       toast.error("An error occurred. Please try again.");
     } finally {
       setIsSubmitting(false);
+      setStep("completed");
     }
   };
 
@@ -442,7 +446,7 @@ export default function Onboarding() {
             Your application has been received.
           </p>
           <Link href="/jobs" className="text-teal-700 hover:underline">
-            Redirecting to dashboard...
+            Redirect to dashboard...
           </Link>
         </div>
       </div>

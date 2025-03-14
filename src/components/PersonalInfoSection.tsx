@@ -52,7 +52,7 @@ export const PersonalInfoSection: React.FC<PersonalInfoSectionProps> = ({
               Food Preference <span className="text-red-500">*</span>
             </label>
             <div className="grid grid-cols-2 gap-4">
-              {["Veg", "Non-veg"].map((pref) => (
+              {["Veg", "Non-veg", "Both"].map((pref) => (
                 <label
                   key={pref}
                   className={`flex items-center justify-center p-3 rounded-xl border-2 cursor-pointer
