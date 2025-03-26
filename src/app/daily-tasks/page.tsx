@@ -15,6 +15,8 @@ import {
   Plus,
   Smile,
   Utensils,
+  CalendarIcon,
+  ChevronDown,
 } from "lucide-react";
 import { TaskList } from "@/components/TaskList";
 import { VitalsCard } from "@/components/VitalsCard";
@@ -38,6 +40,8 @@ export default function DailyTasks() {
   const { isAuthenticated, isLoading, userData } = useAuth();
   const router = useRouter();
   const [selectedDate, setSelectedDate] = useState<Value>(new Date());
+  const [showCalendar, setShowCalendar] = useState(false);
+
   const [tasks, setTasks] = useState([
     { id: 1, title: "Morning Medication", completed: false, time: "08:00 AM" },
     {
@@ -98,6 +102,21 @@ export default function DailyTasks() {
     }
   };
 
+  const handleDateChange = (date: Value) => {
+    setSelectedDate(date);
+    setShowCalendar(false); // Hide calendar after date selection
+  };
+
+  const toggleCalendar = () => {
+    setShowCalendar(!showCalendar);
+  };
+
+  // Format the selected date for display
+  const formattedDate =
+    selectedDate instanceof Date
+      ? format(selectedDate, "EEEE, MMMM d, yyyy")
+      : "Select a date";
+
   const handleMoodSelect = (mood: string) => {
     setSelectedMood(mood);
   };
@@ -106,13 +125,32 @@ export default function DailyTasks() {
     <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 pb-24">
       <h1 className="text-2xl font-bold text-gray-900 mb-8">Daily Tasks</h1>
 
-      {/* Calendar Section */}
       <div className="mb-8">
-        <Calendar
-          onChange={setSelectedDate}
-          value={selectedDate}
-          className="w-full max-w-md mx-auto bg-white rounded-xl shadow-sm p-4"
-        />
+        <div
+          className="flex items-center justify-between p-4 bg-white rounded-xl shadow-sm cursor-pointer"
+          onClick={toggleCalendar}
+        >
+          <div className="flex items-center">
+            <CalendarIcon className="w-5 h-5 mr-2 text-teal-700" />
+            <span>{formattedDate}</span>
+          </div>
+          <ChevronDown
+            className={`w-5 h-5 transition-transform ${
+              showCalendar ? "rotate-180" : ""
+            }`}
+          />
+        </div>
+
+        {showCalendar && (
+          <div className="mt-2">
+            <Calendar
+              onChange={handleDateChange}
+              value={selectedDate}
+              maxDate={new Date()} // Prevent selecting future dates
+              className="w-full max-w-md mx-auto bg-white rounded-xl shadow-sm p-4"
+            />
+          </div>
+        )}
       </div>
 
       {/* Attendance Tracking */}
