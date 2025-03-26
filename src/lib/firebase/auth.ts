@@ -14,7 +14,7 @@ import {
   updateDoc,
 } from "firebase/firestore";
 import { useRouter } from "next/navigation";
-import { UserData } from "@/types/index";
+import { UserData } from "@/types";
 
 // Setup recaptcha verifier
 export const setupRecaptcha = (containerId: string) => {

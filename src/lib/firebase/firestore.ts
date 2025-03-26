@@ -9,7 +9,7 @@ import {
   DocumentReference,
 } from "firebase/firestore";
 import { ref, uploadBytes, getDownloadURL } from "firebase/storage";
-import { FormState, UserData, StaffDetails } from "@/types/index";
+import { FormState, UserData, StaffDetails } from "@/types";
 
 export { updateDoc, doc, db };
 

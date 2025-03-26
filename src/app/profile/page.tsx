@@ -23,7 +23,7 @@ import { StatsCard } from "@/components/profile/StatsCard";
 import { TestimonialCard } from "@/components/profile/TestimonialCard";
 import { useAuth } from "@/context/AuthContext";
 import { getStaffDetails } from "@/lib/firebase/firestore";
-import { StaffDetails } from "@/types/index";
+import { StaffDetails } from "@/types";
 import LoadingScreen from "@/components/common/LoadingScreen";
 
 export default function Profile() {

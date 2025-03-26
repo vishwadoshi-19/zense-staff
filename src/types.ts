@@ -76,6 +76,7 @@ export interface IdProofState {
   panNumber: string;
   panCard: File | null;
 }
+//
 
 export interface ShiftsState {
   preferredShifts: string[];
@@ -92,3 +93,62 @@ export type FormStep =
   | "testimonial"
   | "idproof"
   | "completed";
+
+export interface UserData {
+  name: string;
+  status: "unregistered" | "registered" | "onboarding";
+  phone: string;
+  profilePhoto?: string;
+  previewUrl?: string;
+  location?: string;
+  gender?: string;
+  role: "user" | "provider" | "staff" | "admin";
+  lastStep: "details";
+  createdAt: any; // Firestore Timestamp
+  updatedAt: any; // Firestore Timestamp
+}
+
+export interface StaffDetails {
+  lastStep: FormStep;
+  name: string;
+  phone: string;
+  agency: string;
+  profilePhoto: string | null;
+  location: string;
+  gender: string;
+  district: string;
+  subDistricts: string[];
+
+  providerId: string;
+  expectedWages: {
+    "5hrs": number;
+    "12hrs": number;
+    "24hrs": number;
+  };
+  educationQualification: string;
+  educationCertificate: string;
+  experienceYears: string;
+  maritalStatus: string;
+  languagesKnown: string[];
+  preferredShifts: string[];
+  jobRole: string;
+  extraServicesOffered: string[];
+  foodPreference: string;
+  smokes: string;
+  carryOwnFood12hrs: string;
+  additionalInfo?: string;
+  selfTestimonial?: {
+    customerName: string;
+    customerPhone: string;
+    recording: string;
+  } | null;
+  identityDocuments: {
+    aadharNumber: string;
+    aadharFront: string;
+    aadharBack: string;
+    panNumber?: string;
+    panDocument?: string;
+  };
+  createdAt: any; // Firestore Timestamp
+  updatedAt: any; // Firestore Timestamp
+}

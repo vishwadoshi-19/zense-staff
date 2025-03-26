@@ -8,7 +8,7 @@ import {
   checkUserExists,
   signOut as firebaseSignOut,
 } from "@/lib/firebase/auth";
-import { UserData } from "@/types/index";
+import { UserData } from "@/types";
 import { useRouter, usePathname } from "next/navigation";
 
 interface AuthContextType {
