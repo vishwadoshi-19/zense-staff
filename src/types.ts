@@ -96,7 +96,7 @@ export type FormStep =
 
 export interface UserData {
   name: string;
-  status: "unregistered" | "registered" | "onboarding";
+  status: "unregistered" | "registered" | "live";
   phone: string;
   profilePhoto?: string;
   previewUrl?: string;

@@ -5,11 +5,15 @@ import {
   setDoc,
   updateDoc,
   getDoc,
+  getDocs,
+  query,
+  where,
   serverTimestamp,
   DocumentReference,
 } from "firebase/firestore";
 import { ref, uploadBytes, getDownloadURL } from "firebase/storage";
 import { FormState, UserData, StaffDetails } from "@/types";
+import { sub } from "date-fns";
 
 export { updateDoc, doc, db };
 
@@ -147,5 +151,44 @@ export const getStaffDetails = async (userId: string) => {
   } catch (error) {
     console.error("Error getting staff details:", error);
     return { success: false, error };
+  }
+};
+
+// Fetch jobs from Firestore
+export const fetchJobs = async (userStatus: string) => {
+  console.log("Fetching jobs for user status:", userStatus);
+  if (userStatus !== "live") {
+    return {
+      error:
+        "Your application is under verification. You can take jobs after you have been approved.",
+    };
+  }
+
+  try {
+    const jobsCollection = collection(db, "jobs");
+    const jobsQuery = query(jobsCollection, where("staffId", "==", "unknown"));
+    // ,where("staffId", "==", "open")
+    const querySnapshot = await getDocs(jobsQuery);
+    console.log("Jobs found:", querySnapshot);
+
+    const jobs = querySnapshot.docs.map((doc) => ({
+      id: doc.id,
+      status: doc.data().status || "unknown",
+      staffId: doc.data().staffId || "unknown",
+      customerName: doc.data().customerName || "Unknown Patient",
+      customerAge: doc.data().customerAge || 0,
+      description: doc.data().description || "No description provided",
+      requirements: doc.data().requirements || [],
+      district: doc.data().district || "Unknown Location",
+      subDistrict: doc.data().subDistrict || "Unknown Location",
+      pincode: doc.data().pincode || 110042,
+      timing: doc.data().timing || "Unknown Timing",
+    }));
+    console.log("Jobs:", jobs);
+
+    return { jobs };
+  } catch (error) {
+    console.error("Error fetching jobs:", error);
+    return { error: "Failed to fetch jobs. Please try again later." };
   }
 };

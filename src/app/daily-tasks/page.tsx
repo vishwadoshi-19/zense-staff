@@ -85,7 +85,7 @@ export default function DailyTasks() {
     if (!isLoading) {
       if (!isAuthenticated) {
         router.push("/sign-in");
-      } else if (userData?.status !== "registered") {
+      } else if (userData?.status === "unregistered") {
         router.push("/onboarding");
       }
     }

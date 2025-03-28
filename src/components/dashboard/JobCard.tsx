@@ -7,11 +7,14 @@ import { ConfirmationDialog } from "@/components/common/ConfirmationDialog";
 
 export interface Job {
   id: number;
-  patientName: string;
-  age: number;
+  customerName: string;
+  customerAge: number;
   description: string;
   requirements: string[];
   location: string;
+  district: string;
+  subDistrict: string;
+  pincode: number;
   timing: string;
   status: string;
 }
@@ -49,9 +52,9 @@ export const JobCard = ({ job }: JobCardProps) => {
           <div className="flex items-start justify-between mb-4">
             <div>
               <h3 className="text-lg font-semibold text-gray-900">
-                {job.patientName}
+                {job.customerName}
               </h3>
-              <p className="text-sm text-gray-500">Age: {job.age}</p>
+              <p className="text-sm text-gray-500">Age: {job.customerAge}</p>
             </div>
             <span
               className={`px-3 py-1 rounded-full text-sm font-medium ${
@@ -71,7 +74,7 @@ export const JobCard = ({ job }: JobCardProps) => {
           <div className="space-y-3 mb-6">
             <div className="flex items-center text-gray-600">
               <MapPin className="w-5 h-5 mr-2 text-gray-400" />
-              {job.location}
+              {job.subDistrict}, {job.district}, {job.pincode}
             </div>
             <div className="flex items-center text-gray-600">
               <Clock className="w-5 h-5 mr-2 text-gray-400" />
