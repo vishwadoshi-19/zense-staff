@@ -101,8 +101,11 @@ export default function Jobs() {
   return (
     <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 mb-10">
       <div className="flex justify-between items-center mb-8">
-        <h1 className="text-2xl font-bold text-gray-900">Available Jobs</h1>
-        <button
+        <h1 className="text-2xl font-bold text-gray-900 pl-3">Jobs</h1>
+
+        {/* Clock in button */}
+
+        {/* <button
           onClick={clockedIn ? handleClockOut : handleClockIn}
           className={`px-6 py-2 rounded-full font-medium ${
             clockedIn
@@ -114,7 +117,7 @@ export default function Jobs() {
             <Clock className="w-5 h-5" />
             {clockedIn ? "Clock Out" : "Clock In"}
           </div>
-        </button>
+        </button> */}
       </div>
 
       <StatusFilter

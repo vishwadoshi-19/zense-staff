@@ -182,7 +182,9 @@ export const fetchJobs = async (userStatus: string) => {
       district: doc.data().district || "Unknown Location",
       subDistrict: doc.data().subDistrict || "Unknown Location",
       pincode: doc.data().pincode || 110042,
-      timing: doc.data().timing || "Unknown Timing",
+      JobType: doc.data().JobType || "Unknown Job Type",
+      startDate: doc.data().startDate || new Date().toISOString(),
+      endDate: doc.data().endDate || new Date().toISOString(),
     }));
     console.log("Jobs:", jobs);
 

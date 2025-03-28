@@ -2,11 +2,11 @@ import { db } from "./config"; // Adjust path based on your folder structure
 import { collection, addDoc } from "firebase/firestore";
 
 const jobStatuses = [
-  "assigned",
-  "available",
   "ongoing",
   "completed",
-  "rejected",
+  "assigned",
+  "completed",
+  "completed",
 ];
 const subDistricts = [
   "North West Delhi",
@@ -38,12 +38,23 @@ export const addJobs = async () => {
         staffId: "unknown",
         status: jobStatuses[i], // Assigning different status
         subDistrict: subDistricts[i], // Assigning different subdistrict
-        timing: "24 hour Care",
+        JobType: "24 hour Care",
+        startDate: new Date(2025, 4, 15).toISOString(), // Custom date
+        endDate: new Date(2025, 4, 19).toISOString(), // Custom date
+        createdAt: new Date().toISOString(), // Current date
+        jobDuration: 0, // Initialize jobDuration
       };
+
+      newJob.jobDuration = Math.ceil(
+        (new Date(newJob.endDate).getTime() -
+          new Date(newJob.startDate).getTime()) /
+          (1000 * 60 * 60 * 24)
+      ); // Duration in days
 
       await addDoc(collection(db, "jobs"), newJob);
       console.log(`Added job ${i + 1}:`, newJob);
     }
+
     console.log("All jobs added successfully!");
   } catch (error) {
     console.error("Error adding jobs:", error);
