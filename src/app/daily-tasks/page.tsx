@@ -64,6 +64,7 @@ export default function DailyTasks() {
     oxygenLevel: "",
     bloodSugar: "",
   });
+  const [setshowVitalsInput, setSetshowVitalsInput] = useState(false);
   const [attendance, setAttendance] = useState({
     clockIn: [],
     clockOut: [],
@@ -191,6 +192,13 @@ export default function DailyTasks() {
       console.log("Autosaving moodHistory:", moodHistory);
     }
   }, [moodHistory, loading]);
+
+  useEffect(() => {
+    if (!loading) {
+      handleAutosave("vitalsHistory", vitalsHistory);
+      console.log("Autosaving vitalsHistory:", vitalsHistory);
+    }
+  }, [vitalsHistory, loading]);
 
   useEffect(() => {
     if (!isLoading) {
@@ -347,57 +355,120 @@ export default function DailyTasks() {
           <h2 className="text-lg font-semibold text-gray-900">
             Patient Vitals
           </h2>
-          <button className="text-teal-700 hover:text-teal-600">
+          <button
+            className="text-teal-700 hover:text-teal-600"
+            onClick={() => setSetshowVitalsInput(true)}
+          >
             <Plus className="w-5 h-5" />
           </button>
         </div>
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-          <VitalsCard
-            icon={Heart}
-            title="Blood Pressure"
-            value={vitals.bloodPressure}
-            unit="mmHg"
-            onChange={(newValue) =>
-              setVitals((prev) => ({ ...prev, bloodPressure: newValue }))
-            }
-          />
-          <VitalsCard
-            icon={Activity}
-            title="Heart Rate"
-            value={vitals.heartRate}
-            unit="bpm"
-            onChange={(newValue) =>
-              setVitals((prev) => ({ ...prev, heartRate: newValue }))
-            }
-          />
-          <VitalsCard
-            icon={Thermometer}
-            title="Temperature"
-            value={vitals.temperature}
-            unit="°F"
-            onChange={(newValue) =>
-              setVitals((prev) => ({ ...prev, temperature: newValue }))
-            }
-          />
-          <VitalsCard
-            icon={Lungs}
-            title="Oxygen Level"
-            value={vitals.oxygenLevel}
-            unit="%"
-            onChange={(newValue) =>
-              setVitals((prev) => ({ ...prev, oxygenLevel: newValue }))
-            }
-          />
-          <VitalsCard
-            icon={Droplet}
-            title="Blood Sugar"
-            value={vitals.bloodSugar}
-            unit="mg/dL"
-            onChange={(newValue) =>
-              setVitals((prev) => ({ ...prev, bloodSugar: newValue }))
-            }
-          />
-        </div>
+        {setshowVitalsInput && (
+          <div>
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+              <div>
+                <label className="block text-sm font-medium text-gray-700">
+                  Blood Pressure (mmHg)
+                </label>
+                <input
+                  type="text"
+                  value={vitals.bloodPressure}
+                  onChange={(e) =>
+                    setVitals((prev) => ({
+                      ...prev,
+                      bloodPressure: e.target.value,
+                    }))
+                  }
+                  className="mt-1 block w-full p-2 border border-gray-300 rounded-md"
+                />
+              </div>
+              <div>
+                <label className="block text-sm font-medium text-gray-700">
+                  Heart Rate (bpm)
+                </label>
+                <input
+                  type="text"
+                  value={vitals.heartRate}
+                  onChange={(e) =>
+                    setVitals((prev) => ({
+                      ...prev,
+                      heartRate: e.target.value,
+                    }))
+                  }
+                  className="mt-1 block w-full p-2 border border-gray-300 rounded-md"
+                />
+              </div>
+              <div>
+                <label className="block text-sm font-medium text-gray-700">
+                  Temperature (°F)
+                </label>
+                <input
+                  type="text"
+                  value={vitals.temperature}
+                  onChange={(e) =>
+                    setVitals((prev) => ({
+                      ...prev,
+                      temperature: e.target.value,
+                    }))
+                  }
+                  className="mt-1 block w-full p-2 border border-gray-300 rounded-md"
+                />
+              </div>
+              <div>
+                <label className="block text-sm font-medium text-gray-700">
+                  Oxygen Level (%)
+                </label>
+                <input
+                  type="text"
+                  value={vitals.oxygenLevel}
+                  onChange={(e) =>
+                    setVitals((prev) => ({
+                      ...prev,
+                      oxygenLevel: e.target.value,
+                    }))
+                  }
+                  className="mt-1 block w-full p-2 border border-gray-300 rounded-md"
+                />
+              </div>
+              <div>
+                <label className="block text-sm font-medium text-gray-700">
+                  Blood Sugar (mg/dL)
+                </label>
+                <input
+                  type="text"
+                  value={vitals.bloodSugar}
+                  onChange={(e) =>
+                    setVitals((prev) => ({
+                      ...prev,
+                      bloodSugar: e.target.value,
+                    }))
+                  }
+                  className="mt-1 block w-full p-2 border border-gray-300 rounded-md"
+                />
+              </div>
+            </div>
+            <button
+              onClick={() => {
+                // Save vitals to history
+                setSetshowVitalsInput(false);
+                const timestamp = format(new Date(), "hh:mm a");
+                setVitalsHistory((prev) => [
+                  ...prev,
+                  { time: timestamp, ...vitals },
+                ]);
+                setVitals({
+                  bloodPressure: "",
+                  heartRate: "",
+                  temperature: "",
+                  oxygenLevel: "",
+                  bloodSugar: "",
+                });
+              }}
+              className="mt-4 p-2 bg-teal-700 text-white rounded-lg"
+            >
+              Save Vitals
+            </button>
+          </div>
+        )}
       </div>
 
       {/* Vitals History */}
@@ -409,7 +480,8 @@ export default function DailyTasks() {
           {vitalsHistory.map((vital, index) => (
             <li key={index}>
               {vital.time} - BP: {vital.bloodPressure}, HR: {vital.heartRate},
-              Temp: {vital.temperature}
+              Temp: {vital.temperature}, O2: {vital.oxygenLevel}, Sugar:{" "}
+              {vital.bloodSugar}
             </li>
           ))}
         </ul>
