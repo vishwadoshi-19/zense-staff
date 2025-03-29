@@ -2,13 +2,14 @@ import { Clock } from "lucide-react";
 
 interface AttendanceProps {
   attendance: {
-    clockIn: string;
-    clockOut: string;
+    clockIn: string[]; // Accept arrays
+    clockOut: string[]; // Accept arrays
     totalHours: number;
   };
 }
 
 export const AttendanceBar = ({ attendance }: AttendanceProps) => {
+  console.log(attendance.clockIn, attendance.clockOut);
   return (
     <div className="bg-white rounded-xl border border-gray-200 p-4">
       <div className="flex items-center justify-between mb-4">
@@ -28,8 +29,8 @@ export const AttendanceBar = ({ attendance }: AttendanceProps) => {
           />
         </div>
         <div className="flex justify-between text-sm text-gray-500">
-          <span>{attendance.clockIn}</span>
-          <span>{attendance.clockOut}</span>
+          <span>{attendance.clockIn[0]}</span>
+          <span>{attendance.clockOut[attendance.clockOut.length - 1]}</span>
         </div>
       </div>
     </div>

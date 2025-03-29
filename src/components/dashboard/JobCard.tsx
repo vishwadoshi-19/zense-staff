@@ -55,80 +55,79 @@ export const JobCard = ({ job }: JobCardProps) => {
       animate={{ opacity: 1, y: 0 }}
       className="bg-white rounded-xl shadow-sm border border-gray-200 overflow-hidden"
     >
-      <a href={`/jobs/${job.id}`} className="block">
-        <div className="p-6">
-          <div className="flex items-start justify-between mb-4">
-            <div>
-              <h3 className="text-lg font-semibold text-gray-900">
-                {job.customerName}
-              </h3>
-              <p className="text-sm text-gray-500">Age: {job.customerAge}</p>
-            </div>
-            <span
-              className={`px-3 py-1 rounded-full text-sm font-medium ${
-                job.status === "available"
-                  ? "bg-green-100 text-green-800"
-                  : job.status === "assigned"
-                  ? "bg-teal-100 text-teal-800"
-                  : "bg-gray-100 text-gray-800"
-              }`}
-            >
-              {job.status.charAt(0).toUpperCase() + job.status.slice(1)}
-            </span>
+      {/* <a href={`/jobs/${job.id}`} className="block"></a> */}
+      <div className="p-6">
+        <div className="flex items-start justify-between mb-4">
+          <div>
+            <h3 className="text-lg font-semibold text-gray-900">
+              {job.customerName}
+            </h3>
+            <p className="text-sm text-gray-500">Age: {job.customerAge}</p>
           </div>
-
-          <p className="text-gray-600 mb-4">{job.description}</p>
-
-          <div className="space-y-3 mb-6">
-            <div className="flex items-center text-gray-600">
-              <MapPin className="w-5 h-5 mr-2 text-gray-400" />
-              {job.subDistrict}, {job.district}, {job.pincode}
-            </div>
-            <div className="flex items-center text-gray-600">
-              <Clock className="w-5 h-5 mr-2 text-gray-400" />
-              {job.JobType}
-            </div>
-            <div className="flex items-center text-gray-600">
-              <CalendarSearchIcon className="w-5 h-5 mr-2 text-gray-400" />
-              {new Date(job.startDate).toLocaleDateString("en-GB")} -{" "}
-              {new Date(job.endDate).toLocaleDateString("en-GB")}
-            </div>
-          </div>
-
-          <div className="space-y-2 mb-6">
-            <h4 className="text-sm font-medium text-gray-900">Requirements:</h4>
-            <ul className="space-y-1">
-              {job.requirements.map((req, index) => (
-                <li
-                  key={index}
-                  className="text-sm text-gray-600 flex items-center"
-                >
-                  <span className="w-1.5 h-1.5 bg-teal-700 rounded-full mr-2" />
-                  {req}
-                </li>
-              ))}
-            </ul>
-          </div>
-          {canJobBeAccepted && (
-            <div className="flex gap-3">
-              <button
-                onClick={() => handleAction("accept")}
-                className="flex-1 bg-teal-700 text-white px-4 py-2 rounded-lg hover:bg-teal-600 
-                       transition-colors duration-200"
-              >
-                Accept
-              </button>
-              <button
-                onClick={() => handleAction("decline")}
-                className="flex-1 border border-gray-300 text-gray-700 px-4 py-2 rounded-lg 
-                       hover:bg-gray-50 transition-colors duration-200"
-              >
-                Decline
-              </button>
-            </div>
-          )}
+          <span
+            className={`px-3 py-1 rounded-full text-sm font-medium ${
+              job.status === "available"
+                ? "bg-green-100 text-green-800"
+                : job.status === "assigned"
+                ? "bg-teal-100 text-teal-800"
+                : "bg-gray-100 text-gray-800"
+            }`}
+          >
+            {job.status.charAt(0).toUpperCase() + job.status.slice(1)}
+          </span>
         </div>
-      </a>
+
+        <p className="text-gray-600 mb-4">{job.description}</p>
+
+        <div className="space-y-3 mb-6">
+          <div className="flex items-center text-gray-600">
+            <MapPin className="w-5 h-5 mr-2 text-gray-400" />
+            {job.subDistrict}, {job.district}, {job.pincode}
+          </div>
+          <div className="flex items-center text-gray-600">
+            <Clock className="w-5 h-5 mr-2 text-gray-400" />
+            {job.JobType}
+          </div>
+          <div className="flex items-center text-gray-600">
+            <CalendarSearchIcon className="w-5 h-5 mr-2 text-gray-400" />
+            {new Date(job.startDate).toLocaleDateString("en-GB")} -{" "}
+            {new Date(job.endDate).toLocaleDateString("en-GB")}
+          </div>
+        </div>
+
+        <div className="space-y-2 mb-6">
+          <h4 className="text-sm font-medium text-gray-900">Requirements:</h4>
+          <ul className="space-y-1">
+            {job.requirements.map((req, index) => (
+              <li
+                key={index}
+                className="text-sm text-gray-600 flex items-center"
+              >
+                <span className="w-1.5 h-1.5 bg-teal-700 rounded-full mr-2" />
+                {req}
+              </li>
+            ))}
+          </ul>
+        </div>
+        {canJobBeAccepted && (
+          <div className="flex gap-3">
+            <button
+              onClick={() => handleAction("accept")}
+              className="flex-1 bg-teal-700 text-white px-4 py-2 rounded-lg hover:bg-teal-600 
+                       transition-colors duration-200"
+            >
+              Accept
+            </button>
+            <button
+              onClick={() => handleAction("decline")}
+              className="flex-1 border border-gray-300 text-gray-700 px-4 py-2 rounded-lg 
+                       hover:bg-gray-50 transition-colors duration-200"
+            >
+              Decline
+            </button>
+          </div>
+        )}
+      </div>
 
       <ConfirmationDialog
         isOpen={showConfirmation}

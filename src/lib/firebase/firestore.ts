@@ -17,6 +17,79 @@ import { sub } from "date-fns";
 
 export { updateDoc, doc, db };
 
+// Push sample daily tasks data to Firestore
+export const pushSampleDailyTasks = async (userId: string, date: string) => {
+  const sampleData = {
+    date,
+    clockInTimes: ["09:00 AM", "01:00 PM"],
+    clockOutTimes: ["12:00 PM", "05:00 PM"],
+    totalHours: 7,
+    vitals: [
+      {
+        time: "09:30 AM",
+        bloodPressure: "120/80",
+        heartRate: 72,
+        temperature: 98.6,
+        oxygenLevel: 98,
+        bloodSugar: 110,
+      },
+    ],
+    tasks: ["Morning Medication", "Blood Pressure Check", "Physical Therapy"],
+    diet: { breakfast: true, lunch: true, snacks: false, dinner: true },
+    activities: ["Yoga", "Reading"],
+    moodHistory: [
+      { time: "10:00 AM", mood: "Cheerful" },
+      { time: "03:00 PM", mood: "Calm" },
+    ],
+  };
+
+  try {
+    const dailyTaskRef = doc(db, `users/${userId}/daily-tasks`, date);
+    await setDoc(dailyTaskRef, sampleData);
+    console.log("Sample daily tasks data pushed successfully.");
+    return { success: true };
+  } catch (error) {
+    console.error("Error pushing sample daily tasks data:", error);
+    return { success: false, error };
+  }
+};
+
+// Fetch daily tasks for a specific date
+export const fetchDailyTasks = async (userId: string, date: string) => {
+  try {
+    const dailyTaskRef = doc(db, `users/${userId}/daily-tasks`, date);
+    const dailyTaskSnapshot = await getDoc(dailyTaskRef);
+    if (dailyTaskSnapshot.exists()) {
+      return { success: true, data: dailyTaskSnapshot.data() };
+    } else {
+      return { success: false, message: "No data available for this date." };
+    }
+  } catch (error) {
+    console.error("Error fetching daily tasks:", error);
+    return { success: false, error };
+  }
+};
+
+// Save or update daily tasks
+export const saveDailyTasks = async (
+  userId: string,
+  date: string,
+  data: any
+) => {
+  try {
+    const dailyTaskRef = doc(db, `users/${userId}/daily-tasks`, date);
+    await setDoc(
+      dailyTaskRef,
+      { ...data, updatedAt: serverTimestamp() },
+      { merge: true }
+    );
+    return { success: true };
+  } catch (error) {
+    console.error("Error saving daily tasks:", error);
+    return { success: false, error };
+  }
+};
+
 // Upload file to Firebase Storage
 export const uploadFile = async (file: File, path: string): Promise<string> => {
   try {
