@@ -111,6 +111,9 @@ export default function DailyTasks() {
 
   const [vitalsHistory, setVitalsHistory] = useState<Vital[]>([]);
   const [loading, setLoading] = useState(true);
+  const [showClockHistory, setShowClockHistory] = useState(false);
+  const [showVitalsHistory, setShowVitalsHistory] = useState(false);
+  const [showMoodHistory, setShowMoodHistory] = useState(false);
   const [noData, setNoData] = useState(false);
 
   //pushing sample data
@@ -403,7 +406,7 @@ export default function DailyTasks() {
   return (
     <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 pb-24">
       <div className="flex justify-between items-center mb-8">
-        <h1 className="text-2xl font-bold text-gray-900 pl-3">Daily Tasks</h1>
+        <h1 className="text-3xl font-bold text-gray-900 pl-3">Daily Tasks</h1>
 
         {/* Clock in button */}
 
@@ -457,7 +460,7 @@ export default function DailyTasks() {
 
       {/* Attendance Tracking */}
       <div className="mb-8">
-        <h2 className="text-lg font-semibold text-gray-900 mb-4">
+        <h2 className="text-xl font-semibold text-gray-900 mb-4 pl-3">
           Today&apos;s Attendance
         </h2>
         <AttendanceBar
@@ -467,258 +470,361 @@ export default function DailyTasks() {
           }}
         />
         <div className="mt-4"></div>
-        <h3 className="text-md font-medium text-gray-800 mb-2">
-          Clock In/Out History
-        </h3>
-        <ul className="list-disc pl-5">
-          {attendance.clockIn.map((clockInTime, index) => (
-            <li key={index}>
-              Clock In: {clockInTime} - Clock Out:{" "}
-              {attendance.clockOut[index] || "N/A"}
-            </li>
-          ))}
-        </ul>
-      </div>
-
-      {/* Vitals Section */}
-      <div className="mb-8">
-        <div className="flex items-center justify-between mb-4">
-          <h2 className="text-lg font-semibold text-gray-900">
-            Patient Vitals
-          </h2>
-          <button
-            className="text-teal-700 hover:text-teal-600"
-            onClick={() => setShowVitalsInput(!showVitalsInput)}
+        <div className="bg-white p-4 pb-1.5 rounded-lg shadow-md">
+          <h3
+            className="text-lg font-medium text-gray-800 mb-2 flex items-center justify-between cursor-pointer"
+            onClick={() => setShowClockHistory((prev) => !prev)}
           >
-            <Plus className="w-5 h-5" />
-          </button>
+            Clock In/Out History
+            <ChevronDown
+              className={`w-5 h-5 transition-transform ${
+                showClockHistory ? "rotate-180" : ""
+              }`}
+            />
+          </h3>
+          {showClockHistory && (
+            <ul className="list-disc pl-5 space-y-2">
+              {attendance.clockIn.map((clockInTime, index) => (
+                <li
+                  key={index}
+                  className="p-2 bg-gray-50 rounded-md border border-gray-200"
+                >
+                  <span className="font-semibold text-gray-700">Clock In:</span>{" "}
+                  {clockInTime}{" "}
+                  <span className="font-semibold text-gray-700">
+                    - Clock Out:
+                  </span>{" "}
+                  {attendance.clockOut[index] || "N/A"}
+                </li>
+              ))}
+            </ul>
+          )}
         </div>
-        {showVitalsInput && (
-          <div>
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-              <div>
-                <label className="block text-sm font-medium text-gray-700">
-                  Blood Pressure (mmHg)
-                </label>
-                <input
-                  type="text"
-                  value={vitals.bloodPressure}
-                  onChange={(e) =>
-                    setVitals((prev) => ({
-                      ...prev,
-                      bloodPressure: e.target.value,
-                    }))
-                  }
-                  className="mt-1 block w-full p-2 border border-gray-300 rounded-md"
-                />
-              </div>
-              <div>
-                <label className="block text-sm font-medium text-gray-700">
-                  Heart Rate (bpm)
-                </label>
-                <input
-                  type="text"
-                  value={vitals.heartRate}
-                  onChange={(e) =>
-                    setVitals((prev) => ({
-                      ...prev,
-                      heartRate: e.target.value,
-                    }))
-                  }
-                  className="mt-1 block w-full p-2 border border-gray-300 rounded-md"
-                />
-              </div>
-              <div>
-                <label className="block text-sm font-medium text-gray-700">
-                  Temperature (°F)
-                </label>
-                <input
-                  type="text"
-                  value={vitals.temperature}
-                  onChange={(e) =>
-                    setVitals((prev) => ({
-                      ...prev,
-                      temperature: e.target.value,
-                    }))
-                  }
-                  className="mt-1 block w-full p-2 border border-gray-300 rounded-md"
-                />
-              </div>
-              <div>
-                <label className="block text-sm font-medium text-gray-700">
-                  Oxygen Level (%)
-                </label>
-                <input
-                  type="text"
-                  value={vitals.oxygenLevel}
-                  onChange={(e) =>
-                    setVitals((prev) => ({
-                      ...prev,
-                      oxygenLevel: e.target.value,
-                    }))
-                  }
-                  className="mt-1 block w-full p-2 border border-gray-300 rounded-md"
-                />
-              </div>
-              <div>
-                <label className="block text-sm font-medium text-gray-700">
-                  Blood Sugar (mg/dL)
-                </label>
-                <input
-                  type="text"
-                  value={vitals.bloodSugar}
-                  onChange={(e) =>
-                    setVitals((prev) => ({
-                      ...prev,
-                      bloodSugar: e.target.value,
-                    }))
-                  }
-                  className="mt-1 block w-full p-2 border border-gray-300 rounded-md"
-                />
-              </div>
-            </div>
+        {/* Vitals Section */}
+        <div className="my-8">
+          <div className="flex items-center justify-between mb-4">
+            <h2 className="text-xl font-semibold text-gray-900 pl-3">
+              Patient Vitals
+            </h2>
             <button
-              onClick={() => {
-                // Save vitals to history
-                setShowVitalsInput(false);
-                const timestamp = format(new Date(), "hh:mm a");
-                setVitalsHistory((prev) => [
-                  ...prev,
-                  { time: timestamp, ...vitals },
-                ]);
-                setVitals({
-                  bloodPressure: "",
-                  heartRate: "",
-                  temperature: "",
-                  oxygenLevel: "",
-                  bloodSugar: "",
-                });
-              }}
-              className="mt-4 p-2 bg-teal-700 text-white rounded-lg"
+              className="text-teal-700 hover:text-teal-600 flex items-center gap-1"
+              onClick={() => setShowVitalsInput(!showVitalsInput)}
             >
-              Save Vitals
+              <Plus className="w-5 h-5" />
+              <span>Add Vitals</span>
             </button>
           </div>
-        )}
-      </div>
-
-      {/* Vitals History */}
-      <div className="mb-8">
-        <h2 className="text-lg font-semibold text-gray-900 mb-4">
-          Vitals History
-        </h2>
-        <ul className="list-disc pl-5">
-          {vitalsHistory.map((vital, index) => (
-            <li key={index}>
-              {vital.time} - BP: {vital.bloodPressure}, HR: {vital.heartRate},
-              Temp: {vital.temperature}, O2: {vital.oxygenLevel}, Sugar:{" "}
-              {vital.bloodSugar}
-            </li>
-          ))}
-        </ul>
-      </div>
-
-      {/* Tasks Section */}
-      <div className="mb-8">
-        <div className="flex items-center justify-between mb-4">
-          <h2 className="text-lg font-semibold text-gray-900">Tasks</h2>
+          {showVitalsInput && (
+            <div className="bg-white p-6 rounded-lg shadow-md">
+              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-1">
+                    Blood Pressure (mmHg)
+                  </label>
+                  <input
+                    type="text"
+                    placeholder="120/80"
+                    value={vitals.bloodPressure}
+                    onChange={(e) =>
+                      setVitals((prev) => ({
+                        ...prev,
+                        bloodPressure: e.target.value,
+                      }))
+                    }
+                    className="block w-full p-3 border border-gray-300 rounded-md focus:ring-teal-500 focus:border-teal-500"
+                  />
+                </div>
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-1">
+                    Heart Rate (bpm)
+                  </label>
+                  <input
+                    type="text"
+                    placeholder="75"
+                    value={vitals.heartRate}
+                    onChange={(e) =>
+                      setVitals((prev) => ({
+                        ...prev,
+                        heartRate: e.target.value,
+                      }))
+                    }
+                    className="block w-full p-3 border border-gray-300 rounded-md focus:ring-teal-500 focus:border-teal-500"
+                  />
+                </div>
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-1">
+                    Temperature (°F)
+                  </label>
+                  <input
+                    type="text"
+                    placeholder="98.6"
+                    value={vitals.temperature}
+                    onChange={(e) =>
+                      setVitals((prev) => ({
+                        ...prev,
+                        temperature: e.target.value,
+                      }))
+                    }
+                    className="block w-full p-3 border border-gray-300 rounded-md focus:ring-teal-500 focus:border-teal-500"
+                  />
+                </div>
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-1">
+                    Oxygen Level (%)
+                  </label>
+                  <input
+                    type="text"
+                    placeholder="98"
+                    value={vitals.oxygenLevel}
+                    onChange={(e) =>
+                      setVitals((prev) => ({
+                        ...prev,
+                        oxygenLevel: e.target.value,
+                      }))
+                    }
+                    className="block w-full p-3 border border-gray-300 rounded-md focus:ring-teal-500 focus:border-teal-500"
+                  />
+                </div>
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-1">
+                    Blood Sugar (mg/dL)
+                  </label>
+                  <input
+                    type="text"
+                    placeholder="90"
+                    value={vitals.bloodSugar}
+                    onChange={(e) =>
+                      setVitals((prev) => ({
+                        ...prev,
+                        bloodSugar: e.target.value,
+                      }))
+                    }
+                    className="block w-full p-3 border border-gray-300 rounded-md focus:ring-teal-500 focus:border-teal-500"
+                  />
+                </div>
+              </div>
+              <button
+                onClick={() => {
+                  // Save vitals to history
+                  setShowVitalsInput(false);
+                  const timestamp = format(new Date(), "hh:mm a");
+                  setVitalsHistory((prev) => [
+                    ...prev,
+                    { time: timestamp, ...vitals },
+                  ]);
+                  setVitals({
+                    bloodPressure: "",
+                    heartRate: "",
+                    temperature: "",
+                    oxygenLevel: "",
+                    bloodSugar: "",
+                  });
+                }}
+                className="mt-6 px-6 py-3 bg-teal-700 text-white rounded-lg hover:bg-teal-600 transition"
+              >
+                Save Vitals
+              </button>
+            </div>
+          )}
         </div>
-        <TaskList
-          tasks={tasks}
-          onTaskToggle={(id) => {
-            setTasks((prevTasks) =>
-              prevTasks.map((task) =>
-                task.id === id ? { ...task, completed: !task.completed } : task
-              )
-            );
-          }}
-        />
-      </div>
 
-      {/* Diet Section */}
-      <div className="mb-8 ">
-        <h2 className="text-lg font-semibold text-gray-900 mb-4">Diet</h2>
-        <div className="grid grid-cols-2 gap-4">
-          {["breakfast", "lunch", "snacks", "dinner"].map((meal) => (
-            <button
-              key={meal}
-              className={`p-4 border rounded-lg ${
-                diet[meal as keyof typeof diet]
-                  ? "bg-teal-700 text-white"
-                  : "bg-white text-gray-900"
-              }`}
-              onClick={() => handleDietClick(meal as keyof typeof diet)}
+        {/* Vitals History */}
+        <div className="mb-8">
+          <div className="bg-white p-4 pb-1.5 rounded-lg shadow-md">
+            <h2
+              className="text-lg font-medium text-gray-900 mb-4 flex items-center justify-between cursor-pointer"
+              onClick={() => setShowVitalsHistory((prev) => !prev)}
             >
-              {meal.charAt(0).toUpperCase() + meal.slice(1)}
-            </button>
-          ))}
+              Vitals History
+              <ChevronDown
+                className={`w-5 h-5 transition-transform ${
+                  showVitalsHistory ? "rotate-180" : ""
+                }`}
+              />
+            </h2>
+            {showVitalsHistory && (
+              <div>
+                <ul className="space-y-4">
+                  {vitalsHistory.map((vital, index) => (
+                    <li
+                      key={index}
+                      className="p-4 bg-gray-50 rounded-md border border-gray-200"
+                    >
+                      <p className="text-sm text-gray-700">
+                        <span className="font-semibold">Time:</span>{" "}
+                        {vital.time}
+                      </p>
+                      <p className="text-sm text-gray-700">
+                        <span className="font-semibold">BP:</span>{" "}
+                        {vital.bloodPressure}
+                      </p>
+                      <p className="text-sm text-gray-700">
+                        <span className="font-semibold">HR:</span>{" "}
+                        {vital.heartRate}
+                      </p>
+                      <p className="text-sm text-gray-700">
+                        <span className="font-semibold">Temp:</span>{" "}
+                        {vital.temperature}
+                      </p>
+                      <p className="text-sm text-gray-700">
+                        <span className="font-semibold">O2:</span>{" "}
+                        {vital.oxygenLevel}
+                      </p>
+                      <p className="text-sm text-gray-700">
+                        <span className="font-semibold">Sugar:</span>{" "}
+                        {vital.bloodSugar}
+                      </p>
+                    </li>
+                  ))}
+                </ul>
+              </div>
+            )}
+          </div>
         </div>
-      </div>
 
-      {/* Activity Section */}
-      <div className="mb-8">
-        <h2 className="text-lg font-semibold text-gray-900 mb-4">Activity</h2>
-        <div className="mb-4">
-          <input
-            type="text"
-            value={newActivity}
-            onChange={(e) => setNewActivity(e.target.value)}
-            className="p-3 border border-teal-700 rounded-lg w-full"
-            placeholder="Add new activity"
-          />
-          <button
-            className="mt-3 p-2 bg-teal-700 text-white rounded-lg"
-            onClick={handleAddActivity}
-          >
-            Add Activity
-          </button>
-        </div>
-        <ul className="list-disc pl-5">
-          {activities.map((activity, index) => (
-            <li key={index}>{activity}</li>
-          ))}
-        </ul>
-      </div>
-
-      {/* Mood Section */}
-      <div className="mb-8">
-        <h2 className="text-lg font-semibold text-gray-900 mb-4">Mood</h2>
-        <div className="grid grid-cols-2 md:grid-cols-3 gap-4">
-          {moods.map((mood) => (
-            <button
-              key={mood.name}
-              className={`p-4 border rounded-lg flex items-center justify-center ${
-                selectedMood === mood.name
-                  ? "bg-teal-700 text-white"
-                  : "bg-white text-gray-900"
-              }`}
-              onClick={() => {
-                handleMoodSelect(mood.name);
-                setMoodHistory((prev) => [
-                  ...prev,
-                  { time: format(new Date(), "hh:mm a"), mood: mood.name },
-                ]);
+        {/* Tasks Section */}
+        <div className="mb-8">
+          <div className="flex items-center justify-between mb-4">
+            <h2 className="text-xl pl-3 font-semibold text-gray-900">Tasks</h2>
+          </div>
+          <div className="bg-white p-6 rounded-lg shadow-md">
+            <TaskList
+              tasks={tasks}
+              onTaskToggle={(id) => {
+                setTasks((prevTasks) =>
+                  prevTasks.map((task) =>
+                    task.id === id
+                      ? { ...task, completed: !task.completed }
+                      : task
+                  )
+                );
               }}
-            >
-              <span className="mr-6 text-3xl">{mood.emoji}</span>
-              {mood.name}
-            </button>
-          ))}
+            />
+          </div>
         </div>
-      </div>
 
-      {/* Mood History */}
-      <div className="mb-8">
-        <h2 className="text-lg font-semibold text-gray-900 mb-4">
-          Mood History
-        </h2>
-        <ul className="list-disc pl-5">
-          {moodHistory.map((mood, index) => (
-            <li key={index}>
-              {mood.time} - {mood.mood}
-            </li>
-          ))}
-        </ul>
+        {/* Diet Section */}
+        <div className="mb-8">
+          <h2 className="text-xl pl-3 font-semibold text-gray-900 mb-4">
+            Diet
+          </h2>
+          <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+            {["breakfast", "lunch", "snacks", "dinner"].map((meal) => (
+              <button
+                key={meal}
+                className={`p-4 border rounded-lg shadow-sm transition-all duration-200 transform hover:scale-105 ${
+                  diet[meal as keyof typeof diet]
+                    ? "bg-teal-700 text-white border-teal-700"
+                    : "bg-gray-50 text-gray-900 border-gray-300 hover:bg-teal-100 hover:border-teal-500"
+                }`}
+                onClick={() => handleDietClick(meal as keyof typeof diet)}
+              >
+                <span className="text-lg font-medium">
+                  {meal.charAt(0).toUpperCase() + meal.slice(1)}
+                </span>
+              </button>
+            ))}
+          </div>
+        </div>
+
+        {/* Activity Section */}
+        <div className="mb-8">
+          <h2 className="text-xl pl-3 font-semibold text-gray-900 mb-4">
+            Activity
+          </h2>
+          <div className="flex flex-col md:flex-row items-center gap-4 mb-6">
+            <input
+              type="text"
+              value={newActivity}
+              onChange={(e) => setNewActivity(e.target.value)}
+              className="p-3 border border-gray-300 rounded-lg w-full md:w-auto flex-grow focus:ring-teal-500 focus:border-teal-500"
+              placeholder="Add new activity"
+            />
+            <button
+              className="px-6 py-3 bg-teal-700 text-white rounded-lg hover:bg-teal-600 transition-all"
+              onClick={handleAddActivity}
+            >
+              Add Activity
+            </button>
+          </div>
+          {activities.length > 0 ? (
+            <ul className="space-y-2">
+              {activities.map((activity, index) => (
+                <li
+                  key={index}
+                  className="p-3 bg-gray-50 border border-gray-200 rounded-lg shadow-sm"
+                >
+                  {activity}
+                </li>
+              ))}
+            </ul>
+          ) : (
+            <p className="text-gray-500">No activities added yet.</p>
+          )}
+        </div>
+
+        {/* Mood Section */}
+        <div className="mb-8">
+          <h2 className="text-xl pl-3 font-semibold text-gray-900 mb-4">
+            Mood
+          </h2>
+          <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
+            {moods.map((mood) => (
+              <button
+                key={mood.name}
+                className={`p-4 border rounded-lg flex flex-col items-center justify-center transition-all duration-200 transform hover:scale-105 shadow-sm ${
+                  selectedMood === mood.name
+                    ? "bg-teal-700 text-white border-teal-700"
+                    : "bg-gray-50 text-gray-900 border-gray-300 hover:bg-teal-100 hover:border-teal-500"
+                }`}
+                onClick={() => {
+                  handleMoodSelect(mood.name);
+                  setMoodHistory((prev) => [
+                    ...prev,
+                    { time: format(new Date(), "hh:mm a"), mood: mood.name },
+                  ]);
+                }}
+              >
+                <span className="text-4xl mb-2">{mood.emoji}</span>
+                <span className="text-sm font-medium">{mood.name}</span>
+              </button>
+            ))}
+          </div>
+        </div>
+
+        {/* Mood History */}
+        <div className="mb-8">
+          <div className="bg-white p-4 pb-1.5 rounded-lg shadow-md">
+            <h2
+              className="text-lg font-medium text-gray-900 mb-4 flex items-center justify-between cursor-pointer"
+              onClick={() => setShowMoodHistory((prev) => !prev)}
+            >
+              Mood History
+              <ChevronDown
+                className={`w-5 h-5 transition-transform ${
+                  showMoodHistory ? "rotate-180" : ""
+                }`}
+              />
+            </h2>
+            {showMoodHistory && (
+              <ul className="space-y-4">
+                {moodHistory.map((mood, index) => (
+                  <li
+                    key={index}
+                    className="p-4 bg-gray-50 rounded-md border border-gray-200 shadow-sm"
+                  >
+                    <p className="text-sm text-gray-700">
+                      <span className="font-semibold">Time:</span> {mood.time}
+                    </p>
+                    <p className="text-sm text-gray-700">
+                      <span className="font-semibold">Mood:</span> {mood.mood}
+                    </p>
+                  </li>
+                ))}
+              </ul>
+            )}
+          </div>
+        </div>
       </div>
     </div>
   );
