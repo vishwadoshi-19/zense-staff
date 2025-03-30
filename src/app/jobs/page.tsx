@@ -67,7 +67,9 @@ export default function Jobs() {
       } else if (userData?.status === "unregistered") {
         router.push("/onboarding");
       } else {
-        fetchJobs(userData?.status || "unregistered").then((result) => {
+        fetchJobs(userData?.status || "unregistered", {
+          uid: user?.uid || "",
+        }).then((result) => {
           if (result.error) {
             setError(result.error);
           } else {
@@ -81,7 +83,7 @@ export default function Jobs() {
         });
       }
     }
-  }, [isAuthenticated, isLoading, router, userData]);
+  }, [isAuthenticated, isLoading, router, userData, user?.uid]);
 
   const filteredJobs =
     selectedStatus === "all"

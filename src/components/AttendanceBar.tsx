@@ -4,12 +4,13 @@ interface AttendanceProps {
   attendance: {
     clockIn: string[]; // Accept arrays
     clockOut: string[]; // Accept arrays
-    totalHours: number;
+    totalHours: string;
   };
 }
 
 export const AttendanceBar = ({ attendance }: AttendanceProps) => {
   console.log(attendance.clockIn, attendance.clockOut);
+  console.log("attendance", attendance);
   return (
     <div className="bg-white rounded-xl border border-gray-200 p-4">
       <div className="flex items-center justify-between mb-4">
@@ -25,12 +26,21 @@ export const AttendanceBar = ({ attendance }: AttendanceProps) => {
         <div className="h-2 bg-teal-100 rounded-full overflow-hidden">
           <div
             className="h-full bg-teal-700 rounded-full"
-            style={{ width: `${(attendance.totalHours / 12) * 100}%` }}
+            style={{
+              width: `${
+                ((parseInt(attendance.totalHours.split(":")[0]) * 60 +
+                  parseInt(attendance.totalHours.split(":")[1])) /
+                  (12 * 60)) *
+                100
+              }%`,
+            }}
           />
         </div>
         <div className="flex justify-between text-sm text-gray-500">
-          <span>{attendance.clockIn[0]}</span>
-          <span>{attendance.clockOut[attendance.clockOut.length - 1]}</span>
+          {/* <span>{attendance.clockIn[0]}</span> */}
+          {/* <span>{attendance.clockOut[attendance.clockOut.length - 1]}</span> */}
+          <span>9:00 AM</span>
+          <span>9:00 PM</span>
         </div>
       </div>
     </div>

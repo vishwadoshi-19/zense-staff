@@ -14,6 +14,7 @@ import {
 import { ref, uploadBytes, getDownloadURL } from "firebase/storage";
 import { FormState, UserData, StaffDetails } from "@/types";
 import { sub } from "date-fns";
+import { useAuth } from "@/context/AuthContext";
 
 export { updateDoc, doc, db };
 
@@ -228,7 +229,7 @@ export const getStaffDetails = async (userId: string) => {
 };
 
 // Fetch jobs from Firestore
-export const fetchJobs = async (userStatus: string) => {
+export const fetchJobs = async (userStatus: string, user: { uid: string }) => {
   console.log("Fetching jobs for user status:", userStatus);
   if (userStatus !== "live") {
     return {
@@ -239,7 +240,7 @@ export const fetchJobs = async (userStatus: string) => {
 
   try {
     const jobsCollection = collection(db, "jobs");
-    const jobsQuery = query(jobsCollection, where("staffId", "==", "unknown"));
+    const jobsQuery = query(jobsCollection, where("staffId", "==", user.uid));
     // ,where("staffId", "==", "open")
     const querySnapshot = await getDocs(jobsQuery);
     console.log("Jobs found:", querySnapshot);

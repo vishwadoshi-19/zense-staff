@@ -79,11 +79,11 @@ export default function DailyTasks() {
   const [attendance, setAttendance] = useState<{
     clockIn: string[];
     clockOut: string[];
-    totalHours: number;
+    totalHours: string;
   }>({
     clockIn: [],
     clockOut: [],
-    totalHours: 0,
+    totalHours: "",
   });
   const [diet, setDiet] = useState({
     breakfast: false,
@@ -169,7 +169,7 @@ export default function DailyTasks() {
           setAttendance({
             clockIn: data?.clockInTimes || [],
             clockOut: data?.clockOutTimes || [],
-            totalHours: data?.totalHours || 0,
+            totalHours: data?.totalHours || "",
           });
           console.log("attendance fetched : ", attendance);
           setDiet(
@@ -218,6 +218,45 @@ export default function DailyTasks() {
     if (!loading) {
       handleAutosave("clockInTimes", attendance.clockIn);
       handleAutosave("clockOutTimes", attendance.clockOut);
+      const calculateTotalHours = () => {
+        const totalMinutes = attendance.clockIn.reduce(
+          (total, clockInTime, index) => {
+            console.log("clock in time : ", clockInTime);
+            const clockOutTime = attendance.clockOut[index];
+            if (clockOutTime) {
+              const today = format(new Date(), "yyyy-MM-dd");
+              const clockInDate = new Date(
+                Date.parse(`${today} ${clockInTime}`)
+              );
+              console.log("clock in date : ", clockInDate);
+              const clockOutDate = new Date(
+                Date.parse(`${today} ${clockOutTime}`)
+              );
+              console.log("clock out date : ", clockOutDate);
+              const diffInMinutes =
+                (clockOutDate.getTime() - clockInDate.getTime()) / 60000;
+              console.log("diff in minutes : ", diffInMinutes);
+              return total + diffInMinutes;
+            }
+            console.log("total : ", total);
+            return total;
+          },
+          0
+        );
+
+        const hours = Math.floor(totalMinutes / 60);
+        console.log("hours : ", hours);
+        const minutes = totalMinutes % 60;
+        console.log("minutes : ", minutes);
+        return `${hours}:${minutes.toString().padStart(2, "0")}`;
+      };
+
+      console.log(
+        "total hoursssssssssssssssssssssssssssssss : ",
+        calculateTotalHours()
+      );
+
+      handleAutosave("totalHours", calculateTotalHours());
       console.log("Autosaving clock-in and clock-out:", attendance);
     }
   }, [attendance, loading]);
@@ -421,7 +460,12 @@ export default function DailyTasks() {
         <h2 className="text-lg font-semibold text-gray-900 mb-4">
           Today&apos;s Attendance
         </h2>
-        <AttendanceBar attendance={attendance} />
+        <AttendanceBar
+          attendance={{
+            ...attendance,
+            totalHours: attendance.totalHours.toString(),
+          }}
+        />
         <div className="mt-4"></div>
         <h3 className="text-md font-medium text-gray-800 mb-2">
           Clock In/Out History
