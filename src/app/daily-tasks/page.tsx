@@ -1,3 +1,4 @@
+/* eslint-disable react-hooks/exhaustive-deps */
 "use client";
 
 import { useState, useEffect } from "react";
@@ -42,13 +43,23 @@ const moods = [
   { name: "Angry", emoji: "😠" },
 ];
 
+interface Task {
+  id: number;
+  title: string;
+  completed: boolean;
+  time: string;
+}
+
 export default function DailyTasks() {
   const { isAuthenticated, isLoading, userData, user } = useAuth();
   const router = useRouter();
   const [selectedDate, setSelectedDate] = useState<Value>(new Date());
   const [showCalendar, setShowCalendar] = useState(false);
+  const [clockedIn, setClockedIn] = useState(false);
+  const [clockInTime, setClockInTime] = useState<Date | null>(null);
+  const [clockOutTime, setClockOutTime] = useState<Date | null>(null);
 
-  const [tasks, setTasks] = useState([]);
+  const [tasks, setTasks] = useState<Task[]>([]);
   type Vitals = {
     bloodPressure: string;
     heartRate: string;
@@ -64,8 +75,12 @@ export default function DailyTasks() {
     oxygenLevel: "",
     bloodSugar: "",
   });
-  const [setshowVitalsInput, setSetshowVitalsInput] = useState(false);
-  const [attendance, setAttendance] = useState({
+  const [showVitalsInput, setShowVitalsInput] = useState(false);
+  const [attendance, setAttendance] = useState<{
+    clockIn: string[];
+    clockOut: string[];
+    totalHours: number;
+  }>({
     clockIn: [],
     clockOut: [],
     totalHours: 0,
@@ -104,6 +119,38 @@ export default function DailyTasks() {
   //   console.log("Sample data pushed");
   // });
 
+  const handleClockIn = () => {
+    setClockedIn(true);
+    const date = new Date();
+    setClockInTime(date);
+    const formattedTime = date.toLocaleTimeString("en-US", {
+      hour: "numeric",
+      minute: "2-digit",
+      hour12: true,
+    });
+    console.log("clock in time : ", formattedTime);
+    setAttendance((prev) => ({
+      ...prev,
+      clockIn: [...prev.clockIn, formattedTime],
+    }));
+  };
+
+  const handleClockOut = () => {
+    setClockedIn(false);
+    const date = new Date();
+    setClockOutTime(date);
+    const formattedTime = date.toLocaleTimeString("en-US", {
+      hour: "numeric",
+      minute: "2-digit",
+      hour12: true,
+    });
+    console.log("clock out time : ", formattedTime);
+    setAttendance((prev) => ({
+      ...prev,
+      clockOut: [...prev.clockOut, formattedTime],
+    }));
+  };
+
   useEffect(() => {
     const fetchData = async () => {
       if (user?.uid) {
@@ -124,6 +171,7 @@ export default function DailyTasks() {
             clockOut: data?.clockOutTimes || [],
             totalHours: data?.totalHours || 0,
           });
+          console.log("attendance fetched : ", attendance);
           setDiet(
             data?.diet || {
               breakfast: false,
@@ -135,6 +183,7 @@ export default function DailyTasks() {
           setActivities(data?.activities || []);
           setMoodHistory(data?.moodHistory || []);
           setVitalsHistory(data?.vitalsHistory || []);
+          setClockedIn(data?.isClockedIn || false);
           setNoData(false);
         } else {
           setNoData(true);
@@ -160,17 +209,32 @@ export default function DailyTasks() {
 
   useEffect(() => {
     if (!loading) {
+      handleAutosave("isClockedIn", clockedIn);
+      console.log("Autosaving Is clocked in ? : ", clockedIn);
+    }
+  }, [clockedIn, loading]);
+
+  useEffect(() => {
+    if (!loading) {
+      handleAutosave("clockInTimes", attendance.clockIn);
+      handleAutosave("clockOutTimes", attendance.clockOut);
+      console.log("Autosaving clock-in and clock-out:", attendance);
+    }
+  }, [attendance, loading]);
+
+  useEffect(() => {
+    if (!loading) {
       handleAutosave("tasks", tasks);
       console.log("Autosaving tasks:", tasks);
     }
   }, [tasks, loading]);
 
-  useEffect(() => {
-    if (!loading) {
-      handleAutosave("vitals", vitals);
-      console.log("Autosaving vitals:", vitals);
-    }
-  }, [vitals, loading]);
+  // useEffect(() => {
+  //   if (!loading) {
+  //     handleAutosave("vitals", vitals);
+  //     console.log("Autosaving vitals:", vitals);
+  //   }
+  // }, [vitals, loading]);
 
   useEffect(() => {
     if (!loading) {
@@ -299,7 +363,30 @@ export default function DailyTasks() {
 
   return (
     <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 pb-24">
-      <h1 className="text-2xl font-bold text-gray-900 mb-8">Daily Tasks</h1>
+      <div className="flex justify-between items-center mb-8">
+        <h1 className="text-2xl font-bold text-gray-900 pl-3">Daily Tasks</h1>
+
+        {/* Clock in button */}
+
+        {selectedDate instanceof Date &&
+        selectedDate.toDateString() === new Date().toDateString() ? (
+          <button
+            onClick={clockedIn ? handleClockOut : handleClockIn}
+            className={`px-6 py-2 rounded-full font-medium ${
+              clockedIn
+                ? "bg-red-100 text-red-700 hover:bg-red-200"
+                : "bg-green-100 text-green-700 hover:bg-green-200"
+            }`}
+          >
+            <div className="flex items-center gap-2">
+              <Clock className="w-5 h-5" />
+              {clockedIn ? "Clock Out" : "Clock In"}
+            </div>
+          </button>
+        ) : (
+          <></>
+        )}
+      </div>
 
       <div className="mb-8">
         <div
@@ -357,12 +444,12 @@ export default function DailyTasks() {
           </h2>
           <button
             className="text-teal-700 hover:text-teal-600"
-            onClick={() => setSetshowVitalsInput(true)}
+            onClick={() => setShowVitalsInput(!showVitalsInput)}
           >
             <Plus className="w-5 h-5" />
           </button>
         </div>
-        {setshowVitalsInput && (
+        {showVitalsInput && (
           <div>
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
               <div>
@@ -449,7 +536,7 @@ export default function DailyTasks() {
             <button
               onClick={() => {
                 // Save vitals to history
-                setSetshowVitalsInput(false);
+                setShowVitalsInput(false);
                 const timestamp = format(new Date(), "hh:mm a");
                 setVitalsHistory((prev) => [
                   ...prev,
@@ -491,20 +578,17 @@ export default function DailyTasks() {
       <div className="mb-8">
         <div className="flex items-center justify-between mb-4">
           <h2 className="text-lg font-semibold text-gray-900">Tasks</h2>
-          <button className="text-teal-700 hover:text-teal-600">
-            <Plus className="w-5 h-5" />
-          </button>
         </div>
-        {/* <TaskList
+        <TaskList
           tasks={tasks}
           onTaskToggle={(id) => {
-            setTasks(
-              tasks.map((task) =>
+            setTasks((prevTasks) =>
+              prevTasks.map((task) =>
                 task.id === id ? { ...task, completed: !task.completed } : task
               )
             );
           }}
-        /> */}
+        />
       </div>
 
       {/* Diet Section */}
