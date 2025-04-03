@@ -14,7 +14,7 @@ import {
   updateDoc,
 } from "firebase/firestore";
 import { useRouter } from "next/navigation";
-import { UserData } from "@/types/index";
+import { UserData } from "@/types";
 
 // Setup recaptcha verifier
 export const setupRecaptcha = (containerId: string) => {
@@ -62,7 +62,7 @@ export const verifyOTP = async (
         updatedAt: serverTimestamp(),
       });
       const status = userDoc.data()?.status || "unregistered"; // Get status if it exists
-      if (status === "registered") {
+      if (status === "registered" || status === "live") {
         router.replace("/jobs");
       } else {
         router.replace("/onboarding");
@@ -115,7 +115,7 @@ export const verifyOTP2 = async (
     }
 
     // Redirect based on user status
-    if (status === "registered") {
+    if (status === "registered" || status === "live") {
       router.replace("/jobs");
     } else {
       router.replace("/onboarding");

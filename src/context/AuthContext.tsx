@@ -8,7 +8,7 @@ import {
   checkUserExists,
   signOut as firebaseSignOut,
 } from "@/lib/firebase/auth";
-import { UserData } from "@/types/index";
+import { UserData } from "@/types";
 import { useRouter, usePathname } from "next/navigation";
 
 interface AuthContextType {
@@ -82,7 +82,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({
       if (pathname !== "/sign-in") router.replace("/sign-in");
     } else if (userData?.status === "unregistered") {
       if (pathname !== "/onboarding") router.replace("/onboarding");
-    } else if (userData?.status === "registered") {
+    } else if (userData?.status === "registered" || "live") {
       if (pathname === "/sign-in" || pathname === "/onboarding") {
         router.replace("/jobs"); // Default for registered users
       }

@@ -68,6 +68,7 @@ export default function RootLayout({
           <div className="min-h-screen bg-gray-50">
             {children}
             {/* {showNavigation && <Navigation />} */}
+            <div className="mb-20"></div>
             <Navigation />
             <Toaster position="top-center" />
           </div>

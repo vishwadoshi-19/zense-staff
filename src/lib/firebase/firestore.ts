@@ -5,13 +5,91 @@ import {
   setDoc,
   updateDoc,
   getDoc,
+  getDocs,
+  query,
+  where,
   serverTimestamp,
   DocumentReference,
 } from "firebase/firestore";
 import { ref, uploadBytes, getDownloadURL } from "firebase/storage";
-import { FormState, UserData, StaffDetails } from "@/types/index";
+import { FormState, UserData, StaffDetails } from "@/types";
+import { sub } from "date-fns";
+import { useAuth } from "@/context/AuthContext";
 
 export { updateDoc, doc, db };
+
+// Push sample daily tasks data to Firestore
+export const pushSampleDailyTasks = async (userId: string, date: string) => {
+  const sampleData = {
+    date,
+    clockInTimes: ["09:00 AM", "01:00 PM"],
+    clockOutTimes: ["12:00 PM", "05:00 PM"],
+    totalHours: 7,
+    vitals: [
+      {
+        time: "09:30 AM",
+        bloodPressure: "120/80",
+        heartRate: 72,
+        temperature: 98.6,
+        oxygenLevel: 98,
+        bloodSugar: 110,
+      },
+    ],
+    tasks: ["Morning Medication", "Blood Pressure Check", "Physical Therapy"],
+    diet: { breakfast: true, lunch: true, snacks: false, dinner: true },
+    activities: ["Yoga", "Reading"],
+    moodHistory: [
+      { time: "10:00 AM", mood: "Cheerful" },
+      { time: "03:00 PM", mood: "Calm" },
+    ],
+  };
+
+  try {
+    const dailyTaskRef = doc(db, `users/${userId}/daily-tasks`, date);
+    await setDoc(dailyTaskRef, sampleData);
+    console.log("Sample daily tasks data pushed successfully.");
+    return { success: true };
+  } catch (error) {
+    console.error("Error pushing sample daily tasks data:", error);
+    return { success: false, error };
+  }
+};
+
+// Fetch daily tasks for a specific date
+export const fetchDailyTasks = async (userId: string, date: string) => {
+  try {
+    const dailyTaskRef = doc(db, `users/${userId}/daily-tasks`, date);
+    const dailyTaskSnapshot = await getDoc(dailyTaskRef);
+    if (dailyTaskSnapshot.exists()) {
+      return { success: true, data: dailyTaskSnapshot.data() };
+    } else {
+      return { success: false, message: "No data available for this date." };
+    }
+  } catch (error) {
+    console.error("Error fetching daily tasks:", error);
+    return { success: false, error };
+  }
+};
+
+// Save or update daily tasks
+export const saveDailyTasks = async (
+  userId: string,
+  date: string,
+  data: any
+) => {
+  try {
+    const dailyTaskRef = doc(db, `users/${userId}/daily-tasks`, date);
+    await setDoc(
+      dailyTaskRef,
+      { ...data, updatedAt: serverTimestamp() },
+      { merge: true }
+    );
+    return { success: true };
+  } catch (error) {
+    console.error("Error saving daily tasks:", error);
+    return { success: false, error };
+  }
+};
 
 // Upload file to Firebase Storage
 export const uploadFile = async (file: File, path: string): Promise<string> => {
@@ -147,5 +225,46 @@ export const getStaffDetails = async (userId: string) => {
   } catch (error) {
     console.error("Error getting staff details:", error);
     return { success: false, error };
+  }
+};
+
+// Fetch jobs from Firestore
+export const fetchJobs = async (userStatus: string, user: { uid: string }) => {
+  console.log("Fetching jobs for user status:", userStatus);
+  if (userStatus !== "live") {
+    return {
+      error:
+        "Your application is under verification. You can take jobs after you have been approved.",
+    };
+  }
+
+  try {
+    const jobsCollection = collection(db, "jobs");
+    const jobsQuery = query(jobsCollection, where("staffId", "==", user.uid));
+    // ,where("staffId", "==", "open")
+    const querySnapshot = await getDocs(jobsQuery);
+    console.log("Jobs found:", querySnapshot);
+
+    const jobs = querySnapshot.docs.map((doc) => ({
+      id: doc.id,
+      status: doc.data().status || "unknown",
+      staffId: doc.data().staffId || "unknown",
+      customerName: doc.data().customerName || "Unknown Patient",
+      customerAge: doc.data().customerAge || 0,
+      description: doc.data().description || "No description provided",
+      requirements: doc.data().requirements || [],
+      district: doc.data().district || "Unknown Location",
+      subDistrict: doc.data().subDistrict || "Unknown Location",
+      pincode: doc.data().pincode || 110042,
+      JobType: doc.data().JobType || "Unknown Job Type",
+      startDate: doc.data().startDate || new Date().toISOString(),
+      endDate: doc.data().endDate || new Date().toISOString(),
+    }));
+    console.log("Jobs:", jobs);
+
+    return { jobs };
+  } catch (error) {
+    console.error("Error fetching jobs:", error);
+    return { error: "Failed to fetch jobs. Please try again later." };
   }
 };

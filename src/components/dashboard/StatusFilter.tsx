@@ -12,8 +12,8 @@ export const StatusFilter = ({
   onStatusChange,
 }: StatusFilterProps) => {
   const statuses = [
-    { value: "all", label: "All" },
-    { value: "available", label: "Available" },
+    // { value: "all", label: "All" },
+    // { value: "available", label: "Available" },
     { value: "assigned", label: "Assigned" },
     { value: "ongoing", label: "Ongoing" },
     { value: "completed", label: "Completed" },
