@@ -168,9 +168,9 @@ export default function Profile() {
 
       {/* Stats Grid */}
       <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-8">
-        <StatsCard icon={Star} title="Rating" value={4.8} suffix="/5" />
-        <StatsCard icon={Check} title="Tasks" value={1250} />
-        <StatsCard icon={Clock} title="Hours" value={3200} />
+        <StatsCard icon={Star} title="Rating" value={4.7} suffix="/5" />
+        <StatsCard icon={Check} title="Jobs Completed" value={38} />
+        <StatsCard icon={Clock} title="Income" value={50000} />
         <StatsCard icon={Calendar} title="On Time" value={98} suffix="%" />
       </div>
 

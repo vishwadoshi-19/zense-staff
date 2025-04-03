@@ -75,7 +75,7 @@ const ReviewsSection = () => {
                 <Star className="w-4 h-4 ml-1" />
               </div>
               <div className="customer-id text-gray-500 text-sm">
-                Customer ID: {review.customer_id}
+                {review.customer_id}
               </div>
             </div>
           ))}
