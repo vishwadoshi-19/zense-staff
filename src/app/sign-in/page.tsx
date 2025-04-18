@@ -6,9 +6,11 @@ import { PhoneVerification } from "@/components/auth/PhoneVerification";
 import { useAuth } from "@/context/AuthContext";
 import LoadingScreen from "@/components/common/LoadingScreen";
 import toast from "react-hot-toast";
+import { UserDetails } from "@/components/onboarding/UserDetails";
 
 export default function SignIn() {
-  const { isAuthenticated, isLoading, isNewUser, signOut } = useAuth();
+  const { isAuthenticated, isLoading, isNewUser, signOut, userData } =
+    useAuth();
   const router = useRouter();
   const [verificationState, setVerificationState] = useState({
     verificationId: null,
@@ -33,7 +35,7 @@ export default function SignIn() {
 
   const handlePhoneVerified = () => {
     if (!isLoading) {
-      if (isNewUser) {
+      if (isNewUser || userData?.status === "unregistered") {
         router.replace("/onboarding"); // Redirect to onboarding page
       } else {
         router.replace("/jobs"); // Redirect to jobs page

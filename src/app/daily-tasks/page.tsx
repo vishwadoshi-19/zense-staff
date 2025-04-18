@@ -30,6 +30,7 @@ import {
 } from "@/lib/firebase/firestore";
 import { useRouter } from "next/navigation";
 import { da } from "date-fns/locale";
+import { Navigation } from "@/components/Navigation";
 
 type ValuePiece = Date | null;
 type Value = ValuePiece | [ValuePiece, ValuePiece];
@@ -826,6 +827,7 @@ export default function DailyTasks() {
           </div>
         </div>
       </div>
+      <Navigation />
     </div>
   );
 }

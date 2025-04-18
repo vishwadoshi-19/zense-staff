@@ -12,6 +12,7 @@ import { fetchJobs } from "@/lib/firebase/firestore";
 import { Job } from "@/components/dashboard/JobCard";
 
 import { addJobs } from "@/lib/firebase/postJobs";
+import { Navigation } from "@/components/Navigation";
 
 // type Job = {
 //   id: string;
@@ -141,6 +142,7 @@ export default function Jobs() {
           </p>
         </div>
       )}
+      <Navigation />
     </div>
   );
 }

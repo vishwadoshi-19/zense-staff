@@ -29,6 +29,7 @@ import { signOut } from "firebase/auth";
 import { auth } from "@/lib/firebase/config"; // Import the auth object
 import toast from "react-hot-toast";
 import { LogOut } from "lucide-react";
+import { Navigation } from "@/components/Navigation";
 
 export default function Profile() {
   const { user, userData, isAuthenticated, isLoading } = useAuth();
@@ -274,6 +275,7 @@ export default function Profile() {
           </>
         )}
       </div>
+      <Navigation />
     </div>
   );
 }

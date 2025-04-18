@@ -428,6 +428,8 @@ export default function Onboarding() {
     } finally {
       setIsSubmitting(false);
       setStep("completed");
+      router.replace("/jobs");
+      console.log("Effect Triggered");
     }
   };
 
@@ -436,7 +438,7 @@ export default function Onboarding() {
   }
 
   if (step === "completed") {
-    // router.push("/jobs");
+    router.replace("/jobs");
     return (
       <div className="min-h-screen bg-gradient-to-br from-teal-600 to-teal-400 flex items-center justify-center p-6">
         <div className="text-center text-white space-y-6">

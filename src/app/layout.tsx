@@ -69,7 +69,7 @@ export default function RootLayout({
             {children}
             {/* {showNavigation && <Navigation />} */}
             <div className="mb-20"></div>
-            <Navigation />
+            {/* <Navigation /> */}
             <Toaster position="top-center" />
           </div>
         </AuthProvider>
