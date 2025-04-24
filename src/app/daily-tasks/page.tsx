@@ -53,6 +53,8 @@ interface Task {
 
 export default function DailyTasks() {
   const { isAuthenticated, isLoading, userData, user } = useAuth();
+  console.log("userData", userData);
+
   const router = useRouter();
   const [selectedDate, setSelectedDate] = useState<Value>(new Date());
   const [showCalendar, setShowCalendar] = useState(false);
@@ -363,6 +365,43 @@ export default function DailyTasks() {
   //     selectedDate.toDateString === new Date().toDateString()
   // );
 
+  if (userData?.hasOngoingJob === false) {
+    return (
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 pb-24">
+        <h1 className="text-2xl font-bold text-gray-900 mb-8">Daily Tasks</h1>
+        <div className="mb-8">
+          <div
+            className="flex items-center justify-between p-4 bg-white rounded-xl shadow-sm cursor-pointer"
+            onClick={toggleCalendar}
+          >
+            <div className="flex items-center">
+              <CalendarIcon className="w-5 h-5 mr-2 text-teal-700" />
+              <span>{formattedDate}</span>
+            </div>
+            <ChevronDown
+              className={`w-5 h-5 transition-transform ${
+                showCalendar ? "rotate-180" : ""
+              }`}
+            />
+          </div>
+
+          {showCalendar && (
+            <div className="mt-2">
+              <Calendar
+                onChange={handleDateChange}
+                value={selectedDate}
+                maxDate={new Date()} // Prevent selecting future dates
+                className="w-full max-w-md mx-auto bg-white rounded-xl shadow-sm p-4"
+              />
+            </div>
+          )}
+        </div>
+        <div>No ongoing job present</div>
+        <Navigation />
+      </div>
+    );
+  }
+
   if (
     noData &&
     selectedDate instanceof Date &&
@@ -400,6 +439,7 @@ export default function DailyTasks() {
           )}
         </div>
         <div>No data available</div>
+        <Navigation />
       </div>
     );
   }

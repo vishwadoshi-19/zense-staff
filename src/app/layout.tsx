@@ -2,6 +2,7 @@ import { Inter } from "next/font/google";
 import "./globals.css";
 import { Navigation } from "@/components/Navigation";
 import { AuthProvider } from "@/context/AuthContext";
+import RouteGuard from "@/components/RouteGuard";
 import { Toaster } from "react-hot-toast";
 import { usePathname } from "next/navigation";
 import { Metadata, Viewport } from "next";
@@ -65,13 +66,15 @@ export default function RootLayout({
       </head>
       <body className={inter.className}>
         <AuthProvider>
-          <div className="min-h-screen bg-gray-50">
-            {children}
-            {/* {showNavigation && <Navigation />} */}
-            <div className="mb-20"></div>
-            {/* <Navigation /> */}
-            <Toaster position="top-center" />
-          </div>
+          <RouteGuard>
+            <div className="min-h-screen bg-gray-50">
+              {children}
+              {/* {showNavigation && <Navigation />} */}
+              <div className="mb-20"></div>
+              {/* <Navigation /> */}
+              <Toaster position="top-center" />
+            </div>
+          </RouteGuard>
         </AuthProvider>
       </body>
     </html>

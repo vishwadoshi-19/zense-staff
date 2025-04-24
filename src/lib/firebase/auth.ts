@@ -152,11 +152,36 @@ export const checkUserExists = async (userId: string) => {
 };
 
 // Create user in Firestore
+// export const createUser = async (user: User, userData: Partial<UserData>) => {
+//   try {
+//     await updateDoc(doc(db, "users", user.uid), {
+//       ...userData,
+//     });
+//     return { success: true };
+//   } catch (error) {
+//     console.error("Error creating user:", error);
+//     return { success: false, error };
+//   }
+// };
+
 export const createUser = async (user: User, userData: Partial<UserData>) => {
   try {
-    await updateDoc(doc(db, "users", user.uid), {
-      ...userData,
-    });
+    console.log("Creating user with UID:", user?.uid);
+    console.log("User data:", userData);
+
+    const userRef = doc(db, "users", user.uid);
+    const docSnap = await getDoc(userRef);
+
+    if (docSnap.exists()) {
+      await updateDoc(userRef, { ...userData, updatedAt: serverTimestamp() });
+    } else {
+      await setDoc(
+        doc(db, "users", user.uid),
+        { ...userData },
+        { merge: true }
+      );
+    }
+
     return { success: true };
   } catch (error) {
     console.error("Error creating user:", error);

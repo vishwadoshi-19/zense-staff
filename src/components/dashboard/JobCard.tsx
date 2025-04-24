@@ -109,7 +109,7 @@ export const JobCard = ({ job }: JobCardProps) => {
             ))}
           </ul>
         </div>
-        {canJobBeAccepted && (
+        {/* {canJobBeAccepted && (
           <div className="flex gap-3">
             <button
               onClick={() => handleAction("accept")}
@@ -126,7 +126,7 @@ export const JobCard = ({ job }: JobCardProps) => {
               Decline
             </button>
           </div>
-        )}
+        )} */}
       </div>
 
       <ConfirmationDialog

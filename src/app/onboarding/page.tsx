@@ -59,6 +59,7 @@ interface Props {
 
 export default function Onboarding() {
   const { user, isAuthenticated, isLoading, isNewUser, userData } = useAuth();
+  console.log("userData", userData);
   const router = useRouter();
   const [isSubmitting, setIsSubmitting] = useState(false);
 

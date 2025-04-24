@@ -16,6 +16,13 @@ import { FormState, UserData, StaffDetails } from "@/types";
 import { sub } from "date-fns";
 import { useAuth } from "@/context/AuthContext";
 
+export const getUserById = async (uid: string) => {
+  const docRef = doc(db, "users", uid);
+  const docSnap = await getDoc(docRef);
+  if (!docSnap.exists()) return null;
+  return docSnap.data();
+};
+
 export { updateDoc, doc, db };
 
 // Push sample daily tasks data to Firestore

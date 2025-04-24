@@ -106,6 +106,7 @@ export interface UserData {
   lastStep: "details";
   createdAt: any; // Firestore Timestamp
   updatedAt: any; // Firestore Timestamp
+  hasOngoingJob?: boolean; // Added property
 }
 
 export interface StaffDetails {
