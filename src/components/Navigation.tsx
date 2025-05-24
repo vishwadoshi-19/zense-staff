@@ -54,13 +54,13 @@ export const Navigation = () => {
               </Link>
             );
           })}
-          <button
+          {/* <button
             onClick={handleSignOut}
             className="flex flex-col items-center space-y-1 text-gray-500 hover:text-gray-900"
           >
             <LogOut className="w-6 h-6" />
             <span className="text-xs">Logout</span>
-          </button>
+          </button> */}
         </div>
       </div>
     </nav>
