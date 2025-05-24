@@ -4,7 +4,6 @@ import { Navigation } from "@/components/Navigation";
 import { AuthProvider } from "@/context/AuthContext";
 import RouteGuard from "@/components/RouteGuard";
 import { Toaster } from "react-hot-toast";
-import { usePathname } from "next/navigation";
 import { Metadata, Viewport } from "next";
 
 const inter = Inter({ subsets: ["latin"] });
@@ -50,9 +49,6 @@ export default function RootLayout({
 }: {
   children: React.ReactNode;
 }) {
-  // const pathname = usePathname();
-  // const showNavigation = !["/sign-in", "/onboarding"].includes(pathname);
-
   return (
     <html lang="en">
       <head>
@@ -69,9 +65,8 @@ export default function RootLayout({
           <RouteGuard>
             <div className="min-h-screen bg-gray-50">
               {children}
-              {/* {showNavigation && <Navigation />} */}
               <div className="mb-20"></div>
-              {/* <Navigation /> */}
+              <Navigation />
               <Toaster position="top-center" />
             </div>
           </RouteGuard>

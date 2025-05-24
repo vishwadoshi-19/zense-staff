@@ -131,20 +131,29 @@ export const PhoneVerification: React.FC<PhoneVerificationProps> = ({
           {!verificationState.showOTP ? (
             <>
               <div className="relative">
-                <Phone className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-500" />
-                <input
-                  type="tel"
-                  className="w-full pl-10 pr-4 py-3 rounded-xl border border-gray-300 text-gray-900 placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-cyan-700 focus:border-cyan-700"
-                  placeholder="Enter your phone number"
-                  value={verificationState.phoneNumber}
-                  onChange={(e) =>
-                    setVerificationState({
-                      ...verificationState,
-                      phoneNumber: e.target.value,
-                    })
-                  }
-                  required
-                />
+                <div className="flex items-center border border-gray-300 rounded-xl overflow-hidden focus-within:ring-2 focus-within:ring-cyan-700 focus-within:border-cyan-700">
+                  <div className="bg-gray-50 py-3 px-3 border-r border-gray-300 text-gray-600 font-medium">
+                    +91
+                  </div>
+                  <input
+                    type="tel"
+                    className="flex-1 px-4 py-3 border-0 text-gray-900 placeholder-gray-500 focus:outline-none"
+                    placeholder="Enter your phone number"
+                    value={verificationState.phoneNumber}
+                    onChange={(e) =>
+                      setVerificationState({
+                        ...verificationState,
+                        phoneNumber: e.target.value
+                          .replace(/\D/g, "")
+                          .slice(0, 10),
+                      })
+                    }
+                    required
+                    maxLength={10}
+                    inputMode="numeric"
+                    pattern="[0-9]{10}"
+                  />
+                </div>
               </div>
               <div id="recaptcha-container" ref={recaptchaContainerRef}></div>
             </>

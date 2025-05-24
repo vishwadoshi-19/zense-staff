@@ -13,6 +13,7 @@ import { Job } from "@/components/dashboard/JobCard";
 
 import { addJobs } from "@/lib/firebase/postJobs";
 import { Navigation } from "@/components/Navigation";
+import LoadingScreen from "@/components/common/LoadingScreen";
 
 // type Job = {
 //   id: string;
@@ -47,6 +48,7 @@ import { Navigation } from "@/components/Navigation";
 
 export default function Jobs() {
   const { isAuthenticated, isLoading, userData, user } = useAuth();
+  const [loading, setLoading] = useState(true);
   console.log("userData", userData);
   console.log("user", user?.uid);
   const router = useRouter();
@@ -82,6 +84,7 @@ export default function Jobs() {
             );
           }
         });
+        setLoading(false);
       }
     }
   }, [isAuthenticated, isLoading, router, userData, user?.uid]);
@@ -100,6 +103,10 @@ export default function Jobs() {
     setClockedIn(false);
     // Here you would typically save the clock out time to your backend
   };
+
+  if (loading || isLoading) {
+    return <LoadingScreen />;
+  }
 
   return (
     <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 mb-10">

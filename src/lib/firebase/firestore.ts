@@ -162,7 +162,6 @@ export const saveFormData = async (userId: string, formData: FormState) => {
     const userRef = doc(db, "users", userId);
     await updateDoc(userRef, {
       name: formData.fullName || "",
-      location: formData.jobLocation || "",
       gender: formData.gender || "",
       // profilePhoto: formData.profilePhoto || "", // Use the URL directly
       lastStep: formData.lastStep || "details",
@@ -171,19 +170,28 @@ export const saveFormData = async (userId: string, formData: FormState) => {
 
     // Update user data with staff details
     await updateDoc(userRef, {
-      providerId: formData.agency || "self",
-      expectedWages: {
-        "5hrs": formData.lessThan5Hours || 0,
-        "12hrs": formData.hours12 || 0,
-        "24hrs": formData.hours24 || 0,
+      providerId: formData.providedId || "zense",
+      status: formData.status || "unregistered",
+      jobRole: formData.jobRole || "",
+      maritalStatus: formData.maritalStatus || "",
+      dateOfBirth: formData.dateOfBirth || "",
+      religion: formData.religion || "",
+      currentAddress: formData.currentAddress || {},
+      permanentAddress: formData.permanentAddress || {},
+      isCurrentAddressSameAsPermanent:
+        formData.isCurrentAddressSameAsPermanent || false,
+      availability: formData.availability || [],
+      expectedWages: formData.expectedWages || {
+        "5hrs": 0,
+        "12hrs": 0,
+        "24hrs": 0,
       },
-      educationQualification: formData.qualification || "",
+      educationQualification: formData.educationQualification || "",
+
       educationCertificate: certificateURL || "",
       experienceYears: formData.experience || 0,
-      maritalStatus: formData.maritalStatus || "",
       languagesKnown: formData.languages || [],
       preferredShifts: formData.preferredShifts || [],
-      jobRole: formData.jobRole || "",
       extraServicesOffered: formData.services || [],
       foodPreference: formData.foodPreference || "",
       smokes: formData.smoking || "",
@@ -203,6 +211,9 @@ export const saveFormData = async (userId: string, formData: FormState) => {
         panNumber: formData.panNumber || "",
         panDocument: panCardURL,
       },
+      profilePhoto: formData.profilePhoto || "",
+      district: formData.district || [],
+      subDistricts: formData.subDistricts || [],
       createdAt: serverTimestamp(),
       updatedAt: serverTimestamp(),
     });

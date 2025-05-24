@@ -1,6 +1,6 @@
 "use client";
 
-import { FormStep } from "@/types";
+import { AddressData, FormStep } from "@/types";
 import { use, useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import { useAuth } from "@/context/AuthContext";
@@ -40,9 +40,11 @@ import {
 import { createUser } from "@/lib/firebase/auth";
 import LoadingScreen from "@/components/common/LoadingScreen";
 import Link from "next/link";
+import { AddressSection } from "@/components/AddressSection";
 
 const FORM_STEPS: { id: FormStep; label: string }[] = [
   { id: "details", label: "Details" },
+  { id: "address", label: "Address" },
   { id: "wages", label: "Wages" },
   { id: "education", label: "Education" },
   { id: "shifts", label: "Shifts" },
@@ -79,7 +81,25 @@ export default function Onboarding() {
     profilePhoto: null,
     previewUrl: "",
     agency: "",
+    dateOfBirth: "", // Initialize the date of birth field
   });
+  const [currentAddress, setCurrentAddress] = useState<AddressData>({
+    street: "",
+    city: "",
+    state: "",
+    zip: "",
+  });
+
+  const [permanentAddress, setPermanentAddress] = useState<AddressData>({
+    street: "",
+    city: "",
+    state: "",
+    zip: "",
+  });
+
+  const [isCurrentAddressSameAsPermanent, setIsCurrentAddressSameAsPermanent] =
+    useState(true);
+
   const [wagesState, setWagesState] = useState<WagesState>({
     lessThan5Hours: 0,
     hours12: 0,
@@ -136,7 +156,26 @@ export default function Onboarding() {
           agency: res?.data?.agency ?? "",
           gender: res?.data?.gender ?? "",
           previewUrl: res?.data?.profilePhoto ?? "",
+          dateOfBirth: res?.data?.dateOfBirth ?? "",
         }));
+
+        setCurrentAddress({
+          street: res?.data?.currentAddress?.street ?? "",
+          city: res?.data?.currentAddress?.city ?? "",
+          state: res?.data?.currentAddress?.state ?? "",
+          zip: res?.data?.currentAddress?.zip ?? "",
+        });
+
+        setPermanentAddress({
+          street: res?.data?.permanentAddress?.street ?? "",
+          city: res?.data?.permanentAddress?.city ?? "",
+          state: res?.data?.permanentAddress?.state ?? "",
+          zip: res?.data?.permanentAddress?.zip ?? "",
+        });
+
+        setIsCurrentAddressSameAsPermanent(
+          res?.data?.isCurrentAddressSameAsPermanent ?? false
+        );
 
         setWagesState((prev) => ({
           ...prev,
@@ -178,8 +217,40 @@ export default function Onboarding() {
           aadharNumber: res?.data?.identityDocuments?.aadharNumber ?? "",
           panNumber: res?.data?.identityDocuments?.panNumber ?? "",
         }));
+        setCurrentAddress({
+          street: res?.data?.currentAddress?.street ?? "",
+          city: res?.data?.currentAddress?.city ?? "",
+          state: res?.data?.currentAddress?.state ?? "",
+          zip: res?.data?.currentAddress?.zip ?? "",
+        });
+
+        setPermanentAddress({
+          street: res?.data?.permanentAddress?.street ?? "",
+          city: res?.data?.permanentAddress?.city ?? "",
+          state: res?.data?.permanentAddress?.state ?? "",
+          zip: res?.data?.permanentAddress?.zip ?? "",
+        });
+
+        setIsCurrentAddressSameAsPermanent(
+          res?.data?.isCurrentAddressSameAsPermanent ?? false
+        );
+
         setFormState((prev) => ({
           ...userDetails,
+          currentAddress: {
+            street: res?.data?.currentAddress?.street ?? "",
+            city: res?.data?.currentAddress?.city ?? "",
+            state: res?.data?.currentAddress?.state ?? "",
+            zip: res?.data?.currentAddress?.zip ?? "",
+          },
+          permanentAddress: {
+            street: res?.data?.permanentAddress?.street ?? "",
+            city: res?.data?.permanentAddress?.city ?? "",
+            state: res?.data?.permanentAddress?.state ?? "",
+            zip: res?.data?.permanentAddress?.zip ?? "",
+          },
+          isCurrentAddressSameAsPermanent:
+            res?.data?.isCurrentAddressSameAsPermanent ?? false,
           ...wagesState,
           ...educationState,
           ...shiftsState,
@@ -189,6 +260,13 @@ export default function Onboarding() {
           lastStep: res?.data?.lastStep ?? "details",
         }));
         console.log("formState altered in fetchStaffDetails", formState);
+
+        // Add this inside fetchStaffDetails
+        console.log("Retrieved address data:", {
+          currentAddress: res?.data?.currentAddress,
+          permanentAddress: res?.data?.permanentAddress,
+          isSame: res?.data?.isCurrentAddressSameAsPermanent,
+        });
       }
     };
     fetchStaffDetails();
@@ -200,10 +278,10 @@ export default function Onboarding() {
     setFormState(() => ({
       ...userDetails,
       profilePhoto: profilePhotoURL,
-      lastStep: "wages",
+      lastStep: "address", // Changed from "wages" to "address"
     }));
     console.log("formState altered in details", formState, userDetails);
-    setStep("wages");
+    setStep("address"); // Navigate to address step instead of wages
     if (user) {
       console.log(formState);
       const result = await saveFormData(user.uid, formState);
@@ -215,10 +293,54 @@ export default function Onboarding() {
     }
   };
 
+  const handleAddressSubmitted = async () => {
+    // Create a new object with the updated form state
+    const updatedFormState = {
+      ...userDetails,
+      currentAddress: {
+        street: currentAddress.street,
+        city: currentAddress.city,
+        state: currentAddress.state,
+        zip: currentAddress.zip,
+      },
+      permanentAddress: {
+        street: permanentAddress.street,
+        city: permanentAddress.city,
+        state: permanentAddress.state,
+        zip: permanentAddress.zip,
+      },
+      isCurrentAddressSameAsPermanent,
+      lastStep: "wages",
+    };
+
+    // Update the form state
+    setFormState(updatedFormState);
+
+    console.log("formState in handleAddressSubmitted:", updatedFormState);
+
+    setStep("wages");
+
+    if (user) {
+      // Save the updated form state to Firestore
+      const result = await saveFormData(user.uid, updatedFormState);
+
+      if (result.success) {
+        console.log("Address details saved successfully:", updatedFormState);
+        toast.success("Address details saved");
+      } else {
+        console.error("Failed to save address details");
+        toast.error("Failed to save address details. Please try again.");
+      }
+    }
+  };
+
   const handleWagesSubmitted = async () => {
     console.log(wagesState);
     setFormState(() => ({
       ...userDetails,
+      currentAddress,
+      permanentAddress,
+      isCurrentAddressSameAsPermanent,
       ...wagesState,
       ...educationState,
       ...shiftsState,
@@ -246,6 +368,9 @@ export default function Onboarding() {
     console.log(educationState);
     setFormState((prev) => ({
       ...userDetails,
+      currentAddress,
+      permanentAddress,
+      isCurrentAddressSameAsPermanent,
       ...wagesState,
       ...educationState,
       ...shiftsState,
@@ -272,6 +397,9 @@ export default function Onboarding() {
   const handleShiftsSubmitted = async () => {
     setFormState((prev) => ({
       ...userDetails,
+      currentAddress,
+      permanentAddress,
+      isCurrentAddressSameAsPermanent,
       ...wagesState,
       ...educationState,
       ...shiftsState,
@@ -297,6 +425,9 @@ export default function Onboarding() {
   const handleSkillsSubmitted = async () => {
     setFormState((prev) => ({
       ...userDetails,
+      currentAddress,
+      permanentAddress,
+      isCurrentAddressSameAsPermanent,
       ...wagesState,
       ...educationState,
       ...shiftsState,
@@ -322,6 +453,9 @@ export default function Onboarding() {
   const handlePersonalInfoSubmitted = async () => {
     setFormState((prev) => ({
       ...userDetails,
+      currentAddress,
+      permanentAddress,
+      isCurrentAddressSameAsPermanent,
       ...wagesState,
       ...educationState,
       ...shiftsState,
@@ -348,6 +482,9 @@ export default function Onboarding() {
   const handleTestimonialSubmitted = async () => {
     setFormState(() => ({
       ...userDetails,
+      currentAddress,
+      permanentAddress,
+      isCurrentAddressSameAsPermanent,
       ...wagesState,
       ...educationState,
       ...shiftsState,
@@ -376,9 +513,12 @@ export default function Onboarding() {
 
     setIsSubmitting(true);
 
-    // Update form state with ID proof data
+    // Update form state with all data including address fields
     const updatedFormState = {
       ...userDetails,
+      currentAddress,
+      permanentAddress,
+      isCurrentAddressSameAsPermanent,
       ...wagesState,
       ...educationState,
       ...shiftsState,
@@ -439,21 +579,12 @@ export default function Onboarding() {
   }
 
   if (step === "completed") {
+    // Wait until user is registered and logged in before redirecting
+    if (isLoading || userData?.status !== "registered") {
+      return <LoadingScreen />;
+    }
     router.replace("/jobs");
-    return (
-      <div className="min-h-screen bg-gradient-to-br from-teal-600 to-teal-400 flex items-center justify-center p-6">
-        <div className="text-center text-white space-y-6">
-          <Heart className="w-16 h-16 mx-auto text-red-400 animate-pulse" />
-          <h1 className="text-4xl font-bold">Thank you!</h1>
-          <p className="text-xl text-teal-50">
-            Your application has been received.
-          </p>
-          <Link href="/jobs" className="text-teal-700 hover:underline">
-            Redirect to dashboard...
-          </Link>
-        </div>
-      </div>
-    );
+    return null;
   }
 
   return (
@@ -472,6 +603,21 @@ export default function Onboarding() {
             userDetails={userDetails}
             setUserDetails={setUserDetails}
             onSubmit={handleDetailsSubmitted}
+          />
+        )}
+
+        {step === "address" && (
+          <AddressSection
+            currentAddress={currentAddress}
+            setCurrentAddress={setCurrentAddress}
+            permanentAddress={permanentAddress}
+            setPermanentAddress={setPermanentAddress}
+            isCurrentAddressSameAsPermanent={isCurrentAddressSameAsPermanent}
+            setIsCurrentAddressSameAsPermanent={
+              setIsCurrentAddressSameAsPermanent
+            }
+            onBack={() => setStep("details")}
+            onNext={handleAddressSubmitted}
           />
         )}
 

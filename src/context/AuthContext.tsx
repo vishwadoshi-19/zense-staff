@@ -41,7 +41,6 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({
   const [isLoading, setIsLoading] = useState(true);
   const [isNewUser, setIsNewUser] = useState(false);
   const router = useRouter();
-  const pathname = usePathname();
 
   const signOut = async () => {
     await firebaseSignOut(router);
@@ -49,19 +48,23 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({
 
   useEffect(() => {
     const unsubscribe = onAuthStateChanged(auth, async (currentUser) => {
-      setUser(currentUser);
       setIsLoading(true); // Ensure loading is true until we fetch data
+      setUser(currentUser);
 
       if (currentUser) {
-        const exists = await checkUserExists(currentUser.uid);
-        setIsNewUser(!exists);
+        try {
+          const exists = await checkUserExists(currentUser.uid);
+          setIsNewUser(!exists);
 
-        if (exists) {
-          const result = await getUserData(currentUser.uid);
-          if (result.success && result.data) {
-            setUserData(result.data);
-            setIsNewUser(result.data.status === "unregistered");
+          if (exists) {
+            const result = await getUserData(currentUser.uid);
+            if (result.success && result.data) {
+              setUserData(result.data);
+              setIsNewUser(result.data.status === "unregistered");
+            }
           }
+        } catch (error) {
+          console.error("Error fetching user data:", error);
         }
       } else {
         setUserData(null);
@@ -73,21 +76,6 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({
 
     return () => unsubscribe();
   }, []);
-
-  // Redirect users based on authentication and registration status
-  useEffect(() => {
-    if (isLoading) return;
-
-    if (!user) {
-      if (pathname !== "/sign-in") router.replace("/sign-in");
-    } else if (userData?.status === "unregistered") {
-      if (pathname !== "/onboarding") router.replace("/onboarding");
-    } else if (userData?.status === "registered" || "live") {
-      if (pathname === "/sign-in" || pathname === "/onboarding") {
-        router.replace("/jobs"); // Default for registered users
-      }
-    }
-  }, [user, userData?.status, pathname, isLoading, router]);
 
   const value = {
     user,

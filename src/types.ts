@@ -15,7 +15,7 @@ export interface Question {
 }
 
 export interface FormState {
-  [key: string]: string | string[] | File | null | number;
+  [key: string]: string | string[] | File | null | number | object | boolean;
 }
 
 export interface PhoneVerificationState {
@@ -34,6 +34,7 @@ export interface UserDetailsState {
   profilePhoto: File | null;
   previewUrl: string;
   agency: string;
+  dateOfBirth: string;
 }
 
 export interface WagesState {
@@ -85,6 +86,7 @@ export interface ShiftsState {
 export type FormStep =
   | "phone"
   | "details"
+  | "address"
   | "wages"
   | "education"
   | "shifts"
@@ -109,6 +111,13 @@ export interface UserData {
   hasOngoingJob?: boolean; // Added property
 }
 
+export interface AddressData {
+  street: string;
+  city: string;
+  state: string;
+  zip: string;
+}
+
 export interface StaffDetails {
   lastStep: FormStep;
   name: string;
@@ -121,6 +130,10 @@ export interface StaffDetails {
   subDistricts: string[];
 
   providerId: string;
+  currentAddress: AddressData;
+  permanentAddress: AddressData;
+  isCurrentAddressSameAsPermanent: boolean;
+
   expectedWages: {
     "5hrs": number;
     "12hrs": number;
@@ -150,6 +163,7 @@ export interface StaffDetails {
     panNumber?: string;
     panDocument?: string;
   };
+  dateOfBirth: string;
   createdAt: any; // Firestore Timestamp
   updatedAt: any; // Firestore Timestamp
 }

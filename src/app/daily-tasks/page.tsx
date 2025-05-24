@@ -11,26 +11,21 @@ import {
   Heart,
   Thermometer,
   Droplet,
-  Settings as Lungs,
+  TreesIcon as Lungs,
   Check,
   Plus,
   Smile,
   Utensils,
   CalendarIcon,
   ChevronDown,
+  AlertCircle,
 } from "lucide-react";
 import { TaskList } from "@/components/TaskList";
-import { VitalsCard } from "@/components/VitalsCard";
 import { AttendanceBar } from "@/components/AttendanceBar";
 import { useAuth } from "@/context/AuthContext";
-import {
-  fetchDailyTasks,
-  pushSampleDailyTasks,
-  saveDailyTasks,
-} from "@/lib/firebase/firestore";
+import { fetchDailyTasks, saveDailyTasks } from "@/lib/firebase/firestore";
 import { useRouter } from "next/navigation";
-import { da } from "date-fns/locale";
-import { Navigation } from "@/components/Navigation";
+import LoadingScreen from "@/components/common/LoadingScreen";
 
 type ValuePiece = Date | null;
 type Value = ValuePiece | [ValuePiece, ValuePiece];
@@ -53,8 +48,6 @@ interface Task {
 
 export default function DailyTasks() {
   const { isAuthenticated, isLoading, userData, user } = useAuth();
-  console.log("userData", userData);
-
   const router = useRouter();
   const [selectedDate, setSelectedDate] = useState<Value>(new Date());
   const [showCalendar, setShowCalendar] = useState(false);
@@ -118,12 +111,6 @@ export default function DailyTasks() {
   const [showVitalsHistory, setShowVitalsHistory] = useState(false);
   const [showMoodHistory, setShowMoodHistory] = useState(false);
   const [noData, setNoData] = useState(false);
-
-  //pushing sample data
-  // useEffect(() => {
-  //   pushSampleDailyTasks(user?.uid || "", format(new Date(), "yyyy-MM-dd"));
-  //   console.log("Sample data pushed");
-  // });
 
   const handleClockIn = () => {
     setClockedIn(true);
@@ -274,13 +261,6 @@ export default function DailyTasks() {
     }
   }, [tasks, loading]);
 
-  // useEffect(() => {
-  //   if (!loading) {
-  //     handleAutosave("vitals", vitals);
-  //     console.log("Autosaving vitals:", vitals);
-  //   }
-  // }, [vitals, loading]);
-
   useEffect(() => {
     if (!loading) {
       handleAutosave("diet", diet);
@@ -350,56 +330,7 @@ export default function DailyTasks() {
   };
 
   if (loading) {
-    return <div>Loading...</div>;
-  }
-
-  // console.log(
-  //   "dates 1:......",
-  //   selectedDate instanceof Date && selectedDate.toDateString
-  // );
-
-  // console.log("dates 2:......", new Date().toDateString());
-
-  // console.log(
-  //   selectedDate instanceof Date &&
-  //     selectedDate.toDateString === new Date().toDateString()
-  // );
-
-  if (userData?.hasOngoingJob === false) {
-    return (
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 pb-24">
-        <h1 className="text-2xl font-bold text-gray-900 mb-8">Daily Tasks</h1>
-        <div className="mb-8">
-          <div
-            className="flex items-center justify-between p-4 bg-white rounded-xl shadow-sm cursor-pointer"
-            onClick={toggleCalendar}
-          >
-            <div className="flex items-center">
-              <CalendarIcon className="w-5 h-5 mr-2 text-teal-700" />
-              <span>{formattedDate}</span>
-            </div>
-            <ChevronDown
-              className={`w-5 h-5 transition-transform ${
-                showCalendar ? "rotate-180" : ""
-              }`}
-            />
-          </div>
-
-          {showCalendar && (
-            <div className="mt-2">
-              <Calendar
-                onChange={handleDateChange}
-                value={selectedDate}
-                maxDate={new Date()} // Prevent selecting future dates
-                className="w-full max-w-md mx-auto bg-white rounded-xl shadow-sm p-4"
-              />
-            </div>
-          )}
-        </div>
-        <div>No ongoing job present</div>
-        <Navigation />
-      </div>
-    );
+    return <LoadingScreen />;
   }
 
   if (
@@ -410,52 +341,91 @@ export default function DailyTasks() {
     console.log(selectedDate, new Date());
     return (
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 pb-24">
-        <h1 className="text-2xl font-bold text-gray-900 mb-8">Daily Tasks</h1>
-        <div className="mb-8">
+        <motion.h1
+          initial={{ opacity: 0, y: -10 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.3 }}
+          className="text-3xl font-bold text-gray-900 mb-8"
+        >
+          Daily Tasks
+        </motion.h1>
+
+        <motion.div
+          initial={{ opacity: 0, y: 10 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.3, delay: 0.1 }}
+          className="mb-8"
+        >
           <div
-            className="flex items-center justify-between p-4 bg-white rounded-xl shadow-sm cursor-pointer"
+            className="flex items-center justify-between p-4 bg-white rounded-xl shadow-sm cursor-pointer hover:shadow-md transition-shadow duration-200"
             onClick={toggleCalendar}
           >
             <div className="flex items-center">
               <CalendarIcon className="w-5 h-5 mr-2 text-teal-700" />
-              <span>{formattedDate}</span>
+              <span className="font-medium">{formattedDate}</span>
             </div>
             <ChevronDown
-              className={`w-5 h-5 transition-transform ${
+              className={`w-5 h-5 transition-transform duration-200 ${
                 showCalendar ? "rotate-180" : ""
               }`}
             />
           </div>
 
           {showCalendar && (
-            <div className="mt-2">
+            <motion.div
+              initial={{ opacity: 0, height: 0 }}
+              animate={{ opacity: 1, height: "auto" }}
+              exit={{ opacity: 0, height: 0 }}
+              transition={{ duration: 0.3 }}
+              className="mt-2"
+            >
               <Calendar
                 onChange={handleDateChange}
                 value={selectedDate}
                 maxDate={new Date()} // Prevent selecting future dates
                 className="w-full max-w-md mx-auto bg-white rounded-xl shadow-sm p-4"
               />
-            </div>
+            </motion.div>
           )}
-        </div>
-        <div>No data available</div>
-        <Navigation />
+        </motion.div>
+
+        <motion.div
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          transition={{ duration: 0.3, delay: 0.2 }}
+          className="bg-white rounded-xl shadow-sm p-8 flex flex-col items-center justify-center text-center"
+        >
+          <AlertCircle className="w-16 h-16 text-gray-300 mb-4" />
+          <h2 className="text-xl font-semibold text-gray-700 mb-2">
+            No Data Available
+          </h2>
+          <p className="text-gray-500 max-w-md">
+            There is no recorded information for this date. Please select
+            another date or add new entries.
+          </p>
+        </motion.div>
       </div>
     );
   }
 
   return (
     <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 pb-24">
-      <div className="flex justify-between items-center mb-8">
-        <h1 className="text-3xl font-bold text-gray-900 pl-3">Daily Tasks</h1>
+      <motion.div
+        initial={{ opacity: 0, y: -10 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.3 }}
+        className="flex justify-between items-center mb-8"
+      >
+        <h1 className="text-3xl font-bold text-gray-900">Daily Tasks</h1>
 
         {/* Clock in button */}
-
         {selectedDate instanceof Date &&
         selectedDate.toDateString() === new Date().toDateString() ? (
-          <button
+          <motion.button
+            whileHover={{ scale: 1.05 }}
+            whileTap={{ scale: 0.95 }}
             onClick={clockedIn ? handleClockOut : handleClockIn}
-            className={`px-6 py-2 rounded-full font-medium ${
+            className={`px-6 py-3 rounded-full font-medium shadow-sm transition-all duration-200 ${
               clockedIn
                 ? "bg-red-100 text-red-700 hover:bg-red-200"
                 : "bg-green-100 text-green-700 hover:bg-green-200"
@@ -465,409 +435,613 @@ export default function DailyTasks() {
               <Clock className="w-5 h-5" />
               {clockedIn ? "Clock Out" : "Clock In"}
             </div>
-          </button>
+          </motion.button>
         ) : (
           <></>
         )}
-      </div>
+      </motion.div>
 
-      <div className="mb-8">
+      <motion.div
+        initial={{ opacity: 0, y: 10 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.3, delay: 0.1 }}
+        className="mb-8"
+      >
         <div
-          className="flex items-center justify-between p-4 bg-white rounded-xl shadow-sm cursor-pointer"
+          className="flex items-center justify-between p-4 bg-white rounded-xl shadow-sm cursor-pointer hover:shadow-md transition-shadow duration-200"
           onClick={toggleCalendar}
         >
           <div className="flex items-center">
             <CalendarIcon className="w-5 h-5 mr-2 text-teal-700" />
-            <span>{formattedDate}</span>
+            <span className="font-medium">{formattedDate}</span>
           </div>
           <ChevronDown
-            className={`w-5 h-5 transition-transform ${
+            className={`w-5 h-5 transition-transform duration-200 ${
               showCalendar ? "rotate-180" : ""
             }`}
           />
         </div>
 
         {showCalendar && (
-          <div className="mt-2">
+          <motion.div
+            initial={{ opacity: 0, height: 0 }}
+            animate={{ opacity: 1, height: "auto" }}
+            exit={{ opacity: 0, height: 0 }}
+            transition={{ duration: 0.3 }}
+            className="mt-2"
+          >
             <Calendar
               onChange={handleDateChange}
               value={selectedDate}
               maxDate={new Date()} // Prevent selecting future dates
               className="w-full max-w-md mx-auto bg-white rounded-xl shadow-sm p-4"
             />
-          </div>
+          </motion.div>
         )}
-      </div>
+      </motion.div>
 
-      {/* Attendance Tracking */}
-      <div className="mb-8">
-        <h2 className="text-xl font-semibold text-gray-900 mb-4 pl-3">
-          Today&apos;s Attendance
-        </h2>
-        <AttendanceBar
-          attendance={{
-            ...attendance,
-            totalHours: attendance.totalHours.toString(),
-          }}
-        />
-        <div className="mt-4"></div>
-        <div className="bg-white p-4 pb-1.5 rounded-lg shadow-md">
-          <h3
-            className="text-lg font-medium text-gray-800 mb-2 flex items-center justify-between cursor-pointer"
-            onClick={() => setShowClockHistory((prev) => !prev)}
+      <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
+        <div className="space-y-8">
+          {/* Attendance Tracking */}
+          <motion.section
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.4, delay: 0.2 }}
+            className="bg-white rounded-xl shadow-sm overflow-hidden"
           >
-            Clock In/Out History
-            <ChevronDown
-              className={`w-5 h-5 transition-transform ${
-                showClockHistory ? "rotate-180" : ""
-              }`}
-            />
-          </h3>
-          {showClockHistory && (
-            <ul className="list-disc pl-5 space-y-2">
-              {attendance.clockIn.map((clockInTime, index) => (
-                <li
-                  key={index}
-                  className="p-2 bg-gray-50 rounded-md border border-gray-200"
-                >
-                  <span className="font-semibold text-gray-700">Clock In:</span>{" "}
-                  {clockInTime}{" "}
-                  <span className="font-semibold text-gray-700">
-                    - Clock Out:
-                  </span>{" "}
-                  {attendance.clockOut[index] || "N/A"}
-                </li>
-              ))}
-            </ul>
-          )}
-        </div>
-        {/* Vitals Section */}
-        <div className="my-8">
-          <div className="flex items-center justify-between mb-4">
-            <h2 className="text-xl font-semibold text-gray-900 pl-3">
-              Patient Vitals
-            </h2>
-            <button
-              className="text-teal-700 hover:text-teal-600 flex items-center gap-1"
-              onClick={() => setShowVitalsInput(!showVitalsInput)}
-            >
-              <Plus className="w-5 h-5" />
-              <span>Add Vitals</span>
-            </button>
-          </div>
-          {showVitalsInput && (
-            <div className="bg-white p-6 rounded-lg shadow-md">
-              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-                <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-1">
-                    Blood Pressure (mmHg)
-                  </label>
-                  <input
-                    type="text"
-                    placeholder="120/80"
-                    value={vitals.bloodPressure}
-                    onChange={(e) =>
-                      setVitals((prev) => ({
-                        ...prev,
-                        bloodPressure: e.target.value,
-                      }))
-                    }
-                    className="block w-full p-3 border border-gray-300 rounded-md focus:ring-teal-500 focus:border-teal-500"
-                  />
-                </div>
-                <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-1">
-                    Heart Rate (bpm)
-                  </label>
-                  <input
-                    type="text"
-                    placeholder="75"
-                    value={vitals.heartRate}
-                    onChange={(e) =>
-                      setVitals((prev) => ({
-                        ...prev,
-                        heartRate: e.target.value,
-                      }))
-                    }
-                    className="block w-full p-3 border border-gray-300 rounded-md focus:ring-teal-500 focus:border-teal-500"
-                  />
-                </div>
-                <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-1">
-                    Temperature (°F)
-                  </label>
-                  <input
-                    type="text"
-                    placeholder="98.6"
-                    value={vitals.temperature}
-                    onChange={(e) =>
-                      setVitals((prev) => ({
-                        ...prev,
-                        temperature: e.target.value,
-                      }))
-                    }
-                    className="block w-full p-3 border border-gray-300 rounded-md focus:ring-teal-500 focus:border-teal-500"
-                  />
-                </div>
-                <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-1">
-                    Oxygen Level (%)
-                  </label>
-                  <input
-                    type="text"
-                    placeholder="98"
-                    value={vitals.oxygenLevel}
-                    onChange={(e) =>
-                      setVitals((prev) => ({
-                        ...prev,
-                        oxygenLevel: e.target.value,
-                      }))
-                    }
-                    className="block w-full p-3 border border-gray-300 rounded-md focus:ring-teal-500 focus:border-teal-500"
-                  />
-                </div>
-                <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-1">
-                    Blood Sugar (mg/dL)
-                  </label>
-                  <input
-                    type="text"
-                    placeholder="90"
-                    value={vitals.bloodSugar}
-                    onChange={(e) =>
-                      setVitals((prev) => ({
-                        ...prev,
-                        bloodSugar: e.target.value,
-                      }))
-                    }
-                    className="block w-full p-3 border border-gray-300 rounded-md focus:ring-teal-500 focus:border-teal-500"
-                  />
-                </div>
-              </div>
-              <button
-                onClick={() => {
-                  // Save vitals to history
-                  setShowVitalsInput(false);
-                  const timestamp = format(new Date(), "hh:mm a");
-                  setVitalsHistory((prev) => [
-                    ...prev,
-                    { time: timestamp, ...vitals },
-                  ]);
-                  setVitals({
-                    bloodPressure: "",
-                    heartRate: "",
-                    temperature: "",
-                    oxygenLevel: "",
-                    bloodSugar: "",
-                  });
-                }}
-                className="mt-6 px-6 py-3 bg-teal-700 text-white rounded-lg hover:bg-teal-600 transition"
-              >
-                Save Vitals
-              </button>
+            <div className="border-b border-gray-100 px-6 py-4">
+              <h2 className="text-xl font-semibold text-gray-900">
+                Today&apos;s Attendance
+              </h2>
             </div>
-          )}
-        </div>
-
-        {/* Vitals History */}
-        <div className="mb-8">
-          <div className="bg-white p-4 pb-1.5 rounded-lg shadow-md">
-            <h2
-              className="text-lg font-medium text-gray-900 mb-4 flex items-center justify-between cursor-pointer"
-              onClick={() => setShowVitalsHistory((prev) => !prev)}
-            >
-              Vitals History
-              <ChevronDown
-                className={`w-5 h-5 transition-transform ${
-                  showVitalsHistory ? "rotate-180" : ""
-                }`}
-              />
-            </h2>
-            {showVitalsHistory && (
-              <div>
-                <ul className="space-y-4">
-                  {vitalsHistory.map((vital, index) => (
-                    <li
-                      key={index}
-                      className="p-4 bg-gray-50 rounded-md border border-gray-200"
-                    >
-                      <p className="text-sm text-gray-700">
-                        <span className="font-semibold">Time:</span>{" "}
-                        {vital.time}
-                      </p>
-                      <p className="text-sm text-gray-700">
-                        <span className="font-semibold">BP:</span>{" "}
-                        {vital.bloodPressure}
-                      </p>
-                      <p className="text-sm text-gray-700">
-                        <span className="font-semibold">HR:</span>{" "}
-                        {vital.heartRate}
-                      </p>
-                      <p className="text-sm text-gray-700">
-                        <span className="font-semibold">Temp:</span>{" "}
-                        {vital.temperature}
-                      </p>
-                      <p className="text-sm text-gray-700">
-                        <span className="font-semibold">O2:</span>{" "}
-                        {vital.oxygenLevel}
-                      </p>
-                      <p className="text-sm text-gray-700">
-                        <span className="font-semibold">Sugar:</span>{" "}
-                        {vital.bloodSugar}
-                      </p>
-                    </li>
-                  ))}
-                </ul>
-              </div>
-            )}
-          </div>
-        </div>
-
-        {/* Tasks Section */}
-        <div className="mb-8">
-          <div className="flex items-center justify-between mb-4">
-            <h2 className="text-xl pl-3 font-semibold text-gray-900">Tasks</h2>
-          </div>
-          <div className="bg-white p-6 rounded-lg shadow-md">
-            <TaskList
-              tasks={tasks}
-              onTaskToggle={(id) => {
-                setTasks((prevTasks) =>
-                  prevTasks.map((task) =>
-                    task.id === id
-                      ? { ...task, completed: !task.completed }
-                      : task
-                  )
-                );
-              }}
-            />
-          </div>
-        </div>
-
-        {/* Diet Section */}
-        <div className="mb-8">
-          <h2 className="text-xl pl-3 font-semibold text-gray-900 mb-4">
-            Diet
-          </h2>
-          <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-            {["breakfast", "lunch", "snacks", "dinner"].map((meal) => (
-              <button
-                key={meal}
-                className={`p-4 border rounded-lg shadow-sm transition-all duration-200 transform hover:scale-105 ${
-                  diet[meal as keyof typeof diet]
-                    ? "bg-teal-700 text-white border-teal-700"
-                    : "bg-gray-50 text-gray-900 border-gray-300 hover:bg-teal-100 hover:border-teal-500"
-                }`}
-                onClick={() => handleDietClick(meal as keyof typeof diet)}
-              >
-                <span className="text-lg font-medium">
-                  {meal.charAt(0).toUpperCase() + meal.slice(1)}
-                </span>
-              </button>
-            ))}
-          </div>
-        </div>
-
-        {/* Activity Section */}
-        <div className="mb-8">
-          <h2 className="text-xl pl-3 font-semibold text-gray-900 mb-4">
-            Activity
-          </h2>
-          <div className="flex flex-col md:flex-row items-center gap-4 mb-6">
-            <input
-              type="text"
-              value={newActivity}
-              onChange={(e) => setNewActivity(e.target.value)}
-              className="p-3 border border-gray-300 rounded-lg w-full md:w-auto flex-grow focus:ring-teal-500 focus:border-teal-500"
-              placeholder="Add new activity"
-            />
-            <button
-              className="px-6 py-3 bg-teal-700 text-white rounded-lg hover:bg-teal-600 transition-all"
-              onClick={handleAddActivity}
-            >
-              Add Activity
-            </button>
-          </div>
-          {activities.length > 0 ? (
-            <ul className="space-y-2">
-              {activities.map((activity, index) => (
-                <li
-                  key={index}
-                  className="p-3 bg-gray-50 border border-gray-200 rounded-lg shadow-sm"
-                >
-                  {activity}
-                </li>
-              ))}
-            </ul>
-          ) : (
-            <p className="text-gray-500">No activities added yet.</p>
-          )}
-        </div>
-
-        {/* Mood Section */}
-        <div className="mb-8">
-          <h2 className="text-xl pl-3 font-semibold text-gray-900 mb-4">
-            Mood
-          </h2>
-          <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
-            {moods.map((mood) => (
-              <button
-                key={mood.name}
-                className={`p-4 border rounded-lg flex flex-col items-center justify-center transition-all duration-200 transform hover:scale-105 shadow-sm ${
-                  selectedMood === mood.name
-                    ? "bg-teal-700 text-white border-teal-700"
-                    : "bg-gray-50 text-gray-900 border-gray-300 hover:bg-teal-100 hover:border-teal-500"
-                }`}
-                onClick={() => {
-                  handleMoodSelect(mood.name);
-                  setMoodHistory((prev) => [
-                    ...prev,
-                    { time: format(new Date(), "hh:mm a"), mood: mood.name },
-                  ]);
+            <div className="p-6">
+              <AttendanceBar
+                attendance={{
+                  ...attendance,
+                  totalHours: attendance.totalHours.toString(),
                 }}
-              >
-                <span className="text-4xl mb-2">{mood.emoji}</span>
-                <span className="text-sm font-medium">{mood.name}</span>
-              </button>
-            ))}
-          </div>
+              />
+
+              <div className="mt-6">
+                <div
+                  className="flex items-center justify-between cursor-pointer hover:bg-gray-50 p-3 rounded-lg transition-colors"
+                  onClick={() => setShowClockHistory((prev) => !prev)}
+                >
+                  <h3 className="text-lg font-medium text-gray-800 flex items-center">
+                    <Clock className="w-4 h-4 mr-2 text-teal-700" />
+                    Clock In/Out History
+                  </h3>
+                  <ChevronDown
+                    className={`w-5 h-5 text-gray-500 transition-transform duration-200 ${
+                      showClockHistory ? "rotate-180" : ""
+                    }`}
+                  />
+                </div>
+
+                {showClockHistory && (
+                  <motion.div
+                    initial={{ opacity: 0, height: 0 }}
+                    animate={{ opacity: 1, height: "auto" }}
+                    exit={{ opacity: 0, height: 0 }}
+                    transition={{ duration: 0.3 }}
+                    className="mt-3 space-y-2 pl-9"
+                  >
+                    {attendance.clockIn.length > 0 ? (
+                      attendance.clockIn.map((clockInTime, index) => (
+                        <div
+                          key={index}
+                          className="p-3 bg-gray-50 rounded-lg border border-gray-100 flex justify-between"
+                        >
+                          <div>
+                            <span className="font-medium text-teal-700">
+                              In:
+                            </span>{" "}
+                            <span className="text-gray-700">{clockInTime}</span>
+                          </div>
+                          <div>
+                            <span className="font-medium text-red-500">
+                              Out:
+                            </span>{" "}
+                            <span className="text-gray-700">
+                              {attendance.clockOut[index] || "Active"}
+                            </span>
+                          </div>
+                        </div>
+                      ))
+                    ) : (
+                      <p className="text-gray-500 text-sm italic">
+                        No clock in/out records for today
+                      </p>
+                    )}
+                  </motion.div>
+                )}
+              </div>
+            </div>
+          </motion.section>
+
+          {/* Tasks Section */}
+          <motion.section
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.4, delay: 0.3 }}
+            className="bg-white rounded-xl shadow-sm overflow-hidden"
+          >
+            <div className="border-b border-gray-100 px-6 py-4">
+              <h2 className="text-xl font-semibold text-gray-900">Tasks</h2>
+            </div>
+            <div className="p-6">
+              {tasks.length > 0 ? (
+                <TaskList
+                  tasks={tasks}
+                  onTaskToggle={(id) => {
+                    setTasks((prevTasks) =>
+                      prevTasks.map((task) =>
+                        task.id === id
+                          ? { ...task, completed: !task.completed }
+                          : task
+                      )
+                    );
+                  }}
+                />
+              ) : (
+                <div className="text-center py-8">
+                  <Check className="w-12 h-12 text-gray-300 mx-auto mb-3" />
+                  <p className="text-gray-500">No tasks scheduled for today</p>
+                </div>
+              )}
+            </div>
+          </motion.section>
+
+          {/* Diet Section */}
+          <motion.section
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.4, delay: 0.4 }}
+            className="bg-white rounded-xl shadow-sm overflow-hidden"
+          >
+            <div className="border-b border-gray-100 px-6 py-4">
+              <h2 className="text-xl font-semibold text-gray-900">Diet</h2>
+            </div>
+            <div className="p-6">
+              <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+                {[
+                  {
+                    key: "breakfast",
+                    icon: <Utensils className="w-5 h-5 mb-2" />,
+                  },
+                  { key: "lunch", icon: <Utensils className="w-5 h-5 mb-2" /> },
+                  {
+                    key: "snacks",
+                    icon: <Utensils className="w-5 h-5 mb-2" />,
+                  },
+                  {
+                    key: "dinner",
+                    icon: <Utensils className="w-5 h-5 mb-2" />,
+                  },
+                ].map((meal) => (
+                  <motion.button
+                    key={meal.key}
+                    whileHover={{ scale: 1.03 }}
+                    whileTap={{ scale: 0.97 }}
+                    className={`p-4 border rounded-lg shadow-sm transition-all duration-200 flex flex-col items-center justify-center ${
+                      diet[meal.key as keyof typeof diet]
+                        ? "bg-teal-700 text-white border-teal-700"
+                        : "bg-gray-50 text-gray-900 border-gray-300 hover:bg-teal-50 hover:border-teal-300"
+                    }`}
+                    onClick={() =>
+                      handleDietClick(meal.key as keyof typeof diet)
+                    }
+                  >
+                    {diet[meal.key as keyof typeof diet] ? (
+                      <div className="text-white mb-2">
+                        <Check className="w-5 h-5" />
+                      </div>
+                    ) : (
+                      meal.icon
+                    )}
+                    <span className="text-lg font-medium">
+                      {meal.key.charAt(0).toUpperCase() + meal.key.slice(1)}
+                    </span>
+                  </motion.button>
+                ))}
+              </div>
+            </div>
+          </motion.section>
         </div>
 
-        {/* Mood History */}
-        <div className="mb-8">
-          <div className="bg-white p-4 pb-1.5 rounded-lg shadow-md">
-            <h2
-              className="text-lg font-medium text-gray-900 mb-4 flex items-center justify-between cursor-pointer"
-              onClick={() => setShowMoodHistory((prev) => !prev)}
-            >
-              Mood History
-              <ChevronDown
-                className={`w-5 h-5 transition-transform ${
-                  showMoodHistory ? "rotate-180" : ""
-                }`}
-              />
-            </h2>
-            {showMoodHistory && (
-              <ul className="space-y-4">
-                {moodHistory.map((mood, index) => (
-                  <li
-                    key={index}
-                    className="p-4 bg-gray-50 rounded-md border border-gray-200 shadow-sm"
+        <div className="space-y-8">
+          {/* Vitals Section */}
+          <motion.section
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.4, delay: 0.2 }}
+            className="bg-white rounded-xl shadow-sm overflow-hidden"
+          >
+            <div className="border-b border-gray-100 px-6 py-4 flex items-center justify-between">
+              <h2 className="text-xl font-semibold text-gray-900">
+                Patient Vitals
+              </h2>
+              <motion.button
+                whileHover={{ scale: 1.05 }}
+                whileTap={{ scale: 0.95 }}
+                className="text-teal-700 hover:text-teal-600 flex items-center gap-1 px-3 py-1 rounded-full hover:bg-teal-50 transition-colors"
+                onClick={() => setShowVitalsInput(!showVitalsInput)}
+              >
+                <Plus className="w-5 h-5" />
+                <span>Add Vitals</span>
+              </motion.button>
+            </div>
+
+            <div className="p-6">
+              {showVitalsInput && (
+                <motion.div
+                  initial={{ opacity: 0, y: -10 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  transition={{ duration: 0.3 }}
+                  className="mb-6 border border-teal-100 rounded-lg p-6 bg-teal-50"
+                >
+                  <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                    <div className="space-y-2">
+                      <label className="block text-sm font-medium text-gray-700">
+                        <div className="flex items-center gap-2 mb-1">
+                          <Heart className="w-4 h-4 text-teal-700" />
+                          Blood Pressure (mmHg)
+                        </div>
+                      </label>
+                      <input
+                        type="text"
+                        placeholder="120/80"
+                        value={vitals.bloodPressure}
+                        onChange={(e) =>
+                          setVitals((prev) => ({
+                            ...prev,
+                            bloodPressure: e.target.value,
+                          }))
+                        }
+                        className="block w-full p-3 border border-gray-300 rounded-md focus:ring-teal-500 focus:border-teal-500 bg-white"
+                      />
+                    </div>
+                    <div className="space-y-2">
+                      <label className="block text-sm font-medium text-gray-700">
+                        <div className="flex items-center gap-2 mb-1">
+                          <Activity className="w-4 h-4 text-teal-700" />
+                          Heart Rate (bpm)
+                        </div>
+                      </label>
+                      <input
+                        type="text"
+                        placeholder="75"
+                        value={vitals.heartRate}
+                        onChange={(e) =>
+                          setVitals((prev) => ({
+                            ...prev,
+                            heartRate: e.target.value,
+                          }))
+                        }
+                        className="block w-full p-3 border border-gray-300 rounded-md focus:ring-teal-500 focus:border-teal-500 bg-white"
+                      />
+                    </div>
+                    <div className="space-y-2">
+                      <label className="block text-sm font-medium text-gray-700">
+                        <div className="flex items-center gap-2 mb-1">
+                          <Thermometer className="w-4 h-4 text-teal-700" />
+                          Temperature (°F)
+                        </div>
+                      </label>
+                      <input
+                        type="text"
+                        placeholder="98.6"
+                        value={vitals.temperature}
+                        onChange={(e) =>
+                          setVitals((prev) => ({
+                            ...prev,
+                            temperature: e.target.value,
+                          }))
+                        }
+                        className="block w-full p-3 border border-gray-300 rounded-md focus:ring-teal-500 focus:border-teal-500 bg-white"
+                      />
+                    </div>
+                    <div className="space-y-2">
+                      <label className="block text-sm font-medium text-gray-700">
+                        <div className="flex items-center gap-2 mb-1">
+                          <Lungs className="w-4 h-4 text-teal-700" />
+                          Oxygen Level (%)
+                        </div>
+                      </label>
+                      <input
+                        type="text"
+                        placeholder="98"
+                        value={vitals.oxygenLevel}
+                        onChange={(e) =>
+                          setVitals((prev) => ({
+                            ...prev,
+                            oxygenLevel: e.target.value,
+                          }))
+                        }
+                        className="block w-full p-3 border border-gray-300 rounded-md focus:ring-teal-500 focus:border-teal-500 bg-white"
+                      />
+                    </div>
+                    <div className="space-y-2">
+                      <label className="block text-sm font-medium text-gray-700">
+                        <div className="flex items-center gap-2 mb-1">
+                          <Droplet className="w-4 h-4 text-teal-700" />
+                          Blood Sugar (mg/dL)
+                        </div>
+                      </label>
+                      <input
+                        type="text"
+                        placeholder="90"
+                        value={vitals.bloodSugar}
+                        onChange={(e) =>
+                          setVitals((prev) => ({
+                            ...prev,
+                            bloodSugar: e.target.value,
+                          }))
+                        }
+                        className="block w-full p-3 border border-gray-300 rounded-md focus:ring-teal-500 focus:border-teal-500 bg-white"
+                      />
+                    </div>
+                  </div>
+                  <motion.button
+                    whileHover={{ scale: 1.02 }}
+                    whileTap={{ scale: 0.98 }}
+                    onClick={() => {
+                      // Save vitals to history
+                      setShowVitalsInput(false);
+                      const timestamp = format(new Date(), "hh:mm a");
+                      setVitalsHistory((prev) => [
+                        ...prev,
+                        { time: timestamp, ...vitals },
+                      ]);
+                      setVitals({
+                        bloodPressure: "",
+                        heartRate: "",
+                        temperature: "",
+                        oxygenLevel: "",
+                        bloodSugar: "",
+                      });
+                    }}
+                    className="mt-6 px-6 py-3 bg-teal-700 text-white rounded-lg hover:bg-teal-600 transition-all shadow-sm w-full md:w-auto"
                   >
-                    <p className="text-sm text-gray-700">
-                      <span className="font-semibold">Time:</span> {mood.time}
-                    </p>
-                    <p className="text-sm text-gray-700">
-                      <span className="font-semibold">Mood:</span> {mood.mood}
-                    </p>
-                  </li>
+                    Save Vitals
+                  </motion.button>
+                </motion.div>
+              )}
+
+              <div>
+                <div
+                  className="flex items-center justify-between cursor-pointer hover:bg-gray-50 p-3 rounded-lg transition-colors"
+                  onClick={() => setShowVitalsHistory((prev) => !prev)}
+                >
+                  <h3 className="text-lg font-medium text-gray-800 flex items-center">
+                    <Activity className="w-4 h-4 mr-2 text-teal-700" />
+                    Vitals History
+                  </h3>
+                  <ChevronDown
+                    className={`w-5 h-5 text-gray-500 transition-transform duration-200 ${
+                      showVitalsHistory ? "rotate-180" : ""
+                    }`}
+                  />
+                </div>
+
+                {showVitalsHistory && (
+                  <motion.div
+                    initial={{ opacity: 0, height: 0 }}
+                    animate={{ opacity: 1, height: "auto" }}
+                    exit={{ opacity: 0, height: 0 }}
+                    transition={{ duration: 0.3 }}
+                    className="mt-3 space-y-3"
+                  >
+                    {vitalsHistory.length > 0 ? (
+                      vitalsHistory.map((vital, index) => (
+                        <div
+                          key={index}
+                          className="p-4 bg-gray-50 rounded-lg border border-gray-100"
+                        >
+                          <div className="flex justify-between items-center mb-2">
+                            <span className="font-medium text-teal-700">
+                              {vital.time}
+                            </span>
+                          </div>
+                          <div className="grid grid-cols-2 md:grid-cols-3 gap-3 text-sm">
+                            <div className="flex items-center gap-1">
+                              <Heart className="w-3 h-3 text-red-500" />
+                              <span className="text-gray-700">
+                                BP: {vital.bloodPressure}
+                              </span>
+                            </div>
+                            <div className="flex items-center gap-1">
+                              <Activity className="w-3 h-3 text-blue-500" />
+                              <span className="text-gray-700">
+                                HR: {vital.heartRate}
+                              </span>
+                            </div>
+                            <div className="flex items-center gap-1">
+                              <Thermometer className="w-3 h-3 text-orange-500" />
+                              <span className="text-gray-700">
+                                Temp: {vital.temperature}
+                              </span>
+                            </div>
+                            <div className="flex items-center gap-1">
+                              <Lungs className="w-3 h-3 text-teal-500" />
+                              <span className="text-gray-700">
+                                O2: {vital.oxygenLevel}
+                              </span>
+                            </div>
+                            <div className="flex items-center gap-1">
+                              <Droplet className="w-3 h-3 text-purple-500" />
+                              <span className="text-gray-700">
+                                Sugar: {vital.bloodSugar}
+                              </span>
+                            </div>
+                          </div>
+                        </div>
+                      ))
+                    ) : (
+                      <p className="text-gray-500 text-sm italic p-3">
+                        No vitals recorded today
+                      </p>
+                    )}
+                  </motion.div>
+                )}
+              </div>
+            </div>
+          </motion.section>
+
+          {/* Activity Section */}
+          <motion.section
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.4, delay: 0.3 }}
+            className="bg-white rounded-xl shadow-sm overflow-hidden"
+          >
+            <div className="border-b border-gray-100 px-6 py-4">
+              <h2 className="text-xl font-semibold text-gray-900">Activity</h2>
+            </div>
+            <div className="p-6">
+              <div className="flex flex-col md:flex-row items-center gap-4 mb-6">
+                <input
+                  type="text"
+                  value={newActivity}
+                  onChange={(e) => setNewActivity(e.target.value)}
+                  className="p-3 border border-gray-300 rounded-lg w-full md:w-auto flex-grow focus:ring-teal-500 focus:border-teal-500"
+                  placeholder="Add new activity"
+                  onKeyDown={(e) => {
+                    if (e.key === "Enter" && newActivity.trim()) {
+                      handleAddActivity();
+                    }
+                  }}
+                />
+                <motion.button
+                  whileHover={{ scale: 1.05 }}
+                  whileTap={{ scale: 0.95 }}
+                  className="px-6 py-3 bg-teal-700 text-white rounded-lg hover:bg-teal-600 transition-all shadow-sm w-full md:w-auto flex items-center justify-center gap-2"
+                  onClick={handleAddActivity}
+                >
+                  <Plus className="w-4 h-4" />
+                  Add Activity
+                </motion.button>
+              </div>
+
+              {activities.length > 0 ? (
+                <div className="space-y-2">
+                  {activities.map((activity, index) => (
+                    <motion.div
+                      initial={{ opacity: 0, x: -10 }}
+                      animate={{ opacity: 1, x: 0 }}
+                      transition={{ duration: 0.3 }}
+                      key={index}
+                      className="p-4 bg-gray-50 border border-gray-100 rounded-lg shadow-sm flex items-center gap-3"
+                    >
+                      <div className="bg-teal-100 p-2 rounded-full">
+                        <Activity className="w-4 h-4 text-teal-700" />
+                      </div>
+                      <span>{activity}</span>
+                    </motion.div>
+                  ))}
+                </div>
+              ) : (
+                <div className="text-center py-8">
+                  <Activity className="w-12 h-12 text-gray-300 mx-auto mb-3" />
+                  <p className="text-gray-500">No activities recorded today</p>
+                </div>
+              )}
+            </div>
+          </motion.section>
+
+          {/* Mood Section */}
+          <motion.section
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.4, delay: 0.4 }}
+            className="bg-white rounded-xl shadow-sm overflow-hidden"
+          >
+            <div className="border-b border-gray-100 px-6 py-4">
+              <h2 className="text-xl font-semibold text-gray-900">Mood</h2>
+            </div>
+            <div className="p-6">
+              <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-4 mb-6">
+                {moods.map((mood) => (
+                  <motion.button
+                    key={mood.name}
+                    whileHover={{ scale: 1.05 }}
+                    whileTap={{ scale: 0.95 }}
+                    className={`p-4 border rounded-lg flex flex-col items-center justify-center transition-all duration-200 shadow-sm ${
+                      selectedMood === mood.name
+                        ? "bg-teal-700 text-white border-teal-700"
+                        : "bg-gray-50 text-gray-900 border-gray-300 hover:bg-teal-50 hover:border-teal-300"
+                    }`}
+                    onClick={() => {
+                      handleMoodSelect(mood.name);
+                      setMoodHistory((prev) => [
+                        ...prev,
+                        {
+                          time: format(new Date(), "hh:mm a"),
+                          mood: mood.name,
+                        },
+                      ]);
+                    }}
+                  >
+                    <span className="text-3xl mb-2">{mood.emoji}</span>
+                    <span className="text-sm font-medium">{mood.name}</span>
+                  </motion.button>
                 ))}
-              </ul>
-            )}
-          </div>
+              </div>
+
+              <div>
+                <div
+                  className="flex items-center justify-between cursor-pointer hover:bg-gray-50 p-3 rounded-lg transition-colors"
+                  onClick={() => setShowMoodHistory((prev) => !prev)}
+                >
+                  <h3 className="text-lg font-medium text-gray-800 flex items-center">
+                    <Smile className="w-4 h-4 mr-2 text-teal-700" />
+                    Mood History
+                  </h3>
+                  <ChevronDown
+                    className={`w-5 h-5 text-gray-500 transition-transform duration-200 ${
+                      showMoodHistory ? "rotate-180" : ""
+                    }`}
+                  />
+                </div>
+
+                {showMoodHistory && (
+                  <motion.div
+                    initial={{ opacity: 0, height: 0 }}
+                    animate={{ opacity: 1, height: "auto" }}
+                    exit={{ opacity: 0, height: 0 }}
+                    transition={{ duration: 0.3 }}
+                    className="mt-3 space-y-2"
+                  >
+                    {moodHistory.length > 0 ? (
+                      moodHistory.map((mood, index) => (
+                        <div
+                          key={index}
+                          className="p-3 bg-gray-50 rounded-lg border border-gray-100 flex justify-between items-center"
+                        >
+                          <div className="flex items-center gap-3">
+                            <span className="text-xl">
+                              {moods.find((m) => m.name === mood.mood)?.emoji ||
+                                "😐"}
+                            </span>
+                            <span className="font-medium">{mood.mood}</span>
+                          </div>
+                          <span className="text-sm text-gray-500">
+                            {mood.time}
+                          </span>
+                        </div>
+                      ))
+                    ) : (
+                      <p className="text-gray-500 text-sm italic p-3">
+                        No mood entries recorded today
+                      </p>
+                    )}
+                  </motion.div>
+                )}
+              </div>
+            </div>
+          </motion.section>
         </div>
       </div>
-      <Navigation />
     </div>
   );
 }

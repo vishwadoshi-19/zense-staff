@@ -493,6 +493,60 @@ export const UserDetails: React.FC<UserDetailsProps> = ({
             </div>
           </div>
 
+          {/* Date of Birth */}
+          <div className="space-y-2">
+            <label
+              htmlFor="dateOfBirth"
+              className="block text-gray-700 font-medium"
+            >
+              Date of Birth <span className="text-red-500">*</span>
+            </label>
+            <div className="relative">
+              <input
+                type="date"
+                id="dateOfBirth"
+                name="dateOfBirth"
+                value={userDetails.dateOfBirth}
+                onChange={(e) =>
+                  setUserDetails({
+                    ...userDetails,
+                    dateOfBirth: e.target.value,
+                  })
+                }
+                className="w-full px-4 py-3 rounded-xl border border-gray-300 focus:border-teal-700 
+              focus:ring-2 focus:ring-teal-200 transition-colors bg-white appearance-none pr-12"
+                required
+                max={new Date().toISOString().split("T")[0]}
+                style={{
+                  // Hide the default calendar icon in Chrome/Safari/Edge
+                  WebkitAppearance: "none",
+                  MozAppearance: "none",
+                  appearance: "none",
+                }}
+              />
+              {/* Custom calendar icon, pointer-events-none so input still opens calendar */}
+              <span className="absolute right-4 top-1/2 -translate-y-1/2 text-gray-400 pointer-events-none">
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  className="h-5 w-5"
+                  fill="none"
+                  viewBox="0 0 24 24"
+                  stroke="currentColor"
+                >
+                  <path
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    strokeWidth={2}
+                    d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"
+                  />
+                </svg>
+              </span>
+            </div>
+            <p className="text-xs text-gray-500">
+              Please select your date of birth
+            </p>
+          </div>
+
           {/* Submit Button */}
           <button
             type="submit"

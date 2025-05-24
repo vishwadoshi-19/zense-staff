@@ -1,12 +1,13 @@
 import React from "react";
 
+import { CircularProgress } from "@mui/material";
+
 const LoadingScreen: React.FC = () => {
+  // Heartbeat animation for the icon
+
   return (
-    <div className="min-h-screen flex items-center justify-center bg-gray-50">
-      <div className="text-center">
-        <div className="animate-spin rounded-full h-16 w-16 border-t-2 border-b-2 border-teal-700 mx-auto mb-4"></div>
-        <h2 className="text-xl font-semibold text-gray-700">Loading...</h2>
-      </div>
+    <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-teal-100 via-teal-50 to-white p-4">
+      <CircularProgress size="3rem" color="primary" />
     </div>
   );
 };

@@ -1,16 +1,13 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { PhoneVerification } from "@/components/auth/PhoneVerification";
 import { useAuth } from "@/context/AuthContext";
 import LoadingScreen from "@/components/common/LoadingScreen";
-import toast from "react-hot-toast";
-import { UserDetails } from "@/components/onboarding/UserDetails";
 
 export default function SignIn() {
-  const { isAuthenticated, isLoading, isNewUser, signOut, userData } =
-    useAuth();
+  const { isLoading, isNewUser, userData } = useAuth();
   const router = useRouter();
   const [verificationState, setVerificationState] = useState({
     verificationId: null,
@@ -20,27 +17,9 @@ export default function SignIn() {
     isVerified: false,
   });
 
-  // useEffect(() => {
-  //   const handleDefaultRouteBehaviour = async () => {
-  //     try {
-  //       await signOut();
-  //       // toast.success("Signed out successfully");
-  //       router.push("/sign-in");
-  //     } catch (error) {
-  //       toast.error("Failed to sign out");
-  //     }
-  //   };
-  //   handleDefaultRouteBehaviour();
-  // });
-
   const handlePhoneVerified = () => {
-    if (!isLoading) {
-      if (isNewUser || userData?.status === "unregistered") {
-        router.replace("/onboarding"); // Redirect to onboarding page
-      } else {
-        router.replace("/jobs"); // Redirect to jobs page
-      }
-    }
+    // Let RouteGuard handle the redirects based on user status
+    // Just trigger a re-render by doing nothing
   };
 
   if (isLoading) {
