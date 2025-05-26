@@ -258,14 +258,17 @@ export const fetchJobs = async (userStatus: string, user: { uid: string }) => {
 
   try {
     const jobsCollection = collection(db, "jobs");
-    const jobsQuery = query(jobsCollection, where("staffId", "==", user.uid));
+    const jobsQuery = query(
+      jobsCollection,
+      where("staffInfo.staffId", "==", user.uid)
+    );
     // ,where("staffId", "==", "open")
     const querySnapshot = await getDocs(jobsQuery);
     console.log("Jobs found:", querySnapshot);
 
     const jobs = querySnapshot.docs.map((doc) => ({
       id: doc.id,
-      status: doc.data().status || "unknown",
+      status: doc.data().status || "pending",
       staffId: doc.data().staffId || "unknown",
       customerName: doc.data().customerName || "Unknown Patient",
       customerAge: doc.data().customerAge || 0,

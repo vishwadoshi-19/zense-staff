@@ -297,18 +297,8 @@ export default function Onboarding() {
     // Create a new object with the updated form state
     const updatedFormState = {
       ...userDetails,
-      currentAddress: {
-        street: currentAddress.street,
-        city: currentAddress.city,
-        state: currentAddress.state,
-        zip: currentAddress.zip,
-      },
-      permanentAddress: {
-        street: permanentAddress.street,
-        city: permanentAddress.city,
-        state: permanentAddress.state,
-        zip: permanentAddress.zip,
-      },
+      currentAddress,
+      permanentAddress,
       isCurrentAddressSameAsPermanent,
       lastStep: "wages",
     };
@@ -625,7 +615,7 @@ export default function Onboarding() {
           <WagesSection
             wagesState={wagesState}
             setWagesState={setWagesState}
-            onBack={() => setStep("details")}
+            onBack={() => setStep("address")}
             onNext={handleWagesSubmitted}
           />
         )}
