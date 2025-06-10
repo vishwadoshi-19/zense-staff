@@ -238,7 +238,7 @@ export const PhoneVerification: React.FC<PhoneVerificationProps> = ({
 
               <div className="flex items-center justify-center gap-3 text-sm text-gray-600 mb-6">
                 <Lock className="h-4 w-4" />
-                <span>We never share this with anyone and it won't be on your profile.</span>
+                <span>We never share this with anyone and it won&apos;t be on your profile.</span>
               </div>
             </form>
           </div>
@@ -246,7 +246,7 @@ export const PhoneVerification: React.FC<PhoneVerificationProps> = ({
           <div className="w-full max-w-md text-center">
             <h1 className="text-3xl font-bold text-gray-900 mb-4">Verify your number</h1>
             <p className="text-gray-600 mb-2 text-base">
-              Enter the code we've sent by text to {verificationState.phoneNumber}.
+              Enter the code we&apos;ve sent by text to {verificationState.phoneNumber}.
             </p>
             <button
               onClick={() => setVerificationState((prev) => ({ ...prev, showOTP: false }))}
@@ -286,7 +286,7 @@ export const PhoneVerification: React.FC<PhoneVerificationProps> = ({
                     disabled={loading}
                     className="text-gray-600 text-base"
                   >
-                    Didn't get a code?
+                    Didn&apos;t get a code?
                   </button>
                 )}
               </div>
