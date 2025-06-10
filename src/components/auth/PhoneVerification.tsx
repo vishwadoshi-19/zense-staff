@@ -188,15 +188,15 @@ export const PhoneVerification: React.FC<PhoneVerificationProps> = ({
   return (
     <div className="min-h-screen bg-white flex flex-col">
       {/* Header */}
-      <div className="flex-1 px-6 pt-12 pb-6 flex flex-col items-center">
-        {verificationState.showOTP && (
+      <div className="flex-1 px-6 pt-6 pb-6 flex flex-col items-center">
+        {/* {verificationState.showOTP && (
           <button
             onClick={() => setVerificationState((prev) => ({ ...prev, showOTP: false, otp: "" }))}
             className="mb-6 p-2 -ml-2 self-start"
           >
             <ArrowLeft className="h-6 w-6 text-gray-700" />
           </button>
-        )}
+        )} */}
 
         {/* Logo */}
         <div className="flex justify-center mb-8">
@@ -219,8 +219,8 @@ export const PhoneVerification: React.FC<PhoneVerificationProps> = ({
             <form onSubmit={handlePhoneSubmit} className="w-full">
               <div className="mb-6">
                 <div className="flex gap-3 mb-4">
-                  <div className="bg-gray-100 rounded-lg px-4 py-3 flex items-center">
-                    <span className="text-gray-700 font-medium">IN +91</span>
+                  <div className="bg-gray-100 rounded-lg px-4 py-3 flex items-center shrink-0">
+                    <span className="text-gray-700 font-medium whitespace-nowrap">IN +91</span>
                   </div>
                   <Input
                     type="tel"
@@ -248,12 +248,12 @@ export const PhoneVerification: React.FC<PhoneVerificationProps> = ({
             <p className="text-gray-600 mb-2 text-base">
               Enter the code we&apos;ve sent by text to {verificationState.phoneNumber}.
             </p>
-            <button
+            {/* <button
               onClick={() => setVerificationState((prev) => ({ ...prev, showOTP: false }))}
               className="text-teal-600 underline mb-8 text-base"
             >
               Change number
-            </button>
+            </button> */}
 
             <form onSubmit={handleOTPSubmit} className="w-full">
               <div className="mb-6">
@@ -276,7 +276,7 @@ export const PhoneVerification: React.FC<PhoneVerificationProps> = ({
                 </div>
               )}
 
-              <div className="mb-6">
+              {/* <div className="mb-6">
                 {resendTimer > 0 ? (
                   <p className="text-gray-600 text-base">Resend code in {resendTimer}s</p>
                 ) : (
@@ -289,14 +289,14 @@ export const PhoneVerification: React.FC<PhoneVerificationProps> = ({
                     Didn&apos;t get a code?
                   </button>
                 )}
-              </div>
+              </div> */}
             </form>
           </div>
         )}
       </div>
 
       {/* Mobile Keypad */}
-      <div className="bg-gray-100 p-4">
+      <div className="fixed bottom-0 left-0 right-0 bg-gray-100 p-4">
         <div className="grid grid-cols-3 gap-3 max-w-sm mx-auto">
           <KeypadButton value="1" onPress={handleKeypadPress} />
           <KeypadButton value="2" letters="ABC" onPress={handleKeypadPress} />
