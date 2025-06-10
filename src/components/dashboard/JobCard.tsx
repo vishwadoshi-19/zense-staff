@@ -10,6 +10,8 @@ import {
   CalendarSearchIcon,
 } from "lucide-react";
 import { ConfirmationDialog } from "@/components/common/ConfirmationDialog";
+import { updateJobStatus } from "@/lib/firebase/firestore";
+import { useAuth } from "@/context/AuthContext";
 
 export interface Job {
   id: number;
@@ -44,16 +46,34 @@ interface JobCardProps {
 export const JobCard = ({ job }: JobCardProps) => {
   const [showConfirmation, setShowConfirmation] = useState(false);
   const [action, setAction] = useState<"accept" | "decline" | null>(null);
+  const [isUpdating, setIsUpdating] = useState(false);
+  const { user } = useAuth();
 
   const handleAction = (type: "accept" | "decline") => {
     setAction(type);
     setShowConfirmation(true);
   };
 
-  const handleConfirm = () => {
-    // Handle the confirmation action here
-    console.log(`Job ${action}ed:`, job.id);
-    setShowConfirmation(false);
+  const handleConfirm = async () => {
+    if (!user) return;
+    
+    setIsUpdating(true);
+    try {
+      const newStatus = action === "accept" ? "ongoing" : "cancelled";
+      const result = await updateJobStatus(job.id.toString(), newStatus, user.uid);
+      
+      if (result.success) {
+        // Optionally refresh the jobs list or update local state
+        window.location.reload(); // Simple refresh for now
+      } else {
+        console.error("Failed to update job status");
+      }
+    } catch (error) {
+      console.error("Error updating job:", error);
+    } finally {
+      setIsUpdating(false);
+      setShowConfirmation(false);
+    }
   };
 
   const canJobBeAccepted =
@@ -129,24 +149,26 @@ export const JobCard = ({ job }: JobCardProps) => {
             ))}
           </ul>
         </div>
-        {/* {canJobBeAccepted && (
+        {canJobBeAccepted && (
           <div className="flex gap-3">
             <button
               onClick={() => handleAction("accept")}
+              disabled={isUpdating}
               className="flex-1 bg-teal-700 text-white px-4 py-2 rounded-lg hover:bg-teal-600 
-                       transition-colors duration-200"
+                       transition-colors duration-200 disabled:opacity-50 disabled:cursor-not-allowed"
             >
-              Accept
+              {isUpdating ? "Updating..." : "Accept"}
             </button>
             <button
               onClick={() => handleAction("decline")}
+              disabled={isUpdating}
               className="flex-1 border border-gray-300 text-gray-700 px-4 py-2 rounded-lg 
-                       hover:bg-gray-50 transition-colors duration-200"
+                       hover:bg-gray-50 transition-colors duration-200 disabled:opacity-50 disabled:cursor-not-allowed"
             >
-              Decline
+              {isUpdating ? "Updating..." : "Decline"}
             </button>
           </div>
-        )} */}
+        )}
       </div>
 
       <ConfirmationDialog

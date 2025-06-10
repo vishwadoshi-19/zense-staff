@@ -306,3 +306,21 @@ export const fetchJobs = async (userStatus: string, user: { uid: string }) => {
     return { error: "Failed to fetch jobs. Please try again later." };
   }
 };
+
+// Update job status
+export const updateJobStatus = async (jobId: string, status: string, staffId: string) => {
+  try {
+    const jobRef = doc(db, "jobs", jobId);
+    await updateDoc(jobRef, {
+      status,
+      staffInfo: {
+        staffId,
+        assignedAt: serverTimestamp()
+      }
+    });
+    return { success: true };
+  } catch (error) {
+    console.error("Error updating job status:", error);
+    return { success: false, error };
+  }
+};
