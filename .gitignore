@@ -28,3 +28,4 @@ build/
 
 certificates
 .env
+.env.local
