@@ -114,6 +114,15 @@ export const uploadFile = async (file: File, path: string): Promise<string> => {
 // Save form data to Firestore
 export const saveFormData = async (userId: string, formData: FormState) => {
   try {
+    // Upload profile photo if exists
+    let profilePhotoURL = "";
+    if (formData.profilePhoto instanceof File) {
+      profilePhotoURL = await uploadFile(
+        formData.profilePhoto,
+        `users/${userId}/profile/${formData.profilePhoto.name}`
+      );
+    }
+
     // Upload certificate if exists
     let certificateURL = "";
     if (formData.certificate instanceof File) {
@@ -163,7 +172,6 @@ export const saveFormData = async (userId: string, formData: FormState) => {
     await updateDoc(userRef, {
       name: formData.fullName || "",
       gender: formData.gender || "",
-      // profilePhoto: formData.profilePhoto || "", // Use the URL directly
       lastStep: formData.lastStep || "details",
       updatedAt: serverTimestamp(),
     });
@@ -187,7 +195,6 @@ export const saveFormData = async (userId: string, formData: FormState) => {
         "24hrs": 0,
       },
       educationQualification: formData.educationQualification || "",
-
       educationCertificate: certificateURL || "",
       experienceYears: formData.experience || 0,
       languagesKnown: formData.languages || [],
@@ -211,7 +218,7 @@ export const saveFormData = async (userId: string, formData: FormState) => {
         panNumber: formData.panNumber || "",
         panDocument: panCardURL,
       },
-      profilePhoto: formData.profilePhoto || "",
+      profilePhoto: profilePhotoURL || formData.profilePhoto || "",
       district: formData.district || [],
       subDistricts: formData.subDistricts || [],
       createdAt: serverTimestamp(),
