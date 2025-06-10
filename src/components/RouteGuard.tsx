@@ -17,7 +17,6 @@ const RouteGuard: React.FC<{ children: React.ReactNode }> = ({ children }) => {
   useEffect(() => {
     if (isLoading) return;
 
-    // Handle authentication based on user state and current path
     const handleRouting = async () => {
       // Not authenticated - only allow access to public paths
       if (!user) {
@@ -38,8 +37,7 @@ const RouteGuard: React.FC<{ children: React.ReactNode }> = ({ children }) => {
       // User is registered - prevent access to public and unregistered paths
       if (userData?.status === "registered" || userData?.status === "live") {
         if ([...PUBLIC_PATHS, ...UNREGISTERED_PATHS].includes(pathname)) {
-          // Redirect to an appropriate page based on user state
-          router.replace(userData?.hasOngoingJob ? "/daily-tasks" : "/jobs");
+          router.replace("/jobs");
           return;
         }
 

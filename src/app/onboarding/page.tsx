@@ -564,7 +564,7 @@ export default function Onboarding() {
     }
   };
 
-  if (isLoading) {
+  if (isLoading || isSubmitting) {
     return <LoadingScreen />;
   }
 

@@ -55,7 +55,7 @@ export default function Jobs() {
   const [selectedStatus, setSelectedStatus] = useState("assigned");
   const [clockedIn, setClockedIn] = useState(false);
   const [clockInTime, setClockInTime] = useState<Date | null>(null);
-  const [jobs, setJobs] = useState<Job[]>([]);
+  const [jobs, setJobs] = useState<any[]>([]);
   const [error, setError] = useState("");
 
   // useEffect(() => {
@@ -76,6 +76,7 @@ export default function Jobs() {
           if (result.error) {
             setError(result.error);
           } else {
+            console.log("result.jobs", result.jobs);
             setJobs(
               (result.jobs || []).map((job: any) => ({
                 ...job,
