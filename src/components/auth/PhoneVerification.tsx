@@ -178,17 +178,19 @@ export const PhoneVerification: React.FC<PhoneVerificationProps> = ({
     <button
       type="button"
       onClick={() => onPress(value)}
-      className="bg-white rounded-lg h-14 flex flex-col items-center justify-center text-black hover:bg-gray-50 active:bg-gray-100 transition-colors shadow-sm border border-gray-200"
+      className="bg-white rounded-lg h-11 flex flex-col items-center justify-center text-black hover:bg-gray-50 active:bg-gray-100 transition-colors shadow-sm border border-gray-200 text-sm"
+
     >
-      <span className="text-2xl font-medium">{value}</span>
-      {letters && <span className="text-xs text-gray-500 mt-0.5">{letters}</span>}
+      <span className="text-lg font-medium">{value}</span>
+      
     </button>
   )
 
   return (
-    <div className="min-h-screen bg-white flex flex-col">
+    <div className="h-screen flex flex-col bg-white overflow-hidden">
       {/* Header */}
-      <div className="flex-1 px-6 pt-6 pb-6 flex flex-col items-center">
+      <div className="flex-grow px-4 pt-6 pb-2 flex flex-col items-center overflow-hidden">
+
         {/* {verificationState.showOTP && (
           <button
             onClick={() => setVerificationState((prev) => ({ ...prev, showOTP: false, otp: "" }))}
@@ -203,15 +205,15 @@ export const PhoneVerification: React.FC<PhoneVerificationProps> = ({
           <Image
             src="https://firebasestorage.googleapis.com/v0/b/airy-adapter-451212-b8.firebasestorage.app/o/assets%2Fzense_logo.png?alt=media&token=5ed099ff-e892-472b-a37c-e6f572bb95e5"
             alt="Logo"
-            width={150}
-            height={150}
+            width={100}
+            height={100}
             className="rounded-full"
           />
         </div>
 
         {!verificationState.showOTP ? (
           <div >
-            <h1 className="text-3xl font-bold text-gray-900 mb-4">Can we get your number, please?</h1>
+            <h1 className="text-2xl font-bold text-gray-900 mb-4">Can we get your number, please?</h1>
             <p className="text-gray-600 mb-8 text-base">
               This is madatory for logging in.
             </p>
@@ -256,8 +258,8 @@ export const PhoneVerification: React.FC<PhoneVerificationProps> = ({
             </button> */}
 
             <form onSubmit={handleOTPSubmit} className="w-full">
-              <div className="mb-6">
-                <label className="text-sm text-gray-600 mb-3 block">Code</label>
+              <div className="mb-6 mt-4">
+                {/* <label className="text-sm text-gray-600 mb-3 block">Code</label> */}
                 <div className="flex gap-2 mb-6 justify-center">
                   {Array.from({ length: 6 }).map((_, index) => (
                     <div
@@ -296,8 +298,9 @@ export const PhoneVerification: React.FC<PhoneVerificationProps> = ({
       </div>
 
       {/* Mobile Keypad */}
-      <div className="fixed bottom-0 left-0 right-0 bg-gray-100 p-4">
-        <div className="grid grid-cols-3 gap-3 max-w-sm mx-auto">
+      <div className="fixed bottom-0 left-0 right-0 bg-gray-100 px-4 pt-2">
+  <div className="grid grid-cols-3 gap-2 max-w-xs mx-auto">
+
           <KeypadButton value="1" onPress={handleKeypadPress} />
           <KeypadButton value="2" letters="ABC" onPress={handleKeypadPress} />
           <KeypadButton value="3" letters="DEF" onPress={handleKeypadPress} />
@@ -312,19 +315,19 @@ export const PhoneVerification: React.FC<PhoneVerificationProps> = ({
           <button
             type="button"
             onClick={() => handleKeypadPress("backspace")}
-            className="bg-white rounded-lg h-14 flex items-center justify-center hover:bg-gray-50 active:bg-gray-100 transition-colors shadow-sm border border-gray-200"
+            className="bg-white rounded-lg h-11 flex items-center justify-center hover:bg-gray-50 active:bg-gray-100 transition-colors shadow-sm border border-gray-200"
           >
-            <span className="text-xl">⌫</span>
+            <span className="text-2xl">⌫</span>
           </button>
         </div>
 
         {/* Submit Button */}
         {!verificationState.showOTP ? (
-          <div className="mt-6 max-w-sm mx-auto">
+          <div className="mt-3 max-w-sm mx-auto">
             <Button
               onClick={handlePhoneSubmit}
               disabled={loading || verificationState.phoneNumber.length !== 10}
-              className="w-full h-12 bg-teal-600 hover:bg-teal-700 text-white rounded-lg font-medium"
+              className="w-full h-12 bg-teal-600 hover:bg-teal-700 text-white rounded-md font-medium"
             >
               {loading ? "Sending..." : "Continue"}
             </Button>
@@ -334,7 +337,7 @@ export const PhoneVerification: React.FC<PhoneVerificationProps> = ({
             <Button
               onClick={handleOTPSubmit}
               disabled={loading || verificationState.otp.length !== 6}
-              className="w-full h-12 bg-teal-600 hover:bg-teal-700 text-white rounded-lg font-medium"
+              className="w-full h-12 bg-teal-600 hover:bg-teal-700 text-white rounded-md font-medium"
             >
               {loading ? "Verifying..." : "Verify"}
             </Button>
