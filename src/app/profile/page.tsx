@@ -31,6 +31,11 @@ import toast from "react-hot-toast";
 import { LogOut } from "lucide-react";
 import { Navigation } from "@/components/Navigation";
 
+const capitalize = (str: string): string => {
+  if (!str) return str;
+  return str.charAt(0).toUpperCase() + str.slice(1).toLowerCase();
+}; 
+
 export default function Profile() {
   const { user, userData, isAuthenticated, isLoading } = useAuth();
   const router = useRouter();
@@ -168,12 +173,12 @@ export default function Profile() {
       </div>
 
       {/* Stats Grid */}
-      <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-8">
+      {/* <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-8">
         <StatsCard icon={Star} title="Rating" value={4.7} suffix="/5" />
         <StatsCard icon={Check} title="Jobs Completed" value={38} />
         <StatsCard icon={Clock} title="Income" value={50000} />
         <StatsCard icon={Calendar} title="On Time" value={98} suffix="%" />
-      </div>
+      </div> */}
 
       {/* Profile Sections */}
       <div className="space-y-6">
@@ -220,7 +225,7 @@ export default function Profile() {
             />
 
             {/* Testimonials */}
-            {staffDetails.selfTestimonial && (
+            {/* {staffDetails.selfTestimonial && (
               <div>
                 <h2 className="text-lg font-semibold text-gray-900 mb-4">
                   Testimonials
@@ -237,7 +242,7 @@ export default function Profile() {
                   />
                 </div>
               </div>
-            )}
+            )} */}
             <ReviewsSection />
 
             <div className="mt-8 space-y-4">

@@ -26,6 +26,7 @@ import { useAuth } from "@/context/AuthContext";
 import { fetchDailyTasks, saveDailyTasks } from "@/lib/firebase/firestore";
 import { useRouter } from "next/navigation";
 import LoadingScreen from "@/components/common/LoadingScreen";
+import { useUser } from "@/context/UserContext";
 
 type ValuePiece = Date | null;
 type Value = ValuePiece | [ValuePiece, ValuePiece];
@@ -48,6 +49,13 @@ interface Task {
 
 export default function DailyTasks() {
   const { isAuthenticated, isLoading, userData, user } = useAuth();
+  const { ongoingJob, isLoading: userLoading } = useUser();
+
+  // const today = new Date();
+  // const jobConditions = ongoingJob?.startDate && ongoingJob?.endDate 
+  //   ? (today >= new Date(ongoingJob.startDate) && today <= new Date(ongoingJob.endDate))
+  //   : false;
+
   const router = useRouter();
   const [selectedDate, setSelectedDate] = useState<Value>(new Date());
   const [showCalendar, setShowCalendar] = useState(false);
@@ -416,7 +424,8 @@ export default function DailyTasks() {
         transition={{ duration: 0.3 }}
         className="flex justify-between items-center mb-8"
       >
-        <h1 className="text-3xl font-bold text-gray-900">Daily Tasks</h1>
+        <div className="flex flex-col"><h1 className="text-3xl font-bold text-gray-900">Daily Tasks</h1>
+        {ongoingJob && <div>For : <span>{ongoingJob?.patientInfo?.name}</span></div>}</div>
 
         {/* Clock in button */}
         {selectedDate instanceof Date &&

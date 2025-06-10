@@ -10,6 +10,8 @@ import {
   CalendarSearchIcon,
 } from "lucide-react";
 import { ConfirmationDialog } from "@/components/common/ConfirmationDialog";
+import { updateJobStatus } from "@/lib/firebase/firestore";
+import { useAuth } from "@/context/AuthContext";
 
 export interface Job {
   id: number;
@@ -25,6 +27,16 @@ export interface Job {
   status: string;
   startDate: string;
   endDate: string;
+  patientInfo: any;
+  staffInfo: any;
+  guardianInfo: any;
+  serviceInfo: any;
+  serviceType: string;
+  serviceDate: string;
+  serviceTime: string;
+  serviceLocation: string;
+  serviceNotes: string;
+  staffId: string;
 }
 
 interface JobCardProps {
@@ -34,16 +46,34 @@ interface JobCardProps {
 export const JobCard = ({ job }: JobCardProps) => {
   const [showConfirmation, setShowConfirmation] = useState(false);
   const [action, setAction] = useState<"accept" | "decline" | null>(null);
+  const [isUpdating, setIsUpdating] = useState(false);
+  const { user } = useAuth();
 
   const handleAction = (type: "accept" | "decline") => {
     setAction(type);
     setShowConfirmation(true);
   };
 
-  const handleConfirm = () => {
-    // Handle the confirmation action here
-    console.log(`Job ${action}ed:`, job.id);
-    setShowConfirmation(false);
+  const handleConfirm = async () => {
+    if (!user) return;
+    
+    setIsUpdating(true);
+    try {
+      const newStatus = action === "accept" ? "ongoing" : "cancelled";
+      const result = await updateJobStatus(job.id.toString(), newStatus, user.uid);
+      
+      if (result.success) {
+        // Optionally refresh the jobs list or update local state
+        window.location.reload(); // Simple refresh for now
+      } else {
+        console.error("Failed to update job status");
+      }
+    } catch (error) {
+      console.error("Error updating job:", error);
+    } finally {
+      setIsUpdating(false);
+      setShowConfirmation(false);
+    }
   };
 
   const canJobBeAccepted =
@@ -60,9 +90,9 @@ export const JobCard = ({ job }: JobCardProps) => {
         <div className="flex items-start justify-between mb-4">
           <div>
             <h3 className="text-lg font-semibold text-gray-900">
-              {job.customerName}
+              {job.patientInfo?.name}
             </h3>
-            <p className="text-sm text-gray-500">Age: {job.customerAge}</p>
+            <p className="text-sm text-gray-500">Age: {job.patientInfo?.age}</p>
           </div>
           <span
             className={`px-3 py-1 rounded-full text-sm font-medium ${
@@ -82,16 +112,26 @@ export const JobCard = ({ job }: JobCardProps) => {
         <div className="space-y-3 mb-6">
           <div className="flex items-center text-gray-600">
             <MapPin className="w-5 h-5 mr-2 text-gray-400" />
-            {job.subDistrict}, {job.district}, {job.pincode}
+            {job.patientInfo?.state}, {job.patientInfo?.city}, {job.patientInfo?.pincode}
           </div>
           <div className="flex items-center text-gray-600">
             <Clock className="w-5 h-5 mr-2 text-gray-400" />
-            {job.JobType}
+            {job.serviceType}
           </div>
           <div className="flex items-center text-gray-600">
             <CalendarSearchIcon className="w-5 h-5 mr-2 text-gray-400" />
-            {new Date(job.startDate).toLocaleDateString("en-GB")} -{" "}
-            {new Date(job.endDate).toLocaleDateString("en-GB")}
+            {new Date(job.startDate).toLocaleString('en-GB', {
+              day: 'numeric',
+              month: 'short',
+              year: 'numeric',
+              
+            })} -{" "}
+            {new Date(job.endDate).toLocaleString('en-GB', {
+              day: 'numeric',
+              month: 'short',
+              year: 'numeric',
+              
+            })}
           </div>
         </div>
 
@@ -109,24 +149,26 @@ export const JobCard = ({ job }: JobCardProps) => {
             ))}
           </ul>
         </div>
-        {/* {canJobBeAccepted && (
+        {canJobBeAccepted && (
           <div className="flex gap-3">
             <button
               onClick={() => handleAction("accept")}
+              disabled={isUpdating}
               className="flex-1 bg-teal-700 text-white px-4 py-2 rounded-lg hover:bg-teal-600 
-                       transition-colors duration-200"
+                       transition-colors duration-200 disabled:opacity-50 disabled:cursor-not-allowed"
             >
-              Accept
+              {isUpdating ? "Updating..." : "Accept"}
             </button>
             <button
               onClick={() => handleAction("decline")}
+              disabled={isUpdating}
               className="flex-1 border border-gray-300 text-gray-700 px-4 py-2 rounded-lg 
-                       hover:bg-gray-50 transition-colors duration-200"
+                       hover:bg-gray-50 transition-colors duration-200 disabled:opacity-50 disabled:cursor-not-allowed"
             >
-              Decline
+              {isUpdating ? "Updating..." : "Decline"}
             </button>
           </div>
-        )} */}
+        )}
       </div>
 
       <ConfirmationDialog

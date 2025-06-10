@@ -276,6 +276,16 @@ export const fetchJobs = async (userStatus: string, user: { uid: string }) => {
     const jobs = querySnapshot.docs.map((doc) => ({
       id: doc.id,
       status: doc.data().status || "pending",
+      patientInfo: doc.data().patientInfo || {},
+      staffInfo: doc.data().staffInfo || {},
+      guardianInfo: doc.data().guardianInfo || {},
+      serviceInfo: doc.data().serviceInfo || {},
+      serviceType: doc.data().serviceType || "Unknown Service Type",
+      serviceDate: doc.data().serviceDate || new Date().toISOString(),
+      serviceTime: doc.data().serviceTime || "Unknown Service Time",
+      serviceLocation: doc.data().serviceLocation || "Unknown Service Location",
+      serviceStatus: doc.data().serviceStatus || "Unknown Service Status",
+      serviceNotes: doc.data().serviceNotes || "No service notes provided",
       staffId: doc.data().staffId || "unknown",
       customerName: doc.data().customerName || "Unknown Patient",
       customerAge: doc.data().customerAge || 0,
@@ -285,8 +295,8 @@ export const fetchJobs = async (userStatus: string, user: { uid: string }) => {
       subDistrict: doc.data().subDistrict || "Unknown Location",
       pincode: doc.data().pincode || 110042,
       JobType: doc.data().JobType || "Unknown Job Type",
-      startDate: doc.data().startDate || new Date().toISOString(),
-      endDate: doc.data().endDate || new Date().toISOString(),
+      startDate: doc.data().startDate.toDate() || new Date().toISOString(),
+      endDate: doc.data().endDate.toDate() || new Date().toISOString(),
     }));
     console.log("Jobs:", jobs);
 
@@ -294,5 +304,23 @@ export const fetchJobs = async (userStatus: string, user: { uid: string }) => {
   } catch (error) {
     console.error("Error fetching jobs:", error);
     return { error: "Failed to fetch jobs. Please try again later." };
+  }
+};
+
+// Update job status
+export const updateJobStatus = async (jobId: string, status: string, staffId: string) => {
+  try {
+    const jobRef = doc(db, "jobs", jobId);
+    await updateDoc(jobRef, {
+      status,
+      staffInfo: {
+        staffId,
+        assignedAt: serverTimestamp()
+      }
+    });
+    return { success: true };
+  } catch (error) {
+    console.error("Error updating job status:", error);
+    return { success: false, error };
   }
 };
