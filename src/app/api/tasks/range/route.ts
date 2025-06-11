@@ -1,5 +1,16 @@
-import { fetchDailyTasks } from "@/lib/firebase/firestore";
+import { fetchDailyTasks, getUserById } from "@/lib/firebase/firestore";
 import { NextRequest, NextResponse } from "next/server";
+
+export function OPTIONS() {
+  return new NextResponse(null, {
+    status: 204,
+    headers: {
+      "Access-Control-Allow-Origin": "*", // or specify your domain
+      "Access-Control-Allow-Methods": "GET, OPTIONS",
+      "Access-Control-Allow-Headers": "Content-Type",
+    },
+  });
+}
 
 export async function GET(request: NextRequest) {
   try {
@@ -16,6 +27,16 @@ export async function GET(request: NextRequest) {
         { status: 400 }
       );
     }
+
+    // --- Add this user existence check ---
+    const user = await getUserById(userId);
+    if (!user) {
+      return NextResponse.json(
+        { success: false, message: "User not found" },
+        { status: 404 } // Use 404 for Not Found
+      );
+    }
+    // --- End of added check ---
 
     if (!startDate || !endDate) {
       return NextResponse.json(
@@ -63,10 +84,19 @@ export async function GET(request: NextRequest) {
       })
     );
 
-    return NextResponse.json({
-      success: true,
-      data: results,
-    });
+    return new NextResponse(
+      JSON.stringify({
+        success: true,
+        data: results,
+      }),
+      {
+        status: 200,
+        headers: {
+          "Access-Control-Allow-Origin": "*", // or "http://localhost:3000"
+          "Content-Type": "application/json",
+        },
+      }
+    );
   } catch (error) {
     console.error("API error:", error);
     return NextResponse.json(
