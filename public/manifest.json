@@ -38,8 +38,8 @@
       "url": "/dashboard",
       "icons": [
         {
-          "src": "icons/web-app-manifest-512x512-96.png",
-          "sizes": "96x96"
+          "src": "icons/manifest-icon-192.maskable.png",
+          "sizes": "192x192"
         }
       ]
     }
