@@ -324,3 +324,18 @@ export const updateJobStatus = async (jobId: string, status: string, staffId: st
     return { success: false, error };
   }
 };
+
+// Save user agreement details
+export const saveUserAgreement = async (userId: string, agreementData: { ip: string; userAgent: string; }) => {
+  try {
+    const agreementRef = doc(db, "userAgreements", userId);
+    await setDoc(agreementRef, {
+      ...agreementData,
+      createdAt: serverTimestamp(),
+    });
+    return { success: true };
+  } catch (error) {
+    console.error("Error saving user agreement:", error);
+    return { success: false, error };
+  }
+};

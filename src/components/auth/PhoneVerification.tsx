@@ -96,12 +96,13 @@ export const PhoneVerification: React.FC<PhoneVerificationProps> = ({
       const result = await verifyOTP(verificationState.verificationId, verificationState.otp, router)
 
       if (result && result.success) {
-        setVerificationState((prev) => ({ ...prev, isVerified: true }))
-        toast.success("Phone verified successfully!")
-        setIsNewUser(result.isNewUser ?? false)
-        onVerified()
+        setVerificationState((prev) => ({ ...prev, isVerified: true }));
+        toast.success("Phone verified successfully!");
+        setIsNewUser(result.isNewUser ?? false);
+        onVerified();
+        router.push('/terms-and-agreement');
       } else {
-        toast.error("Invalid OTP. Please try again.")
+        toast.error("Invalid OTP. Please try again.");
       }
     } catch (error) {
       console.error("Error verifying OTP:", error)

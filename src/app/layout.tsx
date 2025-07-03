@@ -1,5 +1,6 @@
 "use client";
 
+import { usePathname } from "next/navigation";
 import { Inter } from "next/font/google";
 import "./globals.css";
 import { Navigation } from "@/components/Navigation";
@@ -54,6 +55,9 @@ export default function RootLayout({
 }: {
   children: React.ReactNode;
 }) {
+  const pathname = usePathname();
+  const noNavRoutes = ["/terms-and-agreement"];
+
   return (
     <html lang="en">
       <head>
@@ -72,8 +76,12 @@ export default function RootLayout({
               <RouteGuard>
                 <div className="min-h-screen bg-gray-50">
                   {children}
-                  <div className="mb-20"></div>
-                  <Navigation />
+                  {!noNavRoutes.includes(pathname) && (
+                    <>
+                      <div className="mb-20"></div>
+                      <Navigation />
+                    </>
+                  )}
                 </div>
               </RouteGuard>
             </Suspense>
