@@ -233,7 +233,7 @@ export default function TermsAgreementPage() {
                     </p>
                     <p>
                       <span className="font-medium">6.3</span> All data collected will be retained and used in
-                      accordance with the Company's data protection policy.
+                      accordance with the Company’s data protection policy.
                     </p>
                   </div>
                 </section>
@@ -313,7 +313,7 @@ export default function TermsAgreementPage() {
                 <section>
                   <h3 className="font-semibold text-base mb-3">11. Declaration and Consent</h3>
                   <div className="space-y-2 text-sm">
-                    <p>By clicking "Accept", you confirm that:</p>
+                    <p>By clicking &quot;Accept&quot;, you confirm that:</p>
                     <ul className="list-disc list-inside ml-4 space-y-1">
                       <li>You have read, understood, and voluntarily agree to the terms above.</li>
                       <li>You are legally eligible to work in India and are above 18 years of age.</li>

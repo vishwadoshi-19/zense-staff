@@ -328,10 +328,13 @@ export const updateJobStatus = async (jobId: string, status: string, staffId: st
 // Save user agreement details
 export const saveUserAgreement = async (userId: string, agreementData: { ip: string; userAgent: string; }) => {
   try {
-    const agreementRef = doc(db, "userAgreements", userId);
-    await setDoc(agreementRef, {
-      ...agreementData,
-      createdAt: serverTimestamp(),
+    const userRef = doc(db, "users", userId);
+    await updateDoc(userRef, {
+      tna: {
+        ...agreementData,
+        status: "accepted",
+        acceptedAt: serverTimestamp(),
+      }
     });
     return { success: true };
   } catch (error) {
