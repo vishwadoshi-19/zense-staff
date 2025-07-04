@@ -1,6 +1,6 @@
 "use client";
 
-import React, { createContext, useContext, useEffect, useState } from "react";
+import React, { createContext, useContext, useEffect, useState, useCallback } from "react";
 import { useAuth } from "./AuthContext";
 import { fetchJobs } from "@/lib/firebase/firestore";
 
@@ -79,7 +79,7 @@ export const UserProvider: React.FC<{ children: React.ReactNode }> = ({
   const [availability, setAvailability] = useState<UserAvailability>(defaultAvailability);
   const [isLoading, setIsLoading] = useState(true);
 
-  const fetchUserData = async () => {
+  const fetchUserData = useCallback(async () => {
     if (!user || !userData) {
       setOngoingJob(null);
       setAvailability(defaultAvailability);
@@ -121,11 +121,11 @@ export const UserProvider: React.FC<{ children: React.ReactNode }> = ({
     } finally {
       setIsLoading(false);
     }
-  };
+  }, [user, userData]);
 
   useEffect(() => {
     fetchUserData();
-  }, [user, userData]);
+  }, [fetchUserData]);
 
   const value = {
     ongoingJob,
@@ -135,4 +135,4 @@ export const UserProvider: React.FC<{ children: React.ReactNode }> = ({
   };
 
   return <UserContext.Provider value={value}>{children}</UserContext.Provider>;
-}; 
+};
