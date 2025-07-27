@@ -1,17 +1,29 @@
 import { fetchDailyTasks, getUserById } from "@/lib/firebase/firestore";
 import { NextRequest, NextResponse } from "next/server";
 
-export function OPTIONS() {
-  return new NextResponse(null, {
-    status: 204,
-    headers: {
-      "Access-Control-Allow-Origin": "*", // or specify your domain
-      "Access-Control-Allow-Methods": "GET, OPTIONS",
-      "Access-Control-Allow-Headers": "Content-Type",
-    },
-  });
+// --- CORS helper functions ---
+function withCorsHeaders(response: NextResponse) {
+  response.headers.set("Access-Control-Allow-Origin", "*"); // or specific origin
+  response.headers.set("Access-Control-Allow-Methods", "GET, OPTIONS");
+  response.headers.set("Access-Control-Allow-Headers", "Content-Type");
+  return response;
 }
 
+function jsonWithCors(data: any, status = 200) {
+  const res = NextResponse.json(data, { status });
+  return withCorsHeaders(res);
+}
+
+// --- OPTIONS handler ---
+export function OPTIONS() {
+  return withCorsHeaders(
+    new NextResponse(null, {
+      status: 204,
+    })
+  );
+}
+
+// --- GET handler ---
 export async function GET(request: NextRequest) {
   try {
     // Get parameters from query string
@@ -22,29 +34,29 @@ export async function GET(request: NextRequest) {
 
     // Validate required parameters
     if (!userId) {
-      return NextResponse.json(
+      return jsonWithCors(
         { success: false, message: "userId parameter is required" },
-        { status: 400 }
+        400
       );
     }
 
     // --- Add this user existence check ---
     const user = await getUserById(userId);
     if (!user) {
-      return NextResponse.json(
+      return jsonWithCors(
         { success: false, message: "User not found" },
-        { status: 404 } // Use 404 for Not Found
+        404 // Use 404 for Not Found
       );
     }
     // --- End of added check ---
 
     if (!startDate || !endDate) {
-      return NextResponse.json(
+      return jsonWithCors(
         {
           success: false,
           message: "startDate and endDate parameters are required",
         },
-        { status: 400 }
+        400
       );
     }
 
@@ -54,17 +66,17 @@ export async function GET(request: NextRequest) {
 
     // Validate date format
     if (isNaN(start.getTime()) || isNaN(end.getTime())) {
-      return NextResponse.json(
+      return jsonWithCors(
         { success: false, message: "Invalid date format. Use YYYY-MM-DD" },
-        { status: 400 }
+        400
       );
     }
 
     // Validate date range
     if (start > end) {
-      return NextResponse.json(
+      return jsonWithCors(
         { success: false, message: "startDate must be before endDate" },
-        { status: 400 }
+        400
       );
     }
 
@@ -84,24 +96,25 @@ export async function GET(request: NextRequest) {
       })
     );
 
-    return new NextResponse(
-      JSON.stringify({
-        success: true,
-        data: results,
-      }),
-      {
-        status: 200,
-        headers: {
-          "Access-Control-Allow-Origin": "*", // or "http://localhost:3000"
-          "Content-Type": "application/json",
-        },
-      }
+    return withCorsHeaders(
+      new NextResponse(
+        JSON.stringify({
+          success: true,
+          data: results,
+        }),
+        {
+          status: 200,
+          headers: {
+            "Content-Type": "application/json",
+          },
+        }
+      )
     );
   } catch (error) {
     console.error("API error:", error);
-    return NextResponse.json(
+    return jsonWithCors(
       { success: false, message: "Internal server error" },
-      { status: 500 }
+      500
     );
   }
 }
